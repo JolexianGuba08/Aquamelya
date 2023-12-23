@@ -1,21 +1,20 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
 import os
 import sys
 
 
 def main():
-    """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Aquamelya.settings')
     try:
         from django.core.management import execute_from_command_line
-    except ImportError:
-        # Handle ImportError without using 'from exc' for Python versions < 3.3
-        raise ImportError(
+    except ImportError as exc:
+        error_msg = (
             "Couldn't import Django. Are you sure it's installed and "
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         )
+        # Print the error message and exit
+        print(error_msg)
+        sys.exit(1)
     execute_from_command_line(sys.argv)
 
 
