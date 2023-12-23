@@ -1,0 +1,104 @@
+body {
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: "Open Sans", sans-serif !important;
+    min-height: 100vh !important;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.form_container {
+    padding: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+}
+
+.form{
+    padding: 50px !important;
+    box-shadow: 0px 0px 6px 0px rgba(56,80,166,0.34) !important;
+    height: 50% !important;
+    width: 450px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+.form .img_container {
+    display: flex ;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px !important;
+}
+
+.form .img_container img {
+    width: 100% !important;
+}
+
+.alert {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
+.form p {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.line {
+    height: 1px !important;
+    width: 100% !important;
+    border-top: 1px solid #3850A6 !important;
+    margin-bottom: 30px !important;
+}
+
+/* Fields Style */
+.input {
+    padding: 5px 5px 5px 10px !important;
+    border-radius: 3px !important;
+    border: 1px solid black !important;
+    font-size: 12px !important;
+    margin-top: 15px !important;
+    width: 100% !important;
+    height: 40px;
+    border: 1px solid #3850A6 !important;
+    color: #3850A6 !important;
+}
+
+.input:focus{
+    outline: 1px solid #F15BB7 !important;
+    border: 1px solid #F15BB7 !important;
+}
+
+input::placeholder {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    color: #b7c2e7 !important;
+}
+
+
+/* Login Button Style*/
+.login_btn {
+    background-color: #3850A6 !important ;
+    border-radius: 3px !important;
+    padding: 10px !important;
+    width: 100% !important;
+    color: white !important;
+    border: none !important;
+    margin-top: 25px !important;
+    letter-spacing: 3px !important;
+    font-size: 16px !important;
+    font-weight: bolder !important;
+    transition: ease-in-out .5s !important;
+}
+
+.login_btn:hover {
+    background-color: #F15BB7 !important;
+    transition: ease-in-out .5s !important;
+}
+

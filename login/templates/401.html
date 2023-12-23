@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Broken Site | Aquamelya</title>
+</head>
+<body>
+    <h1>Broken Site</h1>
+    <p>Sorry, this site is currently broken. Please try again later.</p>
+    <button onclick="">Reload</button>
+
+    <script>
+        document.querySelector('button').addEventListener('click', function() {
+            // Go to homepage
+            window.location.href = "{% url 'homepage' %}";
+        });
+    </script>
+</body>
+</html>
