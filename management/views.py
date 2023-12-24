@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 def homepage(request):
-    if not user_already_logged_in(request):
-        return redirect('login')
+    # if not user_already_logged_in(request):
+    #     return redirect('login')
 
     return render(request, 'user_admin/admin_dashboard.html')
 

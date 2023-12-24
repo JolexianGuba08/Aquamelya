@@ -1,6 +1,5 @@
 from django.core.validators import RegexValidator
 from django.db import models
-import bcrypt
 
 
 def starting_user_id():
@@ -52,19 +51,19 @@ class User_Account(models.Model):
         return f'{self.user_first_name} {self.user_last_name}'
 
     # saving hashed password
-    def save(self, *args, **kwargs):
-        if self.user_password:
-            hashed_password = bcrypt.hashpw(self.user_password.encode('utf8'), bcrypt.gensalt())
-            self.user_password = hashed_password.decode('utf8')
-
-        if self.user_first_name:
-            self.user_first_name = self.user_first_name.upper()
-        if self.user_middle_name:
-            self.user_middle_name = self.user_middle_name.upper()
-        if self.user_last_name:
-            self.user_last_name = self.user_last_name.upper()
-            
-        super(User_Account, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.user_password:
+    #         hashed_password = bcrypt.hashpw(self.user_password.encode('utf8'), bcrypt.gensalt())
+    #         self.user_password = hashed_password.decode('utf8')
+    #
+    #     if self.user_first_name:
+    #         self.user_first_name = self.user_first_name.upper()
+    #     if self.user_middle_name:
+    #         self.user_middle_name = self.user_middle_name.upper()
+    #     if self.user_last_name:
+    #         self.user_last_name = self.user_last_name.upper()
+    #
+    #     super(User_Account, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'user_account'
