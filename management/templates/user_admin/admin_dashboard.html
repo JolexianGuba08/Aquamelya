@@ -131,7 +131,7 @@
                         <script>
                             function redirectToRequisitionPage() {
                                 // Redirect to another HTML file
-                                {#window.location.href = '{% url 'admin_transaction_requests_url' %}';#}
+                                window.location.href = '#admin_transaction_requests_url';
                             }
                         </script>
                         <!-- End Pending Requests -->
@@ -170,7 +170,7 @@
                         <script>
                             function redirectToPurchaseOrderPage() {
                                 // Redirect to another HTML file
-                                {#window.location.href = '{% url 'admin_transaction_purchase_url' %}';#}
+                                window.location.href = '#admin_transaction_purchase_url';
                             }
                         </script>
                         <!-- End Pending Orders-->
@@ -212,7 +212,7 @@
                         <script>
                             function redirectToSuppliersPage() {
                                 // Redirect to another HTML file
-                                {#window.location.href = '{% url 'supplier_index' %}';#}
+                                window.location.href = '#supplier_index';
                             }
                         </script>
                         <!-- End Suppliers Card

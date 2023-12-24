@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Base | HTML{% endblock title %}</title>
-    <link href="{% static 'images/LOGO_2.png' %}" rel="icon">
+    <link rel="icon" href="{% static 'images/main_logo.png' %}" type="image/x-icon">
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -116,7 +116,7 @@
                     <li>
                         <a
                                 class="dropdown-item d-flex align-items-center"
-                                {#                           href="{% url 'admin_profile_url' %}"#}
+                                href="#admin_profile_url"
                         >
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -125,7 +125,7 @@
                     <li>
                         <a
                                 class="dropdown-item d-flex align-items-center"
-                                {#                                href="{% url 'admin_edit_profile_url' %}"#}
+                                href="#admin_edit_profile_url"
                         >
                             <i class="bi bi-gear"></i>
                             <span>Settings</span>
@@ -135,9 +135,9 @@
                         <hr class="dropdown-divider"/>
                     </li>
                     <li>
-                        {#                        <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">#}
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span>Sign Out</span>
+                        <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sign Out</span>
                         </a>
                     </li>
                 </ul>
@@ -176,13 +176,13 @@
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                 <li>
-                    {#                    <a href="{% url 'admin_staff_view_url' %}" {% block management_staff %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i>
-                    <span>Staff</span>
+                    <a href="#admin_staff_view_url" {% block management_staff %} {% endblock %}>
+                        <i class="bi bi-circle"></i>
+                        <span>Staff</span>
                     </a></li>
                 <li>
-                    {#                    <a href="{% url 'supplier_index' %}" {% block management_supplier %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i><span>Supplier</span>
+                    <a href="#supplier_index" {% block management_supplier %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Supplier</span>
                     </a>
                 </li>
             </ul>
@@ -195,13 +195,13 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    {#                    <a href="{% url 'inventory_supply_view' %}" {% block supply %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i><span>Supply</span>
+                    <a href="inventory_supply_view" {% block supply %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Supply</span>
                     </a>
                 </li>
                 <li>
-                    {#                    <a href="{% url 'inventory_assets_view' %}" {% block assets %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i><span>Assets</span>
+                    <a href="#inventory_assets_view" {% block assets %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Assets</span>
                     </a>
                 </li>
             </ul>
@@ -216,21 +216,21 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    {#                    <a href="{% url 'admin_transaction_requests_url' %}"#}
-                    {% block transaction_requests %} {% endblock %}>
-                    <i class="bi bi-circle"></i><span>Requests</span>
+                    <a href="#admin_transaction_requests_url"
+                            {% block transaction_requests %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Requests</span>
                     </a>
                 </li>
                 <li>
-                    {#                    <a href="{% url 'admin_transaction_purchase_url' %}"#}
-                    {% block transaction_purchase %} {% endblock %}>
-                    <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                    <a href="#admin_transaction_purchase_url"
+                            {% block transaction_purchase %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
                     </a>
                 </li>
                 <li>
-                    {#                    <a href="{% url 'admin_transaction_delivery_url' %}"#}
-                    {% block transaction_delivery %} {% endblock %}>
-                    <i class="bi bi-circle"></i><span>Delivery</span>
+                    <a href="#admin_transaction_delivery_url"
+                            {% block transaction_delivery %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Delivery</span>
                     </a>
                 </li>
             </ul>
@@ -244,18 +244,18 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    {#                    <a href="{% url 'admin_reports_purchase_url' %}" {% block reports_purchase %} {% endblock %} >#}
-                    <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                    <a href="#admin_reports_purchase_url" {% block reports_purchase %} {% endblock %} >
+                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
                     </a>
                 </li>
                 <li>
-                    {#                    <a href="{% url 'admin_reports_requests_url' %}"  {% block reports_requests %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i><span>Requests</span>
+                    <a href="#admin_reports_requests_url"  {% block reports_requests %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Requests</span>
                     </a>
                 </li>
                 <li>
-                    {#                    <a href="{% url 'admin_reports_delivery_url' %}"  {% block reports_delivery %} {% endblock %}>#}
-                    <i class="bi bi-circle"></i><span>Delivery</span>
+                    <a href="#admin_reports_delivery_url"  {% block reports_delivery %} {% endblock %}>
+                        <i class="bi bi-circle"></i><span>Delivery</span>
                     </a>
                 </li>
             </ul>
@@ -263,16 +263,16 @@
         <!-- End Reports Nav -->
         <li class="nav-heading">Options</li>
         <li class="nav-item">
-            {#            <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="{% url 'admin_profile_url' %}">#}
-            <i class="bi bi-person"></i>
-            <span>Profile</span>
+            <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="#admin_profile_url">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
             </a>
         </li>
         <!-- End Supplier Nav -->
         <li class="nav-item">
-            {#            <a class="nav-link collapsed" href="{% url 'logout' %}">#}
-            <i class="bi bi-box-arrow-in-left"></i>
-            <span>Logout</span>
+            <a class="nav-link collapsed" href="{% url 'logout' %}">
+                <i class="bi bi-box-arrow-in-left"></i>
+                <span>Logout</span>
             </a>
         </li>
         <!-- End Supplier Nav -->

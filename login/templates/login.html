@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <title>Login | AquaMelya</title>
 
-    <link href="{% static 'images/LOGO_2.png' %}" rel="icon">
+    <link rel="icon" href="{% static 'images/main_logo.png' %}" type="image/x-icon">
 
     {# FONT ICONS #}
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
@@ -21,7 +21,8 @@
 
     {#  FONTS  #}
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
 
     {#  LOGIN CSS  #}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
@@ -29,28 +30,28 @@
 
 <body>
 <div class="form_container">
-        {# Login Form #}
-        <form method="post" class="form">
-            {# Logo #}
-            <div class="img_container">
-                <img src="{% static 'images/LOGO.png' %}" alt="">
-            </div>
+    {# Login Form #}
+    <form method="post" class="form">
+        {# Logo #}
+        <div class="img_container">
+            <img src="{% static 'images/LOGO.png' %}" alt="">
+        </div>
 
-            {# User Icon #}
-            <i class="fa-solid fa-circle-user fa-2xl" style="color: #3850A6; font-size: 65px; margin-bottom: 20px"></i>
+        {# User Icon #}
+        <i class="fa-solid fa-circle-user fa-2xl" style="color: #3850A6; font-size: 65px; margin-bottom: 20px"></i>
 
-            {# Alert #}
-            {% if error_message %}
+        {# Alert #}
+        {% if error_message %}
             <div class="alert alert-danger" role="alert" id="error_alert">
                 {{ error_message }}
             </div>
-            {% endif %}
+        {% endif %}
 
-            {% csrf_token %}
-            {{ form.as_p }}
+        {% csrf_token %}
+        {{ form.as_p }}
 
-            <button class="login_btn" type="submit">LOG IN</button>
-        </form>
+        <button class="login_btn" type="submit">LOG IN</button>
+    </form>
 </div>
 
 <script>

@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path("", views.homepage, name="homepage"),
-    # path('logout/', views.logout_view, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     # # ADMIN Profile Section
     # path('profile/', views.admin_profile_function, name='admin_profile_url'),
     # path('edit-profile/', views.admin_edit_profile_function, name='admin_edit_profile_url'),
