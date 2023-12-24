@@ -1,0 +1,48 @@
+<table class="table table-hover" id="supplier_table">
+    <thead class="text-center">
+    <tr>
+        <th scope="col" class="text-center">Name</th>
+        <th scope="col" class="text-center">Contact Number</th>
+        <th scope="col" class="text-center">Email</th>
+        <th scope="col" class="text-center">Address</th>
+        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    {% if supplier_list %}
+        {% for supplier in supplier_list %}
+            <tr class="update_supplier" data-form-url="{% url 'supplier_update' supplier.pk %}"
+                data-name="{{ supplier.supplier_name }}">
+                <th scope="row" class="text-center align-middle">{{ supplier.supplier_name }}</th>
+                <td class="text-center align-middle">{{ supplier.supplier_primary_contact }}</td>
+                <td class="text-center align-middle">{{ supplier.supplier_email }}</td>
+                <td class="text-center align-middle">{{ supplier.supplier_address }}</td>
+                <td class="text-center align-middle">
+                    {% if supplier.supplier_status|lower == 'blacklisted' %}
+                        <span class="badge bg-danger">{{ supplier.supplier_status }}</span>
+                    {% else %}
+                        <span class="badge bg-success">{{ supplier.supplier_status }}</span>
+                    {% endif %}
+
+                </td>
+                <td class="text-center align-middle">
+                    <button style="background-color: transparent; border-color: transparent;" type="button"
+                            class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                        <i class="bi bi-three-dots" style="color: black;"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="delete-supplier dropdown-item"
+                           data-form-url="{% url 'supplier_delete' supplier.pk %}">Delete Staff</a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="12" class="text-center">No Supplier Found</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

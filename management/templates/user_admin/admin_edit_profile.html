@@ -1,0 +1,146 @@
+{% extends 'user_admin/admin_base.html' %}
+{% block title %}Profile | Edit Profile{% endblock %}
+{% block profile %} class="nav-link" {% endblock %}
+{%block content%}
+<main id="main" class="main">
+
+    <div class="page-title">
+      <h1>Settings</h1>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section profile">
+        <div class="row">
+          <div class="col-xl-4">
+            <div class="card">
+              <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                <img src="{{ profile_picture }}" alt="Profile" class="rounded-circle">
+                <h2>{{ fullname }}</h2>
+                <h3>{{ user_type }}</h3>
+              </div>
+            </div>
+          </div>
+
+        <!-- Profile Details -->
+          <div class="col-xl-8">
+            <div class="card">
+              <div class="card-body pt-3">
+                <!-- Bordered Tabs -->
+                <ul class="nav nav-tabs nav-tabs-bordered">
+
+                  <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                  </li>
+
+                 <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin_edit_password_url' %}">Change Password</a>
+    </li>
+                </ul>
+                <div class="tab-content pt-2">
+
+                  <div class="tab-pane fade show active profile-edit" id="profile-edit">
+
+                 <form method="post" action="{% url 'admin_edit_profile_url' %}">
+                {% csrf_token %}
+
+                <div class="row mb-3">
+                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                    <div class="col-md-8 col-lg-9">
+                        <img src="{{ profile_picture }}" alt="Profile">
+                        <div class="pt-2">
+                            <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image">
+                                <i class="bi bi-upload"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="FirstName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                    <div class="col-md-8 col-lg-9">
+                        <input name="FirstName" class="form-control" id="FirstName" value="{{ form.FirstName.value }}" placeholder="Change First Name">
+                        {{ form.FirstName.errors }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="MiddleName" class="col-md-4 col-lg-3 col-form-label">Middle Name</label>
+                    <div class="col-md-8 col-lg-9">
+                        <input name="MiddleName" class="form-control" id="MiddleName" value="{{ form.MiddleName.value }}" placeholder="Change Middle Name">
+                        {{ form.MiddleName.errors }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="LastName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                    <div class="col-md-8 col-lg-9">
+                        <input name="LastName" class="form-control" id="LastName" value="{{ form.LastName.value }}" placeholder="Change Last Name">
+                        {{ form.LastName.errors }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="PhoneNum" class="col-md-4 col-lg-3 col-form-label">Phone Number</label>
+                    <div class="col-md-8 col-lg-9">
+                        <input name="PhoneNumber" type="tel" class="form-control" value="{{ form.PhoneNumber.value }}" placeholder="New Phone Number">
+                        {{ form.PhoneNumber.errors }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                    <div class="col-md-8 col-lg-9">
+                        <input name="Address" class="form-control" id="Address" value="{{ form.Address.value }}"placeholder="New Address">
+                        {{ form.Address.errors }}
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button style="background-color:#3850A6;" type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+                 <div>
+                    <br>
+                 </div>
+                     {% if success == "success" %}
+                    <div id="success-message" class="alert alert-success">
+                    <strong>Success!</strong> Submitted successfully.
+                    </div>
+                   {% endif %}
+               <script>
+                    // Add a script to hide the success message after a certain duration (e.g., 3 seconds)
+                    setTimeout(function() {
+                        var successMessage = document.getElementById("success-message");
+                        if (successMessage) {
+                            successMessage.style.display = "none";
+                            changeSuccessParameterValue();
+                        }
+                    }, 3000);  // 3000 milliseconds = 3 seconds
+
+                    function changeSuccessParameterValue() {
+                        window.location.href = "{% url 'admin_edit_profile_url'%}";
+                    }
+                </script>
+
+
+            </form>
+
+
+
+                  </div>
+                       </div>
+
+
+                </div><!-- End Bordered Tabs -->
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+  </main><!-- End #main -->
+{% endblock %}

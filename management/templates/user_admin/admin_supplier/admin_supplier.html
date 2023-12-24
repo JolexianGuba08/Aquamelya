@@ -1,0 +1,137 @@
+{% extends 'user_admin/admin_base.html' %}
+{% block title %}Aquamelya | Supplier{% endblock %}
+{% block management %}
+    class="nav-link"
+{% endblock %}
+{% block management_supplier %}
+    class="active"
+{% endblock %}
+{% block content %}
+
+    {% include 'user_admin/admin_supplier/admin_modals.html' %}
+
+    <main id="main" class="main">
+
+        <div class="page-title">
+            <!-- ADD SUPPLIER BUTTON -->
+            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+                <h3 style="font-weight: bold"> Supplier</h3>
+
+                <div class="col-md-2 ml-auto">
+                    <button id="addSupplierButton" style="background-color:#3850A6;" type="button"
+                            class="btn btn-primary">
+                        <i class="bi bi-person-add"></i> Add Supplier
+                    </button>
+                </div>
+            </div>
+
+            <section class=" ">
+                <div style="display: block;">
+                    <div class="card" style="padding-bottom: 27px;">
+                        <div class="card-body">
+                            <h2 class="card-title" style="float: left;"><i class="bi bi-people"></i>Supplier List</h2>
+                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
+                                <!-- SEARCH FIELD -->
+                                <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
+                                    <input type="text" id="supplier_search" name="query" class="form-control"
+                                           placeholder="Search Name"
+                                           title="Enter search keyword">
+                                </div>
+                            </div>
+                            <!--  SUPPLIER TABLE -->
+                            {% include 'user_admin/admin_supplier/table_supplier.html' %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            $(function () {
+                function createSupplier() {
+                    $("#addSupplierButton").modalForm({
+                        formURL: "{% url 'supplier_create' %}",
+                        modalID: "#create_supplier",
+                    });
+                }
+
+                createSupplier();
+
+                function updateSupplier() {
+                    $(".update_supplier").each(function () {
+                        $(this).modalForm({
+                            formURL: $(this).data("form-url"),
+                            modalID: "#supplierinfo",
+                            syncUpdate: true,
+                        });
+                    });
+                }
+
+                updateSupplier();
+
+                function viewSupply() {
+                    $(".view_supplier").each(function () {
+                        $(this).modalForm({
+                            formURL: $(this).data("form-url")
+                        });
+                    });
+                }
+
+                viewSupply();
+
+                function deleteStaff() {
+                    $(".delete-supplier").each(function () {
+                        $(this).modalForm({
+                            formURL: $(this).data("form-url"),
+                            modalID: "#supplierinfo", isDeleteForm: true
+                        });
+
+                    });
+                }
+
+                deleteStaff();
+                $('#supplier_table .btn').click(function (e) {
+                    e.stopPropagation();
+                });
+
+                $('.delete-supplier').click(function (e) {
+                    e.stopPropagation();
+                });
+
+                function updateTable() {
+                    var selectedType = document.getElementById("supplierTypeFilter").value;
+                    $.ajax({
+                        url: "{% url 'supplier_table_update' %}",
+                        type: "GET",
+                        data: {type: selectedType},
+                        success: function (data) {
+                            $("#supplier_table").html(data);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
+
+                updateTable()
+            });
+            $(document).ready(function () {
+                $('#supplier_search').on('input', function () {
+                    var query = $(this).val().toLowerCase();
+                    $('#supplier_table tbody tr').each(function () {
+                        var rowSupplier = $(this).data('name').toLowerCase();
+                        if (query === '' || rowSupplier.includes(query)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+
+                });
+            });
+
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    </main>
+    <!-- End #main -->
+{% endblock %}

@@ -1,0 +1,118 @@
+{% load widget_tweaks %}
+
+<div class="modal-header">
+    <h5 class="modal-title mr-3">Supplier Details</h5>
+    <button type="button" class="btn btn-primary ml-auto" style="margin-left:240px; color: #3850a6; border-color: #3850a6; background-color: rgba(56, 80, 166, 0.05); border-width: 2px" id="purchaseBtn" onclick="enableForm()"> <i class="bi bi-pencil-square"></i></button>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <form id="myForm"  class="row g-3" method="POST" novalidate>
+        {% csrf_token %}
+
+        <div class="col-md-6">
+            <label for="inputName4" class="form-label">Supplier</label>
+            {% render_field form.supplier_name class="form-control" placeholder="Supplier Name"% disabled="disabled" %}
+            <div class="{% if form.supplier_name.errors %} invalid{% endif %}">
+                {% for error in form.supplier_name.errors %}
+                <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputName4" class="form-label">Contact Number</label>
+            {% render_field form.supplier_primary_contact class="form-control" placeholder="Primary Contact" disabled="disabled" %}
+            <div class="{% if form.supplier_primary_contact.errors %} invalid{% endif %}">
+                {% for error in form.supplier_primary_contact.errors %}
+                <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputName4" class="form-label">Email</label>
+            {% render_field form.supplier_email class="form-control" placeholder="Email Address" disabled="disabled"  %}
+            <div class="{% if form.supplier_email.errors %} invalid{% endif %}">
+                {% for error in form.supplier_email.errors %}
+                <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+         <div class="col-md-6">
+            <label for="inputName4" class="form-label">Status</label>
+            {% render_field form.supplier_status disabled="disabled" class="form-control" %}
+            <div class="{% if form.supplier_status.errors %} invalid{% endif %}">
+                {% for error in form.supplier_status.errors %}
+                     <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputName4" class="form-label">Backup Email</label>
+            {% render_field form.supplier_backup_email  class="form-control" disabled="disabled" placeholder="Backup Email"%}
+            <div class="{% if form.supplier_backup_email.errors %} invalid{% endif %}">
+                {% for error in form.supplier_backup_email.errors %}
+                   <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputName4" class="form-label">Backup Phone</label>
+            {% render_field form.supplier_backup_contact class="form-control" placeholder="Backup Contact" disabled="disabled" %}
+            <div class="{% if form.supplier_backup_contact.errors %} invalid{% endif %}">
+                {% for error in form.supplier_backup_contact.errors %}
+                <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">Address</label>
+            {% render_field form.supplier_address class="form-control" placeholder="Address" disabled="disabled" %}
+            <div class="{% if form.supplier_address.errors %} invalid{% endif %}">
+                {% for error in form.supplier_address.errors %}
+                <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div>   </div>
+        <div class="row  justify-content-center">
+            <div class="col-md-6 text-center">
+                <label class="form-label">Date Added</label>
+                <label class="form-label" style="display: block; margin-bottom: 8px;">{{ supplier.supplier_date_added }}</label>
+            </div>
+            <div class="col-md-6 text-center">
+                <label class="form-label">Date Modified</label>
+                <label class="form-label" style="display: block; margin-bottom: 8px;">{{ supplier.supplier_date_modified }}</label>
+            </div>
+        </div>
+
+        <div class="modal-footer justify-content-end">
+            <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary invisible" id="saveBtn">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+<script>
+       function enableForm() {
+            // Get all elements with the class "form-control" inside the form with the id "myForm"
+            var formControls = document.querySelectorAll('#myForm .form-control');
+
+            // Loop through each element and remove the "disabled" attribute
+            formControls.forEach(function (element) {
+                element.removeAttribute('disabled');
+            });
+
+            // Make the "Save Changes" button visible
+            var saveChangesButton = document.querySelector('#saveBtn');
+
+            saveChangesButton.classList.remove('invisible');
+        }
+
+</script>

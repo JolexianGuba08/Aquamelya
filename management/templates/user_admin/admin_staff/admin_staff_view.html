@@ -1,0 +1,120 @@
+{% extends 'user_admin/admin_base.html' %}
+{% block title %}Aquamelya | Staff Management{% endblock %}
+{% block management %}
+    class="nav-link"
+{% endblock %}
+{% block management_staff %}
+    class="active"
+{% endblock %}
+{% block content %} {% include "user_admin/admin_staff/_modal_.html" %}
+    <main id="main" class="main">
+
+        <div class="page-title">
+            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+                <h3 style="font-weight: bold;">Staff</h3>
+
+                <div class="col-md-2 ml-auto align-content-right">
+                    <button id="create-staff" class="btn btn-primary" type="button" name="button"><span
+                            class="fa fa-plus mr-2"></span>Add Staff
+                    </button>
+                </div>
+            </div>
+
+            <section class=" ">
+                <div style="display: block;">
+                    <div class="card" style="padding-bottom: 27px;">
+                        <div class="card-body">
+                            <h2 class="card-title" style="float: left;"><i class="bi bi-people"></i>Staff List</h2>
+
+                            <!-- Filter and Search at the top right -->
+                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
+                                <div class="col-md-3" style="margin-left: auto; padding-right: 5px;">
+                                    <input id="staff_search" type="text" name="query" class="form-control"
+                                           placeholder="Search"
+                                           title="Enter search keyword"/>
+                                </div>
+                            </div>
+                            {#Table Staff#} {% include 'user_admin/admin_staff/table_staff.html' %}
+
+                            <div class="modal fade" id="basicModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Delete Staff</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            This staff will be deleted in this table. Continue?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No
+                                            </button>
+                                            <button type="button" class="btn btn-primary">Yes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Basic Modal-->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <script>
+            $(function () {
+                function createStaff() {
+                    $("#create-staff").modalForm({
+                        formURL: "{% url 'add_staff' %}",
+                        modalID: "#create-modal",
+                    });
+                }
+
+                createStaff();
+
+                function updateStaff() {
+                    $(".view-staff").each(function () {
+                        $(this).modalForm({formURL: $(this).data("form-url")});
+                    });
+                }
+
+                updateStaff();
+
+                function deleteStaff() {
+                    $(".delete-staff").each(function () {
+                        $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+                    });
+                }
+
+                deleteStaff();
+
+                $("#staff_table .btn").click(function (e) {
+                    e.stopPropagation();
+                });
+
+                $(".delete-staff").click(function (e) {
+                    e.stopPropagation();
+                });
+            });
+
+            $(document).ready(function () {
+                $("#staff_search").on("input", function () {
+                    var search = $(this).val().toLowerCase();
+
+                    $("#staff_table tbody tr").each(function () {
+                        var nameRow = $(this).data('name').toLowerCase();
+                        var emailRow = $(this).data('email').toLowerCase();
+
+                        if (nameRow.includes(search) || search === "" || emailRow.includes(search)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    </main>
+    <!-- End #main -->
+{% endblock %}

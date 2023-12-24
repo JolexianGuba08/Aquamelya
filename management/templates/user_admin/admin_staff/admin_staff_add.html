@@ -1,0 +1,96 @@
+{% load widget_tweaks %}
+<div class="modal-header">
+   <h5 class="modal-title">Add Staff</h5>
+   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+   <form class="row g-3" method="post" action="" novalidate>
+      {% csrf_token %}
+      <div class="col-md-6">
+         <label for="inputName5" class="form-label" >FIRST NAME</label>
+         {% render_field form.user_first_name class="form-control" placeholder="" %}
+         <div class="{% if form.user_first_name.errors %} invalid{% endif %}">
+            {% for error in form.user_first_name.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <label for="inputName4" class="form-label">LAST NAME</label>
+         {% render_field form.user_last_name class="form-control" placeholder="" %}
+         <div class="{% if form.user_last_name.errors %} invalid{% endif %}">
+            {% for error in form.user_last_name.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <label for="inputName4" class="form-label">MIDDLE NAME</label>
+         {% render_field form.user_middle_name class="form-control" placeholder="" %}
+         <div class="{% if form.user_middle_name.errors %} invalid{% endif %}">
+            {% for error in form.user_middle_name.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <label for="inputName4" class="form-label">CONTACT NO.</label>
+         {% render_field form.user_contact_number class="form-control" placeholder="" %}
+         <div class="{% if form.user_contact_number.errors %} invalid{% endif %}">
+            {% for error in form.user_contact_number.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <label for="inputName4" class="form-label">BIRTHDATE</label>
+         {% render_field form.user_birthdate class="form-control" %}
+         <div class="{% if form.user_birthdate.errors %} invalid{% endif %}">
+            {% for error in form.user_birthdate.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <label for="inputName4" class="form-label">HIRED DATE</label>
+         {% render_field form.user_date_hired class="form-control" %}
+         <div class="{% if form.user_date_hired.errors %} invalid{% endif %}">
+            {% for error in form.user_date_hired.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-12">
+         <label for="inputName4" class="form-label">ADDRESS</label>
+         {% render_field form.user_address class="form-control" placeholder="" %}
+         <div class="{% if form.user_address.errors %} invalid{% endif %}">
+            {% for error in form.user_address.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-12">
+         <label for="inputName4" class="form-label">EMAIL ADDRESS</label>
+         {% render_field form.user_email class="form-control" placeholder="user@gmail.com" %}
+         <div class="{% if form.user_email.errors %} invalid{% endif %}">
+            {% for error in form.user_email.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="col-md-12">
+         <label for="inputName4" class="form-label">PASSWORD</label>
+         {% render_field form.user_password class="form-control" placeholder="*********" %}
+         <div class="{% if form.user_password.errors %} invalid{% endif %}">
+            {% for error in form.user_password.errors %}
+            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            {% endfor %}
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         <button type="submit" class="btn btn-primary">Add Staff</button>
+      </div>
+   </form>
+   <!-- End Multi Columns Form -->
+</div>
