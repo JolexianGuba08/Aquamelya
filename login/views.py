@@ -1,32 +1,30 @@
+import bcrypt
 from django.shortcuts import render, redirect
 from login.forms import LoginForm
 from management.models import User_Account
 
 
 def login_view(request):
-    form = LoginForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
+    if user_already_logged_in(request):
         return redirect('homepage')
-    # if user_already_logged_in(request):
-    #     return redirect('homepage')
-    #
-    # form = LoginForm(request.POST or None)
-    #
-    # if request.method == 'POST' and form.is_valid():
-    #     email = form.cleaned_data['user_email']
-    #     password = form.cleaned_data['user_password']
-    #
-    #     user = User_Account.objects.filter(user_email=email).first()
-    #     if user and user.user_status == 1 and bcrypt.checkpw(password.encode('utf8'),
-    #                                                          user.user_password.encode('utf8')):
-    #         print('Login successful')
-    #         create_session(request, user)
-    #         return redirect('homepage')
-    #     else:
-    #         print('Login failed')
-    #         error_message = 'Incorrect Email or Password' if user else 'Invalid Email Address'
-    #         form = LoginForm() if user else form
-    #         return render(request, 'login.html', {'error_message': error_message, 'form': form})
+
+    form = LoginForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        email = form.cleaned_data['user_email']
+        password = form.cleaned_data['user_password']
+
+        user = User_Account.objects.filter(user_email=email).first()
+        if user and user.user_status == 1 and bcrypt.checkpw(password.encode('utf8'),
+                                                             user.user_password.encode('utf8')):
+            print('Login successful')
+            create_session(request, user)
+            return redirect('homepage')
+        else:
+            print('Login failed')
+            error_message = 'Incorrect Email or Password' if user else 'Invalid Email Address'
+            form = LoginForm() if user else form
+            return render(request, 'login.html', {'error_message': error_message, 'form': form})
 
     return render(request, 'login.html', {'form': form})
 
