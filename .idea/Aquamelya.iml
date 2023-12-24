@@ -22,6 +22,13 @@
     <orderEntry type="library" name="bootstrap-icons" level="application" />
     <orderEntry type="library" name="animate.css" level="application" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/management/custom_context" />
+      </list>
+    </option>
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">

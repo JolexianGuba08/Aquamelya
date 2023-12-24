@@ -30,6 +30,10 @@ def un_authorized_view(request):
 
 
 def logout_view(request):
+    if user_already_logged_in(request):
+        del request.session['session_email']
+        del request.session['session_user_id']
+        del request.session['session_user_type']
     return redirect('login')
 
 
