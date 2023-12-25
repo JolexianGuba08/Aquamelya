@@ -195,12 +195,12 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="inventory_supply_view" {% block supply %} {% endblock %}>
+                    <a href="{% url 'inventory_supply_view' %}" {% block supply %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Supply</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#inventory_assets_view" {% block assets %} {% endblock %}>
+                    <a href="{% url 'inventory_assets_view' %}" {% block assets %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Assets</span>
                     </a>
                 </li>

@@ -1,10 +1,6 @@
 from bootstrap_modal_forms.generic import (
-    BSModalLoginView,
-    BSModalFormView,
     BSModalCreateView,
     BSModalUpdateView,
-    BSModalReadView,
-    BSModalDeleteView
 )
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -205,6 +201,12 @@ class DeleteStaff(View):
 
 
 def admin_profile_function(request):
+    if not user_already_logged_in(request):
+        return redirect('login')
+    
+    if 'session_user_type' in request.session and request.session['session_user_type'] != 1:
+        return Http404("You are not allowed to access this page.")
+
     return render(request, 'user_admin/admin_profile.html')
 
 

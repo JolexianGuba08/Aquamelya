@@ -1,0 +1,40 @@
+<table class="table table-hover" id="supply-table">
+    <thead class="text-center">
+    <tr>
+        <th scope="col" class="text-center">Supply</th>
+        <th scope="col" class="text-center">Quantity On Hand</th>
+        <th scope="col" class="text-center">Supplier</th>
+        <th class="text-center" scope="col"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    {% if supplies %}
+        {% for supplys in supplies %}
+            <tr class="update-supply" data-form-url="{% url 'update_supply_info' supplys.pk %}"
+                data-type="{{ supplys.supply_type.name }}" data-supplier="{{ supplys.supplier_id.supplier_name }}"
+                data-name="{{ supplys.supply_description }}">
+                <th class="text-center align-middle">{{ supplys.supply_description }}</th>
+                <td class="text-center align-middle">{{ supplys.supply_on_hand }} ({{ supplys.supply_unit }})</td>
+                <td class="text-center align-middle">{{ supplys.supplier_id.supplier_name }}</td>
+                <td class="text-center">
+
+                    <!-- Delete Supply buttons -->
+                    <button style="background-color: transparent; border-color: transparent;" type="button"
+                            class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                        <i class="bi bi-three-dots" style="color: black;"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="delete-supply dropdown-item" data-form-url="{% url 'delete_supply' supplys.pk %}">Delete
+                            Asset</a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td class="text-center align-middle" colspan="10">No Supplies Found</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

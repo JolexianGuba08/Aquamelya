@@ -1,0 +1,85 @@
+{% load widget_tweaks %}
+
+   <div class="modal-header">
+      <h5 class="modal-title">Add Supply</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   </div>
+   <div class="modal-body">
+      <form class="row g-3" method="POST" novalidate>
+        {% csrf_token %}
+
+      <div class="col-md-12">
+            <label for="inputName4" class="form-label">Description</label>
+            {% render_field form.supply_description class="form-control" placeholder="Supply Name (Unit Measure)"%}
+            <div class="{% if form.supply_description.errors %}invalid{% endif %}">
+                {% for error in form.supply_description.errors %}
+                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+      <div class="col-md-6">
+            <label for="inputName4" class="form-label">Type</label>
+            {% render_field form.supply_type class="form-control" placeholder=" "%}
+            <div class="{% if form.supply_type.errors %}invalid{% endif %}">
+                {% for error in form.supply_type.errors %}
+                    <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+      <div class="col-md-6">
+            <label for="inputName4" class="form-label">Supplier</label>
+            {% render_field form.supplier_id class="form-control" placeholder=""%}
+            <div class="{% if form.supplier_id.errors %}invalid{% endif %}">
+                {% for error in form.supplier_id.errors %}
+                <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+      <div class="col-md-4">
+            <label for="inputName4" class="form-label">Quantity On Hand</label>
+            {% render_field form.supply_on_hand class="form-control" placeholder=""%}
+            <div class="{% if form.supply_on_hand.errors %}invalid{% endif %}">
+                {% for error in form.supply_on_hand.errors %}
+                    <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+      <div class="col-md-3">
+            <label for="inputName4" class="form-label">On Hand Unit</label>
+            {% render_field form.supply_unit class="form-control" empty_label="Unit"%}
+            <div class="{% if form.supply_unit.errors %}invalid{% endif %}">
+                {% for error in form.supply_unit.errors %}
+                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+      <div class="col-md-5">
+            <label for="inputName4" class="form-label">Re-order Level</label>
+            {% render_field form.supply_reorder_lvl class="form-control" placeholder=" "%}
+            <div class="{% if form.supply_reorder_lvl.errors %}invalid{% endif %}">
+                {% for error in form.supply_reorder_lvl.errors %}
+                    <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+
+      <div class="col-md-12">
+            <label for="inputName4" class="form-label">Notes</label>
+            {% render_field form.notes class="form-control" placeholder=""%}
+            <div class="{% if form.notes.errors %}invalid{% endif %}">
+                {% for error in form.notes.errors %}
+                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+      </div>
+
+   <div class="modal-footer pb-0">
+      <button type="submit" class="btn btn-primary">Add Supply</button>
+   </div>
+</form>
+   </div>

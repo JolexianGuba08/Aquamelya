@@ -1,0 +1,126 @@
+{% extends "user_admin/admin_base.html" %}
+{% block title %}Inventory | Supply{% endblock %}
+{% block inventory %}
+    class="nav-link"
+{% endblock %}
+{% block supply %}
+    class="active"
+{% endblock %}
+{% block content %}
+    {% include "aqua_assets/_modal.html" %}
+    <main id="main" class="main">
+
+        <div class="page-title">
+            <h3 style="font-weight: bold"> Supply</h3>
+            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+                <!-- Search -->
+                <div class="col-md-3" style="margin-right: 5px">
+                    <input type="text" id="supply_search" name="query" class="form-control" placeholder="Search"
+                           title="Enter search keyword">
+                </div>
+
+                <!-- Supply Type Filtering -->
+                <div class="col-md-3 mb-2" style="margin-right: 5px">
+                    <select class="form-select" id="supply_type_filter">
+                        <option selected value="all">Supply Type: All</option>
+                        {% for supply_type in supply_type %}
+                            <option value="{{ supply_type.name }}">{{ supply_type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Supplier Filtering -->
+                <div class="col-md-3 mb-2" style="margin-right: 35px">
+                    <select class="form-select" id="supplier_filter">
+                        <option selected value="all">Supplier: All</option>
+                        {% for supplier in suppliers %}
+                            <option value="{{ supplier.supplier_name }}">{{ supplier.supplier_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-right justify-content-end mb-2">
+                    <button id="create-supply" class="btn btn-primary" style="background-color:#3850A6;" type="button"
+                            name="button">
+                        <i class="bi bi-database-add"></i>&nbsp; Add Supply
+                    </button>
+                </div>
+            </div>
+            <section class=" ">
+                <div style="display: block;">
+                    <div class="card">
+                        {% include 'aqua_supply/_supply_table.html' %}
+                    </div>
+                </div>
+            </section>
+        </div>
+        <script type="text/javascript">
+            // Create Asset
+            $(function () {
+                function createSupply() {
+                    $("#create-supply").modalForm({
+                        formURL: "{% url 'add_supply' %}",
+                        modalID: "#create-modal",
+                    });
+                }
+
+                createSupply();
+
+                function viewSupply() {
+                    $(".view-supply").each(function () {
+                        $(this).modalForm({formURL: $(this).data("form-url")});
+                    });
+                }
+
+                viewSupply();
+
+                function updateSupply() {
+                    $(".update-supply").each(function () {
+                        $(this).modalForm({formURL: $(this).data("form-url")});
+                    });
+                }
+
+                updateSupply();
+
+                function deleteSupply() {
+                    $(".delete-supply").each(function () {
+                        $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+                    });
+                }
+
+                deleteSupply();
+
+                $('#supply-table .btn').click(function (e) {
+                    e.stopPropagation();
+                });
+
+                $('.delete-supply').click(function (e) {
+                    e.stopPropagation();
+                });
+            });
+            $(document).ready(function () {
+                $('#supply_type_filter, #supplier_filter, #supply_search').on('change input', function () {
+                    supply_type_filter = $('#supply_type_filter').val();
+                    supplier_filter = $('#supplier_filter').val();
+                    supply_search = $('#supply_search').val().toLowerCase();
+
+                    $('#supply-table tbody tr').each(function () {
+                        var rowType = $(this).data('type');
+                        var rowSupplier = $(this).data('supplier');
+                        var rowName = $(this).data('name').toLowerCase();
+
+                        if ((supply_type_filter === 'all' || rowType === supply_type_filter) &&
+                            (supplier_filter === 'all' || rowSupplier === supplier_filter) &&
+                            (rowName.includes(supply_search) || supply_search === '')) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+    </main>
+    <!-- End #main -->
+{% endblock %}

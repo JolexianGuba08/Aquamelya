@@ -1,0 +1,43 @@
+<table class="table table-hover datatable" id="asset-table">
+    <thead class="text-center">
+    <tr>
+        <th scope="col" class="text-center">Asset</th>
+        <th scope="col" class="text-center">Manufacturer</th>
+        <th scope="col" class="text-center">Model</th>
+        <th scope="col" class="text-center">On Hand</th>
+        <th scope="col" class="text-center"></th>
+        <th class="text-center" scope="col"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    {% if asset %}
+        {% for assets in asset %}
+            <tr class="asset-update" data-form-url="{% url 'update_asset_info' assets.pk %}"
+                data-type="{{ assets.asset_type }}" data-name="{{ assets.asset_description }}">
+                <th class="text-center align-middle">{{ assets.asset_description }}</th>
+                <td class="text-center align-middle">{{ assets.asset_manufacturer }}</td>
+                <td class="text-center align-middle">{{ assets.asset_model }}</td>
+                <td class="text-center align-middle">{{ assets.asset_on_hand }} {{ assets.asset_unit }}</td>
+                <td class="text-center align-middle">
+                    <button style="background-color: transparent; border-color: transparent;" type="button"
+                            class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                        <i class="bi bi-three-dots" style="color: black;"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="asset-delete dropdown-item" data-form-url="{% url 'delete_asset' assets.pk %}">Delete
+                            Asset</a>
+                    </div>
+
+
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <td class="text-center align-middle" colspan="12">No assets found.</td>
+    {% endif %}
+    </tbody>
+</table>
+
+
+
