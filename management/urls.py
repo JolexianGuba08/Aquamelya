@@ -15,12 +15,12 @@ urlpatterns = [
     # path('edit-password/<str:success>', views.admin_edit_password_function,
     #      name='admin_edit_password_url_with_success'),
     # path('401/', views.un_authorized_view, name='unauthorized'),
-    # # SUPPLIER Section
-    # path('supplier/', views.IndexSupplier.as_view(), name='supplier_index'),
-    # path('supplier/create', views.CreateSupplier.as_view(), name='supplier_create'),
-    # path('supplier/update/<int:pk>', views.UpdateSupplier.as_view(), name='supplier_update'),
-    # path('supplier/delete/<int:pk>', views.DeleteSupplier.as_view(), name='supplier_delete'),
-    # path('supplier/table/', views.update_table_view, name='supplier_table_update'),
+    # ------------------ SUPPLIER SECTION ------------------
+    path('supplier/', views.IndexSupplier.as_view(), name='supplier_index'),
+    path('supplier/create', views.CreateSupplier.as_view(), name='supplier_create'),
+    path('supplier/update/<int:pk>', views.UpdateSupplier.as_view(), name='supplier_update'),
+    path('supplier/delete/<int:pk>', views.DeleteSupplier.as_view(), name='supplier_delete'),
+    path('supplier/table/', views.update_table_view, name='supplier_table_update'),
     # # STAFF Section
     # path('staff/', views.AdminStaffIndexView.as_view(), name='admin_staff_view_url'),
     # path('staff/add/', views.CreateStaffView.as_view(), name='add_staff'),

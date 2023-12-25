@@ -70,6 +70,7 @@ class User_Account(models.Model):
         db_table = 'user_account'
         verbose_name = 'User Account'
 
+
 # def starting_activity_id():
 #     last_id = Activity_Log.objects.order_by('-activity_id').first()
 #     if last_id:
@@ -107,65 +108,64 @@ class User_Account(models.Model):
 #         verbose_name_plural = 'Activity Logs'
 
 
-# def starting_supplier_id():
-#     last_id = Supplier.objects.order_by('-supplier_id').first()
-#     if last_id:
-#         return last_id.supplier_id + 1
-#     else:
-#         return 10001
-#
-#
-# class SupplierStatus(models.Model):
-#     name = models.CharField(max_length=50, unique=True)
-#     description = models.TextField(blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     @classmethod
-#     def get_default_status(cls):
-#         return cls.objects.get(name='Active')
-#
-#     class Meta:
-#         db_table = 'supplier_status'
-#         verbose_name = 'Supplier Status'
-#
-#
-# class Supplier(models.Model):
-#     supplier_id = models.IntegerField(primary_key=True, default=starting_supplier_id)
-#     supplier_name = models.CharField(max_length=50, unique=True)
-#     supplier_address = models.CharField(max_length=100)
-#     supplier_primary_contact = models.CharField(
-#         validators=[
-#             RegexValidator(
-#                 regex=r'^\d{11}$',
-#                 message='Please enter a valid 11-digit phone number.',
-#             ),
-#         ], max_length=11
-#     )
-#
-#     supplier_email = models.EmailField(max_length=254, unique=True)
-#     supplier_status = models.ForeignKey(SupplierStatus, on_delete=models.CASCADE,
-#                                         default=SupplierStatus.get_default_status)
-#     supplier_date_added = models.DateTimeField(auto_now_add=True)
-#     supplier_date_modified = models.DateTimeField(auto_now=True)
-#     supplier_backup_contact = models.CharField(
-#         validators=[
-#             RegexValidator(
-#                 regex=r'^\d{11}$',
-#                 message='Please enter a valid 11-digit phone number.',
-#             ),
-#         ], max_length=11, blank=True, null=True
-#     )
-#     supplier_backup_email = models.EmailField(max_length=40, blank=True, null=True, unique=True)
-#     notes = models.TextField(blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.supplier_name
-#
-#     class Meta:
-#         db_table = 'supplier'
-#         verbose_name = 'Supplier'
+def starting_supplier_id():
+    last_id = Supplier.objects.order_by('-supplier_id').first()
+    if last_id:
+        return last_id.supplier_id + 1
+    else:
+        return 10001
+
+
+class SupplierStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default_status(cls):
+        return cls.objects.get(name='Active')
+
+    class Meta:
+        db_table = 'supplier_status'
+        verbose_name = 'Supplier Status'
+
+
+class Supplier(models.Model):
+    supplier_id = models.IntegerField(primary_key=True, default=starting_supplier_id)
+    supplier_name = models.CharField(max_length=50, unique=True)
+    supplier_address = models.CharField(max_length=100)
+    supplier_primary_contact = models.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^\d{11}$',
+                message='Please enter a valid 11-digit phone number.',
+            ),
+        ], max_length=11
+    )
+
+    supplier_email = models.EmailField(max_length=254, unique=True)
+    supplier_status = models.ForeignKey(SupplierStatus, on_delete=models.CASCADE,
+                                        default=SupplierStatus.get_default_status)
+    supplier_date_added = models.DateTimeField(auto_now_add=True)
+    supplier_date_modified = models.DateTimeField(auto_now=True)
+    supplier_backup_contact = models.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^\d{11}$',
+                message='Please enter a valid 11-digit phone number.',
+            ),
+        ], max_length=11, blank=True, null=True
+    )
+    supplier_backup_email = models.EmailField(max_length=40, blank=True, null=True, unique=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.supplier_name
+
+    class Meta:
+        db_table = 'supplier'
+        verbose_name = 'Supplier'
 
 # class LoggedInSession(models.Model):
 #     session_key = models.CharField(primary_key=True, max_length=255)

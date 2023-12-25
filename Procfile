@@ -1,1 +1,0 @@
-web: gunicorn Aquamelya.wsgi --log-file -
