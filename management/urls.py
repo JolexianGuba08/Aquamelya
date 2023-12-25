@@ -21,11 +21,11 @@ urlpatterns = [
     path('supplier/update/<int:pk>', views.UpdateSupplier.as_view(), name='supplier_update'),
     path('supplier/delete/<int:pk>', views.DeleteSupplier.as_view(), name='supplier_delete'),
     path('supplier/table/', views.update_table_view, name='supplier_table_update'),
-    # # STAFF Section
-    # path('staff/', views.AdminStaffIndexView.as_view(), name='admin_staff_view_url'),
-    # path('staff/add/', views.CreateStaffView.as_view(), name='add_staff'),
-    # path('staff/update/<int:pk>/', views.AdminStaffView.as_view(), name='admin_staff_info'),
-    # path('staff/delete/<int:pk>/', views.DeleteStaff.as_view(), name='delete_staff'),
+    # ------------------ STAFF SECTION ------------------
+    path('staff/', views.AdminStaffIndexView.as_view(), name='admin_staff_view_url'),
+    path('staff/add/', views.CreateStaffView.as_view(), name='add_staff'),
+    path('staff/update/<int:pk>/', views.AdminStaffView.as_view(), name='admin_staff_info'),
+    path('staff/delete/<int:pk>/', views.DeleteStaff.as_view(), name='delete_staff'),
     #
     # # Staff Url
     # path('staff-dashboard/', views.staff_dashboard_view, name='staff_dashboard_url'),

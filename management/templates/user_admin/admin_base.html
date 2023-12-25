@@ -176,7 +176,7 @@
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                 <li>
-                    <a href="#admin_staff_view_url" {% block management_staff %} {% endblock %}>
+                    <a href="{% url 'admin_staff_view_url' %}" {% block management_staff %} {% endblock %}>
                         <i class="bi bi-circle"></i>
                         <span>Staff</span>
                     </a></li>
