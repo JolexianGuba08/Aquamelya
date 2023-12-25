@@ -8,7 +8,7 @@ from bootstrap_modal_forms.generic import (
 )
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -43,8 +43,6 @@ def user_already_logged_in(request):
 
 # ------------------SUPPLIER PAGE------------------#
 class IndexSupplier(generic.ListView):
-    # if request.session['session_user_type'] != 1:
-    #     return redirect('login')
     model = Supplier
     context_object_name = 'supplier_list'
     template_name = 'user_admin/admin_supplier/admin_supplier.html'
@@ -55,12 +53,22 @@ class IndexSupplier(generic.ListView):
             qs = qs.filter(type=int(self.request.GET['type']))
         return qs
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class CreateSupplier(BSModalCreateView):
     template_name = 'user_admin/admin_supplier/admin_supplier_add.html'
     form_class = SupplierForm
     success_message = 'Success: Supplier was created.'
     success_url = reverse_lazy('supplier_index')
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UpdateSupplier(BSModalUpdateView):
@@ -69,6 +77,11 @@ class UpdateSupplier(BSModalUpdateView):
     form_class = UpdateSupplierForm
     success_message = 'Success: Supplier was updated.'
     success_url = reverse_lazy('supplier_index')
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class DeleteSupplier(View):
@@ -96,18 +109,26 @@ class DeleteSupplier(View):
             messages.error(request, f'Error: {str(e)}')
             return HttpResponseBadRequest(f'Error: {str(e)}')
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 def update_table_view(request):
-    selected_type = request.GET.get('type', None)
-    qs = Supplier.objects.order_by('-supplier_id')
+    if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+        raise Http404("You are not allowed to access this page.")
+    else:
+        selected_type = request.GET.get('type', None)
+        qs = Supplier.objects.order_by('-supplier_id')
 
-    if selected_type:
-        qs = qs.filter(type=int(selected_type))
+        if selected_type:
+            qs = qs.filter(type=int(selected_type))
 
-    context = {'supplier_list': qs}
-    html = render_to_string('user_admin/admin_supplier/table_supplier.html', context)
+        context = {'supplier_list': qs}
+        html = render_to_string('user_admin/admin_supplier/table_supplier.html', context)
 
-    return JsonResponse({'html': html})
+        return JsonResponse({'html': html})
 
 
 def admin_profile_function(request):
