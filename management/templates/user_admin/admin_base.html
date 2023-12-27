@@ -116,7 +116,7 @@
                     <li>
                         <a
                                 class="dropdown-item d-flex align-items-center"
-                                href="#admin_profile_url"
+                                href="{% url 'profile' %}"
                         >
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -263,7 +263,7 @@
         <!-- End Reports Nav -->
         <li class="nav-heading">Options</li>
         <li class="nav-item">
-            <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="#admin_profile_url">
+            <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="{% url 'profile' %}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

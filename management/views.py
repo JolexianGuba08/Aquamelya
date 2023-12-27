@@ -203,11 +203,16 @@ class DeleteStaff(View):
 def admin_profile_function(request):
     if not user_already_logged_in(request):
         return redirect('login')
-    
-    if 'session_user_type' in request.session and request.session['session_user_type'] != 1:
-        return Http404("You are not allowed to access this page.")
-
-    return render(request, 'user_admin/admin_profile.html')
+    user_type = request.session['session_user_type']
+    if user_type == 0:
+        staff_profile_edit = StaffProfileEdit()
+        staff_change_password = StaffChangePasswordForm()
+        return render(request, 'user_staff/staff_profile.html',
+                      {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
+    elif user_type == 1:
+        return render(request, 'user_admin/admin_profile.html')
+    else:
+        return redirect('login')
 
 
 def admin_edit_profile_function(request):
