@@ -29,5 +29,6 @@ urlpatterns = [
 
 ]
 handler404 = 'management.views.error_404_view'
+handler504 = 'management.views.error_404_view'
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

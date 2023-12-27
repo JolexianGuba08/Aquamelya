@@ -91,11 +91,11 @@ WSGI_APPLICATION = 'Aquamelya.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "railway",
-        "USER": "postgres",
-        "PASSWORD": "GAgdf2edcAb4cGA-3Ffea4b-*de55a3A",
-        "HOST": "roundhouse.proxy.rlwy.net",
-        "PORT": "39998",
+        "NAME": "dchr3d63rasp0a",
+        "USER": "tguovdomtxayif",
+        "PASSWORD": "d7ee70937e8ac59cf6d89cb380aba67b07e7709924af58d6d9a0361e2ae9002a",
+        "HOST": "ec2-3-232-218-211.compute-1.amazonaws.com",
+        "PORT": "5432",
     }
 }
 
