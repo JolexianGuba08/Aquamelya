@@ -1,0 +1,212 @@
+{% extends 'user_staff/staff_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Requisition | AquaMelya {% endblock title %}
+
+{# Requisition Active #}
+{% block requisitiontable %}
+    <a class="nav-link" href="{% url 'requisition_table' %}"/>
+{% endblock requisitiontable %}
+
+{% block asset %} class="active" {% endblock %}
+{# Content #}
+{% block content %}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+    {% include 'request/user_staff/staff_request_modal.html' %}
+    {% include 'request/user_staff/confirm_cancel.html' %}
+    <main id="main" class="main">
+        <div>
+            <h1>REQUESTIONS</h1>
+        </div>
+        <section class="section dashboard">
+            <div style="display: block;">
+                <div class="card" style="padding-bottom: 27px;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp; My
+                            Request Forms</h2>
+                        {% include 'request/user_staff/include_request_table.html' %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script>
+        // fetch data and populate modal of STAFF REQUISITION
+        function fetchDataAndModal(pk) {
+            $.ajax({
+                url: `/transactions/get_data_staff/${pk}/`,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('#req_id').val(data.req_id);
+                    $('#req_type').val(data.req_type);
+                    $('#request_description').text(data.req_requestor);
+                    $('#req_date_last_mod').text(data.req_date_last_mod);
+                    $('#req_date_requested').text(data.req_date_requested);
+                    $('#req_notes').text(data.req_notes);
+                    $('#req_reviewer_notes').text(data.req_reviewer_notes);
+
+                    // Disable input fields if req_status is not 'Pending'
+                    if (data.req_status !== 'Pending') {
+                        $('input, textarea, select').prop('disabled', true);
+                        $('.req_submit_bttn.btn').prop('disabled', true);
+
+                    } else {
+                        $('input, textarea, select').prop('disabled', false);
+                        $('.req_submit_bttn.btn').prop('disabled', false);
+                    }
+
+
+                    // Populate options from the JSON response
+                    var dropdown = $('#status_select');
+                    dropdown.empty();
+                    data.req_status_list.forEach(function (status) {
+                        var option = $('<option>', {
+                            value: status.id,
+                            text: status.name
+                        });
+
+                        // Check if the status ID matches the current req_status
+                        if (status.name === data.req_status) {
+                            option.attr('selected', 'selected');
+                        }
+
+                        dropdown.append(option);
+                    });
+
+                    if (data.req_type === 'Job Order') {
+                        $('#job_order_start').val(data.job_start_date);
+                        $('#job_order_end').val(data.job_end_date);
+                        $('#worker_count').val(data.worker_count);
+                        $('#job_order_div').show();
+                    } else {
+                        // Optionally, you can hide the div if req_type is not 'Job Order'
+                        $('#job_order_div').hide();
+                    }
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    console.error('Error fetching data');
+                }
+            });
+        }
+
+        // update staff requisition data
+        function updateData(req_id) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var postData = {
+                'req_type': $('#req_type').val(),
+                'req_notes': $('#req_notes').val()
+            };
+            $.ajax({
+                url: `/transactions/post_data_staff/${req_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        console.log(postData)
+                        console.log(response.status);
+                        window.location.reload();
+                    } else {
+                        console.error('Error updating data');
+                        window.location.reload();
+                    }
+                },
+            });
+        }
+
+        // cancel get request function
+        function cancelRequestGet(req_id) {
+            $.ajax({
+                url: `/transactions/cancel_request/${req_id}/`,
+                method: 'GET',
+                success: function (data) {
+                    $('#cancel_message').text(data.req_description);
+                    $('#req_id').val(data.req_id);
+                    $('#confirmationModal').modal('show');
+                },
+                error: function (error) {
+                    console.error('Error canceling request:', error);
+
+                }
+            });
+
+        }
+
+        // for post cancel request
+        function cancelRequestPost(req_id) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: `/transactions/cancel_request/${req_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                success: function (data) {
+                    if (data.status === 'success') {
+                        console.log(data.status);
+                        window.location.reload();
+                    } else {
+                        console.log('Error updating data');
+                        window.location.reload();
+                    }
+                },
+                error: function (data) {
+                    console.log('Error canceling request:', data);
+                }
+            });
+
+        }
+
+
+        // Datatables initialization
+        $(document).ready(function () {
+            $('#job_order_div').hide();
+            $('#staff_requisition_table tbody').on('click', 'tr', function () {
+                const pk = $(this).data('pk');
+                fetchDataAndModal(pk);
+            });
+
+            $('#req_id').on('submit', function (e) {
+                e.preventDefault();
+                const req_id = $('#req_id').val();
+                updateData(req_id);
+            });
+
+            $('.cancel-request').on('click', function () {
+                var reqId = $(this).data('pk');
+                cancelRequestGet(reqId);
+
+            });
+
+            $('#confirm-cancel-btn').on('click', function () {
+                var reqId = $(req_id).val();
+                cancelRequestPost(reqId);
+            });
+
+
+        });
+
+
+        // Prevent preventing on opening the modal on a CANCEL REQUEST BUTTON
+        $('#staff_requisition_table .btn').click(function (e) {
+            e.stopPropagation();
+        });
+
+        $('.cancel_btn').click(function (e) {
+            e.stopPropagation();
+        });
+
+    </script>
+{% endblock content %}
+

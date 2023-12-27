@@ -1,4 +1,4 @@
-from management.models import User_Account
+from management.models import User_Account, Supplier
 from login.views import user_already_logged_in
 
 
@@ -34,7 +34,7 @@ def get_user_info(request):
 def dashboard_context(request):
     if user_already_logged_in(request):
 
-        # supplier_count = Supplier.objects.filter(supplier_status__name='Active').count()
+        supplier_count = Supplier.objects.filter(supplier_status__name='Active').count()
         # supply_req_pending = Request_Supply.objects.filter(req_status__name='Pending').count()
         # asset_req_pending = Request_Assets.objects.filter(req_status__name='Pending').count()
         # job_order_pending = Job_Order.objects.filter(req_status__name='Pending').count()
@@ -52,7 +52,7 @@ def dashboard_context(request):
         #                                                      'result': result,
         #                                                      'unit': supply.supply_unit.name}
         context = {
-            'supplier_count': 0,
+            'supplier_count': supplier_count,
             'pending_req_count': 0,
             'pending_orders_count': 0,
             'low_stock_list': 0,

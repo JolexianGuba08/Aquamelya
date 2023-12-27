@@ -1,0 +1,49 @@
+<table class="table table-striped table-hover" id="staff_requisition_table">
+    <thead class="text-center">
+    <tr>
+        <th scope="col" class="text-center">Type</th>
+        <th scope="col" class="text-center">Request Item</th>
+        <th scope="col" class="text-center">Quantity or Worker</th>
+        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    {% if requisitions %}
+        {% for requisition in requisitions %}
+            <tr data-pk="{{ requisition.req_id }}">
+                <td class="text-center align-middle">{{ requisition.req_type }}</td>
+                <td class="text-center align-middle">{{ requisition.req_item }}</td>
+                <td class="text-center align-middle">
+                    {{ requisition.req_quantity }}
+                    {% if requisition.req_type == 'Job Order' %}
+                        {% if requisition.req_quantity > 1 %} (persons)
+                        {% else %}(person){% endif %}
+                    {% elif requisition.req_type == 'Asset' %}
+                        {% if requisition.req_quantity > 1 %}  <span>(items)</span>
+                        {% else %}(item){% endif %}
+                    {% endif %}
+                </td>
+                <td class="text-center align-middle">
+                    <span class="badge bg-success">{{ requisition.req_status }}</span>
+                </td>
+                <td class="text-center align-middle">
+                    {% if requisition.req_status|lower == 'cancelled' %}
+                        <button class="cancel-request btn btn-warning" disabled>
+                            Cancelled
+                        </button>
+                    {% else %}
+                        <button class="cancel-request btn btn-warning" data-pk="{{ requisition.req_id }}">
+                            Cancel
+                        </button>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="5" class="text-center">No Requisition Found</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

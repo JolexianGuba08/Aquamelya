@@ -24,8 +24,8 @@ urlpatterns = [
     path('', include('management.urls')),
     path('login/', include('login.urls')),
     path('inventory/', include('inventory.urls')),
-    # path('transactions/', include('transactions.urls')),
-    # path('reports/', include('reports.urls')),
+    path('transactions/', include('transactions.urls')),
+    path('reports/', include('reports.urls')),
 
 ]
 handler404 = 'management.views.error_404_view'

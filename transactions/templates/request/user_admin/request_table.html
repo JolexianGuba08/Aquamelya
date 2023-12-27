@@ -1,0 +1,51 @@
+<table class="table table-striped table-hover " id="requisition_table">
+    <thead class="text-center">
+    <tr>
+        <th scope="col" class="text-center">Requestor</th>
+        <th scope="col" class="text-center">Type</th>
+        <th scope="col" class="text-center">Request Item</th>
+        <th scope="col" class="text-center">Quantity or Worker</th>
+        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    {% if requisitions %}
+        {% for requisition in requisitions %}
+            <tr data-pk="{{ requisition.req_id }}"
+                data-status="{{ requisition.req_status }}" data-type="{{ requisition.req_type }}"
+                data-name="{{ requisition.req_item }}">
+                <th scope="row" class="text-center align-middle">{{ requisition.req_requestor }}</th>
+                <td class="text-center align-middle">{{ requisition.req_type }}</td>
+                <td class="text-center align-middle">{{ requisition.req_item }}</td>
+                <td class="text-center align-middle">{{ requisition.req_quantity }}
+                    {% if requisition.req_type == 'Job Order' %}
+                        {% if requisition.req_quantity > 1 %}
+                            (workers)
+                        {% else %}
+                            (worker)
+                        {% endif %}
+                    {% elif requisition.req_type == 'Asset' %}
+                        {% if requisition.req_quantity > 1 %}
+                            (pieces)
+                        {% else %}
+                            (piece)
+                        {% endif %}
+                    {% endif %}
+                </td>
+
+                <td class="text-center align-middle"><span
+                        class="badge bg-success">{{ requisition.req_status }}</span>
+                </td>
+                <td class="text-center align-middle">
+
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="12" class="text-center">No Requisition Found</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

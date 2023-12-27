@@ -216,19 +216,19 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#admin_transaction_requests_url"
+                    <a href="{% url 'admin_transaction_requests_url' %}"
                             {% block transaction_requests %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Requests</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#admin_transaction_purchase_url"
+                    <a href="{% url 'admin_transaction_purchase_url' %}"
                             {% block transaction_purchase %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Purchase Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#admin_transaction_delivery_url"
+                    <a href="{% url 'admin_transaction_delivery_url' %}"
                             {% block transaction_delivery %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Delivery</span>
                     </a>
@@ -244,17 +244,19 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#admin_reports_purchase_url" {% block reports_purchase %} {% endblock %} >
+                    <a href="{% url 'admin_reports_purchase_url' %}" {% block reports_purchase %} {% endblock %} >
                         <i class="bi bi-circle"></i><span>Purchase Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#admin_reports_requests_url"  {% block reports_requests %} {% endblock %}>
+                    <a href="{% url 'admin_reports_requests_url' %}"
+                            {% block reports_requests %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Requests</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#admin_reports_delivery_url"  {% block reports_delivery %} {% endblock %}>
+                    <a href="{% url 'admin_reports_delivery_url' %}"
+                            {% block reports_delivery %} {% endblock %}>
                         <i class="bi bi-circle"></i><span>Delivery</span>
                     </a>
                 </li>

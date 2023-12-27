@@ -1,0 +1,42 @@
+{% extends 'user_staff/staff_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Requisition | AquaMelya {% endblock title %}
+
+{# Requisition Active #}
+{% block requisition %}
+    class="nav-link"
+{% endblock requisition %}
+{% block job %} class="active" {% endblock%}
+{# Content #}
+{% block content %}
+
+{# Simple Datatables CSS #}
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+<main id="main" class="main">
+<div class="pagetitle">
+  <h1>REQUISITION</h1>
+</div><!-- End Page Title -->
+
+<section class="section dashboard">
+<div class="row">
+    <!-- Left side columns -->
+    <div class="col-lg-12" id="left">
+        {% include 'request/user_staff/job/include_staff_requisition_form_job.html' %}
+    </div>
+
+</div>
+</section>
+
+</main><!-- End #main -->
+
+{# jQuery #}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+{# TINYMCE #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+{# Simple Datatables js#}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+{% endblock content %}

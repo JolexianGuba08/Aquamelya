@@ -1,0 +1,159 @@
+{% extends 'user_admin/admin_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Purchase | AquaMelya {% endblock title %}
+
+{% block transactions %}
+    class="nav-link"
+{% endblock %}
+{% block transaction_delivery %} class="active" {% endblock %}
+{# Content #}
+{% block content %}
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    {% include 'delivery/user_admin/update_info.html' %}
+
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Delivery</h1>
+        </div>
+        <div class="filter-and-search d-flex align-items-right  mb-3">
+            <div class="col-md-4 mb-2">
+                <select class="form-select" id="status_filter">
+                    <option selected value="all">Delivery Status: All</option>
+                    <option value="1">In Process</option>
+                    <option value="2">Order Received</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="query" class="form-control" id="delivery_search"
+                       placeholder="Search Item"
+                       title="Enter search keyword">
+            </div>
+
+        </div>
+        <section class="row">
+            <div style="display: block;">
+                <div class="card">
+                    {% include 'delivery/user_admin/include_delivery_table.html' %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script>
+        function fetchDataAndUpdateModalDelivery(pk) {
+            $.ajax({
+                url: `/transactions/get_delivery_data/${pk}/`,
+                method: 'GET',
+                success: function (data) {
+                    var delivery = data.delivery_json;
+                    var purchase_order = data.purchase_order_data;
+                    $('#delivery_id').val(data.delivery_id);
+                    $('#delivery_purchase_date').text(purchase_order.purch_date);
+                    $('#delivery_purchase_date_lastmod').text(data.formatted_date);
+                    $('#delivery_status_select').val(delivery.delivery_status);
+                    if (delivery.order_receive_date) {
+                        // If the date is defined, display it
+                        $('#delivery_received_date').text(data.date_received);
+                    } else {
+                        // If the date is undefined (none), display a "none" message
+                        $('#delivery_received_date').text('Not yet received');
+                    }
+
+                    if (delivery.delivery_status === 2) {
+                        $('#delivery_status_select').prop('disabled', true);
+                        $('.btn').prop('disabled', true);
+                    } else {
+                        $('#delivery_status_select').prop('disabled', false);
+                        $('.btn').prop('disabled', false);
+                    }
+
+
+                    $('#deliveryModal').modal('show');
+
+                },
+                error: function () {
+                    console.error('Error fetching data');
+                }
+            });
+        }
+
+        function updateData(delivery_id) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var postData = {
+                delivery_status: $('#delivery_status_select').val(),
+            };
+
+            $.ajax({
+                url: `/transactions/post_delivery_data/${delivery_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (response) {
+                    if (response.status === 'success') {
+
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+
+
+                    }
+                },
+            });
+        }
+
+        function filterTable() {
+            $.ajax({
+                url: '/transactions/requests/',
+                data: {status: selectedStatus},
+                dataType: 'json',
+                success: function (data) {
+                    // Replace the existing table body with the new HTML received from the server
+                    $('#requisition_table tbody').html(data.html);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching filtered data:', error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#deliveryModal').on('submit', function (e) {
+                e.preventDefault();
+                const delivery_id = $('#delivery_id').val();
+                updateData(delivery_id);
+            });
+            $('#delivery-table tbody').on('click', 'tr', function () {
+                const pk = $(this).data('pk');
+                fetchDataAndUpdateModalDelivery(pk);
+            });
+            // Handle dropdown change event
+            $('#status_filter, #delivery_search').on('change input', function () {
+                var selectedStatus = $('#status_filter').val();
+                var delivery_search = $('#delivery_search').val().toLowerCase();
+
+                // Show or hide rows based on selected status
+                $('#delivery-table tbody tr').each(function () {
+                    var rowStatus = $(this).data('status');
+                    var rowName = $(this).data('name').toLowerCase();
+                    if ((selectedStatus === 'all' || rowStatus.toString() === selectedStatus) &&
+                        (rowName.includes(delivery_search) || delivery_search === '')) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        })
+        ;
+
+    </script>
+
+{% endblock content %}

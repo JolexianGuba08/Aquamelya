@@ -1,0 +1,78 @@
+<div class="modal fade" id="myModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mr-3"><span id="request_description"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: none;overflow-y: auto;">
+                <form class="row g-3" id="req_id" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="req_type" name="req_type">
+                    <div class="col-md-6 text-center mt-4">
+                        <label class="form-label" style="font-weight: 600">Date Requested</label>
+                        <br>
+                        <label class="form-label" id="req_date_requested"></label>
+                    </div>
+                    <div class="col-md-6 text-center mt-4">
+                        <label class="form-label" style="font-weight: 600">Date Last Modified</label>
+                        <br>
+                        <label class="form-label" id="req_date_last_mod"></label>
+                    </div>
+                    <br>
+                    <div class="col-md-12">
+                        <label class="form-label" style="font-weight: 600"> Requestor's Note</label>
+                        <textarea class="form-control" placeholder="" id="req_notes"
+                                  style="height: 100px; background-color: white" disabled></textarea>
+                        <br>
+                    </div>
+                    <div class="col-md-12" style="display:flex; flex-direction: column; align-items: end;">
+                        <label for="form-control" style="font-weight: 600">Reviewer's Note</label>
+                        <textarea class="form-control" placeholder="" id="req_reviewer_notes"
+                                  style="height: 100px; background-color: white"></textarea>
+                        <br>
+                    </div>
+                    <div id="job_order_div">
+                        <div class="row">
+                            <!-- Your existing content here -->
+                            <div class="col-md-12">
+                                <label for="start_date" style="font-weight: 600;">Worker Count</label>
+                                <input type="number" min="1" class="form-control" id="worker_count">
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="start_date" style="font-weight: 600;">Start Date</label>
+                                <input type="date" class="form-control" id="job_order_start">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="end_date" style="font-weight: 600;">End Date</label>
+                                <input type="date" class="form-control" id="job_order_end">
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-12 mb-2 ml-auto mt-2">
+                        <select class="form-select" id="status_select">
+                            <option selected>Status</option>
+                            <option value="1">Pending</option>
+                            <option value="2">In Process</option>
+                            <option value="3">Approved</option>
+                            <option value="4">Declined</option>
+                            <option value="5">Done</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12 " id="low_stock_div">
+                        <p id="low_stock_message" class="alert-warning rounded p-2 text-center">
+                        </p>
+                    </div>
+                    <div class="modal-footer justify-content-end"
+                         style="position: sticky;bottom: 0;background-color: #fff;z-index: 1;">
+                        <button id="request_submt_btn" type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+                <!-- End Multi Columns Form -->
+            </div>
+        </div>
+    </div>
+</div>

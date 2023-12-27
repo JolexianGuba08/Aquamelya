@@ -1,0 +1,427 @@
+{% extends 'user_admin/admin_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Requisition | AquaMelya {% endblock title %}
+
+{# Requisition Active #}
+{% block transactions %}
+    class="nav-link"
+{% endblock %}
+{% block transaction_purchase %} class="active" {% endblock %}
+{# Content #}
+{% block content %}
+
+    {# Simple Datatables CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Purchase Order</h1>
+        </div><!-- End Page Title -->
+
+        <section>
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-12" id="left">
+                    {% include 'purchase/user_admin/include_purchase_form.html' %}
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main><!-- End #main -->
+
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {# TINYMCE #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    {# Simple Datatables js#}
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+    <script>
+     // Get the request ID from the page
+    var req_id = $("#req_id").text().trim();
+        $(document).ready(function () {
+            // Get the item ID from the page
+            var item_id = $("#item_id").text().trim();
+
+            // Reset values and toggle visibility based on initial conditions
+            $("#choose_item_supply").val('');
+            $("#choose_item_asset").val('');
+
+             // Function to toggle visibility of item_name_div and related fields
+        function toggleItemNameDivVisibility() {
+            // Elements
+            var itemDropdown = $("#item_type");
+            var itemNameDiv = $("#item_name_div");
+            var itemName = $("#item_name");
+            var chooseItemSupply = $("#choose_item_supply");
+            var chooseItemAsset = $("#choose_item_asset");
+
+            // Hide item_name_div by default
+            itemNameDiv.hide();
+
+            chooseItemSupply.hide();
+            chooseItemAsset.hide();
+
+            // Check if req_id is present or if an item type is selected
+            if (req_id || itemDropdown.val()) {
+                itemNameDiv.show();
+
+                if (itemDropdown.val() === "Supply") {
+                     itemName.hide();
+                    chooseItemSupply.show();
+                    chooseItemAsset.hide();
+                } else if (itemDropdown.val() === "Asset") {
+                    itemName.hide();
+                    chooseItemSupply.hide();
+                    chooseItemAsset.show();
+                }
+            }
+        }
+
+        // Call the function on document ready to set initial visibility
+        toggleItemNameDivVisibility();
+
+        // Hook into the change event of the item type dropdown
+        $("#item_type").change(function () {
+            toggleItemNameDivVisibility();
+        });
+        // Hide certain elements on page load, these are elements that are only shown when you are being redirected
+            $("#requestor_label").hide();
+            $("#supplier_fill").hide();
+            $("#requestby_fill").hide();
+
+            // Array of fields to disable
+            var fieldsToDisable = ["#item_name", "#user_name", "#item_type"];
+
+            // if user redirects from pending requests from requisition table this function runs
+            if (req_id) {
+                $("#requestby_fill").show();
+                $("#choose_req").hide();
+                $("#supplier_fill").show();
+                $("#choose_supplier").hide();
+                $("#requestbydiv").show();
+
+                // Fetch data using AJAX
+                $.ajax({
+                    url: `/transactions/get_supply_data/${req_id}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Process data and populate fields
+                        var resultHtml = '';
+                        resultHtml += `<p>Requisition ID: ${data.req_id}</p>`;
+                        for (var i = 0; i < data.requisition_data.length; i++) {
+                            $("#user_name").val(data.requisition_data[i].user__user_first_name);
+                            $("#user_name").text(data.requisition_data[i].user__user_first_name);
+                        }
+
+                        resultHtml += `<p>Requisition ID: ${data.req_id}</p>`;
+                        for (var i = 0; i < data.requisition_data.length; i++) {
+                            $("#user_name").val(data.requisition_data[i].user__user_first_name);
+                            $("#user_name").text(data.requisition_data[i].user__user_first_name);
+                            $("#requestby_fill").val(data.requisition_data[i].req_description + "|"+ data.requisition_data[i].formatted_req_date);
+                        }
+
+                        // Display both supply and asset data
+                        for (var i = 0; i < data.supply_data.length; i++) {
+                            $("#item_type").val("Supply");
+                            $("#item_name").val(data.supply_data[i].supply__supply_description);
+                            $("#item_qty").val(data.supply_data[i].req_supply_qty);
+                            $("#supplier_fill").val(data.supply_data[i].supply__supplier_id__supplier_name);
+                            $("#supplier_fill_id").val(data.supply_data[i].supply__supplier_id);
+
+                        }
+
+                        for (var i = 0; i < data.asset_data.length; i++) {
+                            $("#item_type").val("Asset");
+                            $("#item_name").val(data.asset_data[i].asset__asset_description);
+                            $("#item_qty").val(data.asset_data[i].req_asset_qty);
+                            $("#choose_supplier").show();
+                            $("#supplier_fill").hide();
+                        }
+
+                        // Disable fields after retrieving data
+                        fieldsToDisable.forEach(function (field) {
+                            $(field).prop("disabled", true);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+
+                $("#requestor_label").show();
+            } else {
+                // DONT REMOVE ELSE STATEMENT
+            }
+
+            //if user redirects from low stocks from the dashboard this function runs
+            // Check if the user is redirected from low stocks
+            if (item_id) {
+                $("#item_notif").show();
+                $("#supplier_fill").show();
+                $("#choose_supplier").hide();
+                $("#requestbydiv").hide();
+
+                fieldsToDisable.forEach(function (field) {
+                    $(field).prop("disabled", true);
+                    $.ajax({
+                        url: `/transactions/get_item_data/${item_id}/`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+
+                            // Display both supply and asset data
+                            for (var i = 0; i < data.item_data.length; i++) {
+                                var qty_short = data.item_data[i].supply_reorder_lvl - data.item_data[i].supply_on_hand + 1;
+                                //Notfication labels
+                                $("#curr_name").text(data.item_data[i].supply_description);
+                                $("#curr_qty").text(data.item_data[i].supply_on_hand);
+                                $("#curr_unit").text(data.item_data[i].supply_unit__name.toLowerCase());
+                                $("#curr_sub").text(qty_short);
+                                // Text field Labels
+                                $("#item_type").val("Supply");
+                                $("#item_name").val(data.item_data[i].supply_description);
+                                $("#item_qty").val(qty_short);
+                                $("#supplier_fill").val(data.item_data[i].supplier_id__supplier_name.toString());
+                                $("#supplier_fill_id").val(data.item_data[i].supplier_id.toString());
+
+                            }
+
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+
+
+                    });
+                });
+                $("#requestor_label").show();
+
+            } else {
+                fieldsToDisable.forEach(function (field) {
+                    $(field).prop("disabled", false);
+                    $(field).val(""); // Clear the value
+                });
+                $("#item_notif").hide();
+                $("#requestor_label").show();
+            }
+
+            var isAccordionOpen = false;
+            var change = $(".suppmanu").change()
+
+            //to fetch and show what the supplier offers
+            function toggleAccordion() {
+                var supplierValue = $("#choose_supplier").val();
+
+                if (supplierValue && !isAccordionOpen) {
+                    $("#accordionButton").trigger("click");
+
+                } else if (!supplierValue && isAccordionOpen) {
+                    $("#accordionButton").trigger("click");
+                }
+            }
+
+            $("#accordionButton").on("click", function () {
+                isAccordionOpen = !isAccordionOpen;
+            });
+
+            $(".suppmanu").change(function () {
+                    toggleAccordion();
+                    // Fetch and render supplier offers based on the selected supplier
+                    var selectedSupplierId = $("#choose_supplier").val();
+                    fetchSupplierOffers(selectedSupplierId);
+
+                }
+            );
+            //Clear button to clear all input fields
+            $("#clear").click(function () {
+                $("#item_name").val('');
+                $("#choose_item_supply").val('');
+                $("#choose_item_asset").val('');
+                $("#supplier-offers-list").empty();
+                $("#choose_req").val('');
+                $("#supplier_fill").val('');
+                $("#supplier_fill_id").val('');
+                $("#requestby_fill").val('');
+                $("#requestby_fill_id").val('');
+                $("#requestbydiv").show();
+                $("#choose_supplier").show();
+                $("#choose_req").show();
+                $("#supplier_fill").hide();
+                $("#requestby_fill").hide();
+                $("#item_notif").hide();
+                var fieldsToClear = ["#item_name", "#user_name", "#item_qty", "#item_type", "#choose_supplier"];
+                $("#accordionButton").trigger("click");
+                fieldsToClear.forEach(function (field) {
+                    $(field).prop("disabled", false);
+                    $(field).val("");
+                });
+                $("#requestor_label").hide();
+
+            });
+
+            // Function to fetch and render supplier offers
+            function fetchSupplierOffers(supplierId) {
+                $.ajax({
+                    url: `/transactions/get_supplier_offers/${supplierId}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var supplierOffersList = $('#supplier-offers-list');
+                        supplierOffersList.empty();
+
+                        for (var i = 0; i < data.supplier_offers.length; i++) {
+                            var offerItem = $('<li>', {text: data.supplier_offers[i].supply_description});
+                            supplierOffersList.append(offerItem);
+                        }
+                        for (var i = 0; i < data.asset_offers.length; i++) {
+                            var offerItemasset = $('<li>', {text: data.asset_offers[i].asset_description});
+                            supplierOffersList.append(offerItemasset);
+                        }
+
+                    },
+                    error: function (error) {
+                        console.error('Error fetching supplier offers:', error);
+                    }
+                });
+            }
+
+
+
+            //to fetch data when user chooses a request ID
+            $(".req-dropdown").change(function () {
+                var reqId = $(this).val();
+                var fieldsToDisable = ["#item_name", "#user_name", "#item_qty", "#item_type",];
+
+                if (reqId) {
+                    fieldsToDisable.forEach(function (field) {
+                        $(field).prop("disabled", true);
+                    });
+                    $("#requestor_label").show();
+                    $("#choose_item_supply").hide();
+                    $("#choose_item_asset").hide();
+                    $("#item_name").show();
+
+
+                } else {
+                    fieldsToDisable.forEach(function (field) {
+                        $(field).prop("disabled", false);
+                        $(field).val(""); // Clear the value
+                    });
+
+                    $("#requestor_label").hide();
+                }
+                $.ajax({
+                    url: `/transactions/get_supply_data/${reqId}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var resultHtml = '';
+                        resultHtml += `<p>Requisition ID: ${data.req_id}</p>`;
+                        for (var i = 0; i < data.requisition_data.length; i++) {
+                            $("#user_name").val(data.requisition_data[i].user__user_first_name);
+                            $("#user_name").text(data.requisition_data[i].user__user_first_name);
+                        }
+
+                        // Display both supply and asset data
+                        for (var i = 0; i < data.supply_data.length; i++) {
+                            $("#item_type").val("Supply");
+                            $("#item_name").val(data.supply_data[i].supply__supply_description);
+                            $("#item_qty").val(data.supply_data[i].req_supply_qty);
+                        }
+                        for (var i = 0; i < data.asset_data.length; i++) {
+                            $("#item_type").val("Asset");
+                            $("#item_name").val(data.asset_data[i].asset__asset_description);
+                            $("#item_qty").val(data.asset_data[i].req_asset_qty);
+                        }
+
+                    },
+                    error: function (error) {
+                        console.error('Error fetching data:', error);
+                    }
+
+
+                });
+            });
+        })
+        ;
+        //POST and submit the data input by the user
+        $("#create-supply").click(function () {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var reqId2 = $("#choose_req").val();
+            var reqId;
+            var supp1 = $("#choose_supplier").val();
+            var supp2 = $("#supplier_fill_id").val();
+            var selectedSupplier;
+            var selectedType = $("#item_type").val();
+            var selectedName1 =  $("#item_name").val();
+            var selectedName2 = $("#choose_item_supply").val();
+            var selectedName3 = $("#choose_item_asset").val();
+            var selectedName;
+            var selectedRequestor = $("#user_name").val();
+            var selectedQty = $("#item_qty").val();
+            var selectedReceiver = $("#choose_receive").val();
+
+            //If conditions to check what labels have values inside them and stores those values on the variable to be passed on views.py
+            if (selectedName1){
+                selectedName = selectedName1;
+            }
+            else if (selectedName2){
+                selectedName = selectedName2;
+            }
+            else{
+                selectedName = selectedName3;
+            }
+            if (req_id) {
+                reqId =  req_id;
+            } else {
+                reqId = reqId2;
+            }
+            if (supp2) {
+                selectedSupplier = supp2;
+            } else {
+                selectedSupplier = supp1;
+            }
+            console.log(reqId, selectedSupplier, selectedType, selectedName, selectedRequestor, selectedQty, selectedReceiver)
+            $.ajax({
+                url: `/transactions/post_purchase_data/`,
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: {
+                    'reqId': reqId,
+                    'choose_receiver': selectedReceiver,
+                    'choose_supplier': selectedSupplier,
+                    'choose_type': selectedType,
+                    'choose_name': selectedName,
+                    'choose_requestor': selectedRequestor,
+                    'choose_qty': selectedQty,
+
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.message === 'success') {
+                        console.log(response.messsage);
+                        window.location.href = '/transactions/purchase';
+                    } else {
+                        console.log(response.messsage);
+                        window.location.href = '/transactions/purchase';
+                    }
+                },
+                error: function (error) {
+                    console.error('Error submitting purchase form:', error);
+                    window.location.href = '/transactions/purchase';
+                }
+            });
+        });
+
+    </script>
+{% endblock content %}

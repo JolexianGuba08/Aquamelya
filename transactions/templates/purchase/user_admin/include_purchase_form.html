@@ -1,0 +1,173 @@
+{% load widget_tweaks %}
+<section class="section">
+    {% if supply_id %}
+        <label style="display: none" id="item_id">{{ supply_id }}</label>
+    {% endif %}
+    {% if req_id %}
+        <label style="display: none" id="req_id">{{ req_id }}</label>
+    {% endif %}
+
+    <div class="row" id="template">
+        <!-- Left side columns -->
+        <div class="col-lg-4">
+            <div class="row">
+                <!-- Reports -->
+                <div class="col-12">
+                    <div class="card">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Purchase <span>/Order</span></h5>
+                            <form method="post" novalidate>
+
+                                {% csrf_token %}
+                                <div class="row mb-3" id="requestbydiv">
+                                    <label for="inputText" class="col-sm-12 col-form-label form_label">Request
+                                        </label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="requestby_fill" disabled>
+                                        <span style="display: none" id="requestby_fill_id"></span>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        {% render_field purchase_form.req id="choose_req" class="form-control req-dropdown" %}
+
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="inputText" class="col-sm-12 col-form-label form_label suppmanu">Supplier/Manufacturer</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="supplier_fill" disabled>
+                                        <span style="display: none" id="supplier_fill_id"></span>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        {% render_field purchase_form.supplier id="choose_supplier" class="form-control suppmanu" %}
+                                        <div class="{% if purchase_form.supplier.errors %}invalid{% endif %}">
+                                            {% for error in purchase_form.supplier.errors %}
+                                                <p class="help-block text-danger "
+                                                   style="font-size:13px;">{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Accordion without outline borders -->
+                                <div class="accordion" id="accordionExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button style="display: none" id="accordionButton" class="accordion-button"
+                                                    type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseOne"
+                                                    aria-expanded="true" aria-controls="collapseOne">
+                                                Accordion Item #1
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse"
+                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <nav class="d-flex justify-content-center">
+                                                    <ol class="breadcrumb">
+
+                                                        <li class="breadcrumb-item active">Supplier Offers</li>
+                                                    </ol>
+                                                </nav>
+                                                <ul id="supplier-offers-list" class="list-unstyled text-center">
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div><!-- End Default Accordion Example -->
+
+                        </div>
+                    </div>
+
+                    {#                other card#}
+
+                </div>
+                <!-- End Reports -->
+            </div>
+        </div>
+        <!-- End Left side columns -->
+        <!-- Right side columns -->
+        <div class="col-lg-8 dashboard">
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="filter " style="padding-right: 20px; padding-top: 5px">
+
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Preview <span id="requestor_label">| Request By: <span id="user_name"></span></span>
+                    </h5>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Item Type</label>
+                        <div class="{% if form.purch_item_type.errors %}invalid{% endif %}">
+                            {% for error in form.purch_item_type.errors %}
+                                <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-12">
+                            <select class="form-control" id="item_type" name="item_type">
+                                <option value=" "></option>
+                                <option value="Asset">Asset</option>
+                                <option value="Supply">Supply</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" id="item_name_div">
+                        <label for="inputEmail3" class="col-sm-4 col-form-label">Item Name</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="item_name">
+                        </div>
+                        <div class="col-sm-12" id="supply_render">
+                            {% render_field supply_form.supply_description id="choose_item_supply" class="form-control" %}
+                        </div>
+                        <div class="col-sm-12"  id="asset_render">
+                            {% render_field asset_form.asset_description id="choose_item_asset" class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Quantity</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="item_qty">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Receiver</label>
+                        <div class="col-sm-12">
+                            {% render_field delivery_form.order_receive_by id="choose_receive" class="form-control" %}
+                        </div>
+                    </div>
+                    <div style="display: none" id="item_notif"
+                         class="rounded alert-warning alert-dismissible fade show p-2 m-2 text-center" role="alert">
+                        <span id="curr_name" style="font-weight: 600"></span> currently has <span
+                            style="font-weight: 600" id="curr_qty"></span>
+                        <span
+                                id="curr_unit" style="font-weight: 600"></span>, you need atleast <span
+                            id="curr_sub" style="font-weight: 600"></span> more to surpass the reorder level.
+                    </div>
+                    <script>
+                        // Automatically close the alert after 10 seconds (10000 milliseconds)
+                        setTimeout(function () {
+                            $('#item_notif').alert('close');
+                        }, 8000);
+                    </script>
+
+                    <div class="col-md-12 mb-2 d-flex justify-content-between">
+                        <button id="clear" class="btn btn-outline-secondary" style="font-weight: 600" type="button"
+                                name="button">
+                            Clear
+                        </button>
+                        <button id="create-supply" class="btn btn-primary" style="background-color:#3850A6;"
+                                type="button" name="button">
+                            <i class="bi bi-database-add"></i>&nbsp; Purchase
+                        </button>
+                    </div>
+                    </form>
+                </div>
+            </div><!-- End Recent Activity -->
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

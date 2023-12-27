@@ -1,0 +1,68 @@
+{% load widget_tweaks %}
+<div class="card" id="left_section">
+    <div class="card-body" id="left_body">
+        <div id="template">
+            <div style="display: flex; justify-content: space-between; align-items: center;"></div>
+            <h5 class="card-title">Request Assets</h5>
+            <button type="button" class="btn btn remove_field_btn" id="remove_field_btn">X</button>
+            <!-- Request Forms -->
+            <form method="post" id="input_form" action="{% url 'staff_requisition_asset_url' %}" novalidate>
+                {% csrf_token %}
+                <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
+
+              <!-- ASSET REQUEST SECTION -->
+                <div >
+                    <!-- Asset List Dropdown -->
+                    <div class="row mb-3">
+                         <label for="inputText" class="col-sm-12 col-form-label form_label">Asset List</label>
+                        <div class="col-sm-12">
+                        {%render_field asset_form.asset  class="form-control" %}
+                        </div>
+                        <div class="{% if asset_form.asset.errors %} invalid {% endif %}">
+                            {% for error in asset_form.asset.errors %}
+                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                      <!-- Supply Quantity input -->
+                     <div class="row mb-3">
+                        <label for="inputText" class="col-sm-12 col-form-label form_label">Quantity</label>
+                        <div class="col-sm-12">
+                            {% render_field asset_form.req_asset_qty class="form-control" %}
+                        </div>
+                        <div class="{% if asset_form.req_asset_qty.errors %} invalid {% endif %}">
+                            {% for error in asset_form.req_asset_qty.errors %}
+                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                     </div>
+
+                         <!-- Supply Notes input -->
+                     <div class="row mb-3">
+                        <label for="inputText" class="col-sm-12 col-form-label form_label">Notes</label>
+                        <div class="col-sm-12">
+                            {% render_field asset_form.notes class="form-control" rows="5"%}
+                        </div>
+                        <div class="{% if asset_form.notes.errors %} invalid {% endif %}">
+                            {% for error in asset_form.notes.errors %}
+                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                     </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-sm-6 col-form-label"></label>
+                    <div class="col-sm-6 justify-content-end" id="req_btn">
+
+                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- End General Form Elements -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
