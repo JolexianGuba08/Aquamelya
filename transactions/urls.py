@@ -19,6 +19,7 @@ urlpatterns = [
     path('get_req_data/<str:req_id>/', views.get_purchase_req_id, name='get_req_data'),
     path('get_item_data/<str:item_id>/', views.get_purchase_supply_id, name='get_item_data'),
 
+    # -------------STAFF PURCHASE URLS-----------------
     path('get_supply_data/<int:req_id>/', views.get_purchase_requisition_info, name='get_supply_data'),
     path('post_purchase_data/', views.post_purchase_requisition_info, name='purchase_view'),
     path('get_supplier_offers/<int:supplier_id>/', views.get_supplier_offers, name='get_supplier_offers'),

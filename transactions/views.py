@@ -76,6 +76,8 @@ def admin_transaction_requests_function(request):
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
 def get_requisition_info(request, pk):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     global req_item
     data = get_object_or_404(Requisition, pk=pk)
     request_statuses = RequisitionStatus.objects.exclude(name='Cancelled')
@@ -144,6 +146,8 @@ def get_requisition_info(request, pk):
 
 # POSTING REQUISITION INFO MODAL
 def post_requisition_info(request, req_id):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     global req_form
     try:
         print(request.POST)
@@ -252,7 +256,7 @@ def admin_transaction_purchase_function(request):
 def staff_requisition_table(request):
     if not user_already_logged_in(request):
         return redirect('login')
-    if request.session.get('session_user_type') == 1:
+    if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
 
     requisition_data = []
@@ -394,51 +398,57 @@ def staff_requisition_job_view(request):
 
 # STAFF CANCEL REQUEST INFO MODAL
 def get_requisition_info_staff(request, pk):
-    global req_item
-    data = get_object_or_404(Requisition, pk=pk)
-    request_statuses = RequisitionStatus.objects.exclude(name='Cancelled')
-    req_type = data.req_type.name
-    req_notes = None
-    req_status = None
-    job_start_date = None
-    job_end_date = None
-    worker_count = None
-    statuses_list = [{'id': status.id, 'name': status.name} for status in request_statuses]
-    if req_type == "Supply":
-        req_item = get_object_or_404(Request_Supply, req_id=data.req_id)
+    if request.session.get('session_user_type') == 0:
+        global req_item
+        data = get_object_or_404(Requisition, pk=pk)
+        request_statuses = RequisitionStatus.objects.exclude(name='Cancelled')
+        req_type = data.req_type.name
+        req_notes = None
+        req_status = None
+        job_start_date = None
+        job_end_date = None
+        worker_count = None
+        statuses_list = [{'id': status.id, 'name': status.name} for status in request_statuses]
+        if req_type == "Supply":
+            req_item = get_object_or_404(Request_Supply, req_id=data.req_id)
 
-    elif req_type == "Asset":
-        req_item = get_object_or_404(Request_Assets, req_id=data.req_id)
+        elif req_type == "Asset":
+            req_item = get_object_or_404(Request_Assets, req_id=data.req_id)
 
-    elif req_type == "Job Order":
-        req_item = get_object_or_404(Job_Order, req_id=data.req_id)
-        job_start_date = req_item.job_start_date
-        job_end_date = req_item.job_end_date
-        worker_count = req_item.worker_count
+        elif req_type == "Job Order":
+            req_item = get_object_or_404(Job_Order, req_id=data.req_id)
+            job_start_date = req_item.job_start_date
+            job_end_date = req_item.job_end_date
+            worker_count = req_item.worker_count
 
-    if req_item:
-        req_notes = req_item.notes
-        req_status = req_item.req_status.__str__()
+        if req_item:
+            req_notes = req_item.notes
+            req_status = req_item.req_status.__str__()
 
-    data = {
-        'req_id': data.req_id,
-        'req_requestor': data.req_description,
-        'req_notes': req_notes,
-        'req_reviewer_notes': data.reviewer_notes,
-        'req_type': req_type,
-        'req_status': req_status,
-        'req_status_list': statuses_list,
-        'req_date_requested': data.req_date.strftime('%Y-%m-%d') if data.req_date else "None",
-        'req_date_last_mod': data.req_reviewed_date.strftime('%Y-%m-%d') if data.req_reviewed_date else "None",
-        'job_start_date': job_start_date.strftime('%Y-%m-%d') if job_start_date else "None",
-        'job_end_date': job_end_date.strftime('%Y-%m-%d') if job_end_date else "None",
-        'worker_count': worker_count if worker_count else "None"
-    }
-    return JsonResponse(data)
+        data = {
+            'req_id': data.req_id,
+            'req_requestor': data.req_description,
+            'req_notes': req_notes,
+            'req_reviewer_notes': data.reviewer_notes,
+            'req_type': req_type,
+            'req_status': req_status,
+            'req_status_list': statuses_list,
+            'req_date_requested': data.req_date.strftime('%Y-%m-%d') if data.req_date else "None",
+            'req_date_last_mod': data.req_reviewed_date.strftime('%Y-%m-%d') if data.req_reviewed_date else "None",
+            'job_start_date': job_start_date.strftime('%Y-%m-%d') if job_start_date else "None",
+            'job_end_date': job_end_date.strftime('%Y-%m-%d') if job_end_date else "None",
+            'worker_count': worker_count if worker_count else "None"
+        }
+        return JsonResponse(data)
+    else:
+        raise Http404("You are not allowed to access this page.")
 
 
 # STAFF REQUISITION  CANCEL REQUEST POST METHOD
 def cancel_request(request, req_id):
+    if request.session.get('session_user_type') == 1:
+        raise Http404("You are not allowed to access this page.")
+
     if request.method == 'POST':
         req_type = get_object_or_404(Requisition, req_id=req_id).req_type
 
@@ -476,35 +486,38 @@ def cancel_request(request, req_id):
 
 # STAFF REQUISITION  CANCEL REQUEST POST METHOD
 def post_requisition_info_staff(request, req_id):
-    global req_form
-    try:
-        requisition = get_object_or_404(Requisition, req_id=req_id)
-        req_type = request.POST.get('req_type')
-        req_notes = request.POST.get('req_notes')
-        # Fetching the appropriate form based on req_type
-        if req_type == "Supply":
-            req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
-        elif req_type == "Asset":
-            req_form = get_object_or_404(Request_Assets, req_id=req_id)
-        elif req_type == "Job Order":
-            req_form = get_object_or_404(Job_Order, req_id=req_id)
+    if request.session.get('session_user_type') == 0:
+        global req_form
+        try:
+            requisition = get_object_or_404(Requisition, req_id=req_id)
+            req_type = request.POST.get('req_type')
+            req_notes = request.POST.get('req_notes')
+            # Fetching the appropriate form based on req_type
+            if req_type == "Supply":
+                req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
+            elif req_type == "Asset":
+                req_form = get_object_or_404(Request_Assets, req_id=req_id)
+            elif req_type == "Job Order":
+                req_form = get_object_or_404(Job_Order, req_id=req_id)
 
-        current_status = req_form.req_status
-        if current_status == RequisitionStatus.objects.get(name='Pending'):
-            req_form.notes = req_notes
-            req_form.save()
-            messages.success(request, 'Changes saved successfully!')
-            return JsonResponse({'status': 'success'})
-        elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
-            messages.warning(request, 'Request already cancelled')
-            return JsonResponse({'status': f'error: Request already cancelled'})
-        else:
-            messages.warning(request, f'Request is already in process')
-            return JsonResponse({'status': f'error: Request already cancelled'})
+            current_status = req_form.req_status
+            if current_status == RequisitionStatus.objects.get(name='Pending'):
+                req_form.notes = req_notes
+                req_form.save()
+                messages.success(request, 'Changes saved successfully!')
+                return JsonResponse({'status': 'success'})
+            elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
+                messages.warning(request, 'Request already cancelled')
+                return JsonResponse({'status': f'error: Request already cancelled'})
+            else:
+                messages.warning(request, f'Request is already in process')
+                return JsonResponse({'status': f'error: Request already cancelled'})
 
-    except Exception as e:
-        messages.error(request, f'Error saving changes!')
-        return JsonResponse({'status': f'error: {e}'})
+        except Exception as e:
+            messages.error(request, f'Error saving changes!')
+            return JsonResponse({'status': f'error: {e}'})
+    else:
+        raise Http404("You are not allowed to access this page.")
 
 
 # ---------- STAFF DELIVERY SECTION ------------ #
@@ -520,9 +533,18 @@ class StaffDeliveryIndexView(ListView):
         qs = super().get_queryset().filter(order_receive_by=user_id).order_by('-delivery_id')
         return qs
 
+    def dispatch(self, request, *args, **kwargs):
+        if not user_already_logged_in(request):
+            return redirect('login')
+        if request.session.get('session_user_type') == 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 # Delivery Info modal
 def get_delivery_info(request, pk):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     try:
         delivery = get_object_or_404(Delivery, pk=pk)
         # serializing the data object from database
@@ -545,6 +567,9 @@ def get_delivery_info(request, pk):
 
 # If Admin/Staff Received the delivery then, update the stock
 def post_delivery_info(request, delivery_id):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
+
     message = 'Changes saved successfully!'
     try:
         # Get the delivery object and get the delivery status
@@ -585,6 +610,8 @@ def post_delivery_info(request, delivery_id):
 
 # Purchase Order fetching values
 def get_purchase_requisition_info(request, req_id):
+    if request.session.get('session_user_type') == 1:
+        raise Http404("You are not allowed to access this page.")
     supply_data = Request_Supply.objects.filter(req_id=req_id).values(
         'req_supply_id', 'req_supply_qty', 'req_unit_measure',
         'supply__supply_description', 'notes', 'supply__supply_unit', 'supply__supplier_id__supplier_name',
@@ -610,6 +637,8 @@ def get_purchase_requisition_info(request, req_id):
 
 # Purchase Order fetching values based on supply id
 def get_purchase_supply_id(request, item_id):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     item_data = Supply.objects.filter(supply_id=item_id).values(
         'supply_type__name', 'supply_description', 'supply_on_hand', 'supply_unit__name', 'supply_reorder_lvl',
         'supplier_id__supplier_name', 'supplier_id'
@@ -622,6 +651,8 @@ def get_purchase_supply_id(request, item_id):
 
 
 def get_purchase_req_id(request, req_id):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     try:
         # Check if the requisition exists
         requisition = Requisition.objects.get(req_id=req_id)
@@ -674,6 +705,8 @@ def get_purchase_req_id(request, req_id):
 
 # Purchase Order posting data
 def post_purchase_requisition_info(request):
+    if request.session.get('session_user_type') == 1:
+        raise Http404("You are not allowed to access this page.")
     req_id = request.POST.get('reqId')
     selected_supplier = request.POST.get('choose_supplier', None)
     selected_type = request.POST.get('choose_type', None)
@@ -723,6 +756,8 @@ def post_purchase_requisition_info(request):
 
 
 def get_supplier_offers(request, supplier_id):
+    if request.session.get('session_user_type') == 1:
+        raise Http404("You are not allowed to access this page.")
     try:
         supplier_offers = Supply.objects.filter(supplier_id=supplier_id).values('supply_description')
         asset_offers = Assets.objects.filter(asset_supplier=supplier_id).values('asset_description')
@@ -743,6 +778,13 @@ class DeliveryIndexView(ListView):
         qs = super().get_queryset().order_by('-delivery_id')
         return qs
 
+    def dispatch(self, request, *args, **kwargs):
+        if not user_already_logged_in(request):
+            return redirect('login')
+        if request.session.get('session_user_type') == 0:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class DeliveryUpdateView(BSModalUpdateView):
     model = Purchase_Order
@@ -750,3 +792,10 @@ class DeliveryUpdateView(BSModalUpdateView):
     form_class = PurchaseOrderForm
     success_message = 'Success: Supply was updated successfully.'
     success_url = reverse_lazy('admin_transaction_delivery_url')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_already_logged_in(request):
+            return redirect('login')
+        if request.session.get('session_user_type') == 0:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
