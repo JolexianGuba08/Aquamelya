@@ -3,7 +3,6 @@ from bootstrap_modal_forms.generic import (
     BSModalUpdateView,
 )
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string

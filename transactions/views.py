@@ -705,7 +705,7 @@ def get_purchase_req_id(request, req_id):
 
 # Purchase Order posting data
 def post_purchase_requisition_info(request):
-    if request.session.get('session_user_type') == 1:
+    if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
     req_id = request.POST.get('reqId')
     selected_supplier = request.POST.get('choose_supplier', None)
