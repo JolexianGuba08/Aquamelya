@@ -610,7 +610,7 @@ def post_delivery_info(request, delivery_id):
 
 # Purchase Order fetching values
 def get_purchase_requisition_info(request, req_id):
-    if request.session.get('session_user_type') == 1:
+    if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
     supply_data = Request_Supply.objects.filter(req_id=req_id).values(
         'req_supply_id', 'req_supply_qty', 'req_unit_measure',
