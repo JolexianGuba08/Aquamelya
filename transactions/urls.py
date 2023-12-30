@@ -34,6 +34,7 @@ urlpatterns = [
     path('get_data_staff/<int:pk>/', views.get_requisition_info_staff, name='get_requisition_table'),
     path('post_data_staff/<int:req_id>/', views.post_requisition_info_staff, name='post_requisition_table'),
     path('cancel_request/<int:req_id>/', views.cancel_request, name='cancel_request'),
+    path('get_supplier_offers/<int:supplier_id>/', views.get_supplier_offers, name='get_supplier_offers'),
 
     # -------------STAFF DELIVERY URLS-----------------
     path('staff_delivery/', views.StaffDeliveryIndexView.as_view(), name='staff_delivery_url'),

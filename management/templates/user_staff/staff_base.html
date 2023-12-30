@@ -146,7 +146,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
             {% block dashboard %}
-                <a class="nav-link collapsed" href="{% url 'profile' %}">
+                <a class="nav-link collapsed" href="{% url 'homepage' %}">
             {% endblock dashboard %}
             <i class="bi bi-grid"></i>
             <span>DASHBOARD</span>
@@ -189,14 +189,6 @@
         </li>
         <!-- End Delivery Page Nav -->
         <li class="nav-heading">OVERVIEW</li>
-        <li class="nav-item">
-            {% block report %}
-                <a class="nav-link collapsed" href="">
-            {% endblock report %}
-            <i class="bi bi-pie-chart"></i>
-            <span>REPORTS</span>
-            </a>
-        </li>
         <!-- End Report Page Nav -->
         <li class="nav-item">
             {% block requisitiontable %}

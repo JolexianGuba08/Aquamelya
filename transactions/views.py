@@ -256,7 +256,7 @@ def admin_transaction_purchase_function(request):
 def staff_requisition_table(request):
     if not user_already_logged_in(request):
         return redirect('login')
-    if request.session.get('session_user_type') == 0:
+    if request.session.get('session_user_type') == 1:
         raise Http404("You are not allowed to access this page.")
 
     requisition_data = []
@@ -756,7 +756,7 @@ def post_purchase_requisition_info(request):
 
 
 def get_supplier_offers(request, supplier_id):
-    if request.session.get('session_user_type') == 1:
+    if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
     try:
         supplier_offers = Supply.objects.filter(supplier_id=supplier_id).values('supply_description')
