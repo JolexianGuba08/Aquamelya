@@ -231,14 +231,6 @@ def post_requisition_info(request, req_id):
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
-    # Check if user is logged in
-    if not user_already_logged_in(request):
-        return redirect('login')
-
-    session_user_type = request.session.get('session_user_type')
-    if session_user_type != 1:
-        raise Http404("You are not allowed to access this page.")
-
     # Get supply_id and req_id from request
     supply_id = request.GET.get('supply_id')
     req_id = request.GET.get('req_id')
