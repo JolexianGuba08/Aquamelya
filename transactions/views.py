@@ -247,8 +247,6 @@ def admin_transaction_purchase_function(request):
             'purchase_form': purchase_form, 'supply_form': supply_form, 'asset_form': asset_form,
             'delivery_form': delivery_form, 'supply_id': supply_id, 'req_id': req_id
         })
-    else:
-        raise Http404("You are not allowed to access this page.")
 
 
 # ---------- STAFF REQUISITION SECTION ------------ #
@@ -705,8 +703,6 @@ def get_purchase_req_id(request, req_id):
 
 # Purchase Order posting data
 def post_purchase_requisition_info(request):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     req_id = request.POST.get('reqId')
     selected_supplier = request.POST.get('choose_supplier', None)
     selected_type = request.POST.get('choose_type', None)
