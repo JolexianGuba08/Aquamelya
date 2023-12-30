@@ -301,36 +301,38 @@ def staff_requisition_table(request):
 
 # STAFF REQUISITION PAGE TO REQUEST SUPPLY
 def staff_requisition_supply_view(request):
-    if not user_already_logged_in(request):
-        return redirect('login')
-    if request.session.get('session_user_type') == 1:
-        raise Http404("You are not allowed to access this page.")
+    if request.session.get('session_user_type') == 0:
+        acc_id = request.session.get('session_user_id')
+        user_id = int(acc_id)
 
-    if request.method == 'POST':
-        supply_form = RequestSupplyForm(request.POST)
-        try:
-            user_id = request.session.get('session_user_id')
-            if supply_form.is_valid():
-                request_form = Requisition.objects.create(
-                    req_description=supply_form.cleaned_data['supply'],
-                    req_type=RequestType.objects.get(name='Supply'),
-                    user_id=user_id
-                )
+        if request.method == 'POST':
+            supply_form = RequestSupplyForm(request.POST)
+            try:
+                if supply_form.is_valid():
+                    request_form = Requisition.objects.create(
+                        req_description=supply_form.cleaned_data['supply'],
+                        req_type=RequestType.objects.get(name='Supply'),
+                        user_id=user_id
+                    )
 
-                supply = supply_form.save(commit=False)
-                supply.req_id = request_form
-                supply.save()
-                supply_form = RequestSupplyForm()
-                messages.success(request, 'Request submitted successfully!')
-        except Exception as e:
-            messages.error(request, 'Error submitting request!')
+                    supply = supply_form.save(commit=False)
+                    supply.req_id = request_form
+                    supply.save()
+                    supply_form = RequestSupplyForm()
+                    messages.success(request, 'Request submitted successfully!')
+            except Exception as e:
+                print(e)
+                messages.error(request, 'Error submitting request!')
+        else:
+            supply_form = RequestSupplyForm()
+        return render(request, 'request/user_staff/supply/staff_requisition_supply.html', {
+
+            'supply_form': supply_form,
+
+        })
+
     else:
-        supply_form = RequestSupplyForm()
-    return render(request, 'request/user_staff/supply/staff_requisition_supply.html', {
-
-        'supply_form': supply_form,
-
-    })
+        raise Http404("You are not allowed to access this page.")
 
 
 # STAFF REQUISITION PAGE TO REQUEST ASSET
@@ -486,38 +488,36 @@ def cancel_request(request, req_id):
 
 # STAFF REQUISITION  CANCEL REQUEST POST METHOD
 def post_requisition_info_staff(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        global req_form
-        try:
-            requisition = get_object_or_404(Requisition, req_id=req_id)
-            req_type = request.POST.get('req_type')
-            req_notes = request.POST.get('req_notes')
-            # Fetching the appropriate form based on req_type
-            if req_type == "Supply":
-                req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
-            elif req_type == "Asset":
-                req_form = get_object_or_404(Request_Assets, req_id=req_id)
-            elif req_type == "Job Order":
-                req_form = get_object_or_404(Job_Order, req_id=req_id)
+    global req_form
+    try:
+        requisition = get_object_or_404(Requisition, req_id=req_id)
+        req_type = request.POST.get('req_type')
+        req_notes = request.POST.get('req_notes')
+        # Fetching the appropriate form based on req_type
+        if req_type == "Supply":
+            req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
+        elif req_type == "Asset":
+            req_form = get_object_or_404(Request_Assets, req_id=req_id)
+        elif req_type == "Job Order":
+            req_form = get_object_or_404(Job_Order, req_id=req_id)
 
-            current_status = req_form.req_status
-            if current_status == RequisitionStatus.objects.get(name='Pending'):
-                req_form.notes = req_notes
-                req_form.save()
-                messages.success(request, 'Changes saved successfully!')
-                return JsonResponse({'status': 'success'})
-            elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
-                messages.warning(request, 'Request already cancelled')
-                return JsonResponse({'status': f'error: Request already cancelled'})
-            else:
-                messages.warning(request, f'Request is already in process')
-                return JsonResponse({'status': f'error: Request already cancelled'})
+        current_status = req_form.req_status
+        if current_status == RequisitionStatus.objects.get(name='Pending'):
+            req_form.notes = req_notes
+            req_form.save()
+            messages.success(request, 'Changes saved successfully!')
+            return JsonResponse({'status': 'success'})
+        elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
+            messages.warning(request, 'Request already cancelled')
+            return JsonResponse({'status': f'error: Request already cancelled'})
+        else:
+            messages.warning(request, f'Request is already in process')
+            return JsonResponse({'status': f'error: Request already cancelled'})
 
-        except Exception as e:
-            messages.error(request, f'Error saving changes!')
-            return JsonResponse({'status': f'error: {e}'})
-    else:
-        raise Http404("You are not allowed to access this page.")
+    except Exception as e:
+        print(e)
+        messages.error(request, f'Error saving changes!')
+        return JsonResponse({'status': f'error: {e}'})
 
 
 # ---------- STAFF DELIVERY SECTION ------------ #
