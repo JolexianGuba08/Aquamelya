@@ -1,108 +1,131 @@
 {% extends "user_admin/admin_base.html" %}
 {% block title %}Reports | Purchase{% endblock %}
 {% block reports %}
-   class="nav-link"
+    class="nav-link"
 {% endblock %}
 
 {% block reports_purchase %}
- class="active"
-         {% endblock %}
+    class="active"
+{% endblock %}
 
 {% block content %}
-<main id="main" class="main">
+    <main id="main" class="main">
 
-<div class="page-title">
-      <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
-          <div>
-          <h3 style="font-weight: bold"> Reports</h3>
-         <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item" ><a href="{% url 'admin_reports_requests_url' %}" >Reports</a></li>
-          <li class="breadcrumb-item active">Purchase</li>
-        </ol>
-      </nav>
-          </div>
-    <div class="col-md-6 mb-2 invisible" style="margin-right: 5px">
-        <select class="form-select" id="inputState">
-            <option selected>Manufacturer: All</option>
-            <option value="1">T & J Trading</option>
-            <option value="2">Cebu Home Builder</option>
+        <div class="page-title">
+            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+                <div>
+                    <h3 style="font-weight: bold"> Reports</h3>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'admin_reports_requests_url' %}">Reports</a>
+                            </li>
+                            <li class="breadcrumb-item active">Purchase</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 mb-2 invisible" style="margin-right: 5px">
+                    <select class="form-select" id="inputState">
+                        <option selected>Manufacturer: All</option>
+                        <option value="1">T & J Trading</option>
+                        <option value="2">Cebu Home Builder</option>
 
-        </select>
-    </div>
-
-    <div class="col-md-2 ml-auto mt-3">
-        <button id="requeststodaybutton" type="button" class="btn btn-primary" style="background-color:white;border-color: #3850A6; border-width: 2px;" data-bs-toggle="modal" data-bs-target="#requeststoday">
-            <i class="bi bi-graph-up" style="color:#3850A6;"></i>
-        </button>
-        <button id="requeststodaybutton" style="background-color:#3850A6;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requeststoday">
-            <i class="bi bi-grip-vertical"></i>  Purchases Today
-        </button>
-    </div>
-</div>
-    <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Line Chart</h5>
-
-              <!-- Line Chart -->
-              <div id="lineChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#lineChart"), {
-                    series: [{
-                      name: "Desktops",
-                      data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-                    }],
-                    chart: {
-                      height: 350,
-                      type: 'line',
-                      zoom: {
-                        enabled: false
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'straight'
-                    },
-                    grid: {
-                      row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                      },
-                    },
-                    xaxis: {
-                      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-                    }
-                  }).render();
-                });
-              </script>
-              <!-- End Line Chart -->
+                    </select>
+                </div>
 
             </div>
-          </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Line Chart</h5>
+
+                        <!-- Line Chart -->
+                        <div id="lineChart"></div>
+
+                            <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch('/reports/get_monthly_purchase_data/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.months && data.approved_supply_purchases_count && data.approved_assets_purchases_count) {
+                    new ApexCharts(document.querySelector("#lineChart"), {
+                        series: [
+                            {
+                                name: "Supply",
+                                data: data.approved_supply_purchases_count,
+                            },
+                            {
+                                name: "Asset",
+                                data: data.approved_assets_purchases_count,
+                            }
+                        ],
+                        chart: {
+                            height: 350,
+                            type: 'line',
+                            zoom: {
+                                enabled: false
+                            }
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            curve: 'smooth'
+                        },
+                        grid: {
+                            row: {
+                                colors: ['#f3f3f3', 'transparent'],
+                                opacity: 0.5
+                            },
+                        },
+                        colors: ['#00E396', '#FEB019'],
+                        xaxis: {
+                            categories: data.months,
+                        },
+                        legend: {
+                            show: true,
+                        }
+                    }).render();
+                } else {
+                    console.error('Invalid data format received');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching or rendering chart:', error);
+            });
+    });
+
+</script>
+
+                        <!-- End Line Chart --> 
+
+                    </div>
+                </div>
+            </div>
+            <section class=" ">
+                <div style="display: block;">
+                    <div class="card" style="padding-bottom: 27px;">
+                        <div class="card-body">
+
+                            <h2 class="card-title" style="float: left;"><i class="bi bi-card-text"></i> &nbsp; Purchases
+                            </h2>
+
+
+                        </div>
+                        {% include 'purchase_table.html' %}
+
+
+                    </div>
+                </div>
+
+            </section>
         </div>
-    <section class=" ">
-    <div style="display: block;">
-    <div class="card" style="padding-bottom: 27px;">
-        <div class="card-body">
-
-         <h2 class="card-title" style="float: left;"> <i class="bi bi-card-text"></i> &nbsp; Purchases</h2>
-
-
-</div>
-        {% include 'purchase_table.html' %}
-
-
-        </div></div>
-
-    </section>
         </div>
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-  </main><!-- End #main -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    </main><!-- End #main -->
 {% endblock %}

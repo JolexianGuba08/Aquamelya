@@ -6,8 +6,6 @@ urlpatterns = [
     path('purchase/', views.admin_reports_purchase_function, name='admin_reports_purchase_url'),
     path('requests/', views.admin_reports_requests_function, name='admin_reports_requests_url'),
     path('delivery/', views.admin_reports_delivery_function, name='admin_reports_delivery_url'),
-
-    path('get_all_purchase/', views.get_all_purchase, name='get_all_purchase_url'),
-    # path('get_all_requests/', views.get_all_requests, name='get_all_requests_url'),
-    # path('get_all_delivery/', views.get_all_delivery, name='get_all_delivery_url')
+    path('get_monthly_purchase_data/', views.get_monthly_purchase_data, name='get_monthly_purchase_data'),
+    path('get_monthly_requests_data/', views.get_monthly_requests_data, name='get_monthly_requests_data'),
 ]

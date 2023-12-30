@@ -1,44 +1,28 @@
 <table class="table table-striped table-hover datatable" id="supplier_table">
     <thead class="text-center">
-    <tr>
-
-            <th scope="col" class="text-center">ID</th>
-            <th scope="col" class="text-center">Purchase Date</th>
-            <th scope="col" class="text-center">Description</th>
-            <th scope="col" class="text-center">Unit</th>
-            <th scope="col" class="text-center">Quantity</th>
+        <tr>
+            <th scope="col" class="text-center">Item Type</th>
+            <th scope="col" class="text-center">Item Name</th>
+            <th scope="col" class="text-center">Qty</th>
             <th scope="col" class="text-center">Supplier</th>
             <th scope="col" class="text-center">Requestor</th>
+            <th scope="col" class="text-center">Purchase Date</th>
         </tr>
     </thead>
     <tbody class="text-center">
-        <tr>
-            <th scope="row" class="text-center align-middle">1221114</th>
-            <td class="text-center align-middle">03-11-32</td>
-            <td class="text-center align-middle">Heatgun</td>
-            <td class="text-center align-middle">Bundle</td>
-            <td class="text-center align-middle">232</td>
-            <td class="text-center align-middle">Jose Login</td>
-            <td class="text-center align-middle">Jose Logout</td>
-        </tr>
-        <tr>
-            <th scope="row" class="text-center align-middle">1221114</th>
-            <td class="text-center align-middle">03-11-32</td>
-            <td class="text-center align-middle">Heatgun</td>
-            <td class="text-center align-middle">Bundle</td>
-            <td class="text-center align-middle">232</td>
-            <td class="text-center align-middle">Jose Login</td>
-            <td class="text-center align-middle">Jose Logout</td>
-        </tr>
-        <tr>
-            <th scope="row" class="text-center align-middle">1221114</th>
-            <td class="text-center align-middle">03-11-32</td>
-            <td class="text-center align-middle">Heatgun</td>
-            <td class="text-center align-middle">Bundle</td>
-            <td class="text-center align-middle">232</td>
-            <td class="text-center align-middle">Jose Login</td>
-            <td class="text-center align-middle">Jose Logout</td>
-        </tr>
-
+        {% if purchase_order %}
+            {% for purchase in purchase_order %}
+                <tr>
+                    <td>{{ purchase.purch_item_type }}</td>
+                    <td>{{ purchase.purch_item_name }}</td>
+                    <td>{{ purchase.purch_qty }}</td>
+                    <td>{{ purchase.supplier__supplier_name }}</td>
+                    <td>{{ purchase.purch_requestor }}</td>
+                    <td>{{ purchase.purch_date }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <td class="text-center align-middle" colspan="12">No reports found.</td>
+        {% endif %}
     </tbody>
 </table>

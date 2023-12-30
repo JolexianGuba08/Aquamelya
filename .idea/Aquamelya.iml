@@ -22,6 +22,7 @@
     <orderEntry type="library" name="bootstrap-icons" level="application" />
     <orderEntry type="library" name="animate.css" level="application" />
     <orderEntry type="library" name="apexcharts" level="application" />
+    <orderEntry type="library" name="tinymce" level="application" />
   </component>
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
