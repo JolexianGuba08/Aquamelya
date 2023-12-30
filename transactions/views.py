@@ -231,22 +231,36 @@ def post_requisition_info(request, req_id):
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
+    # Check if user is logged in
     if not user_already_logged_in(request):
         return redirect('login')
 
-    if request.session.get('session_user_type') == 1:
-        supply_id = request.GET.get('supply_id', None)
-        req_id = request.GET.get('req_id', None)
-        purchase_form = PurchaseOrderForm()
-        delivery_form = DeliveryOrderForm()
-        supply_form = SupplyForm()
-        asset_form = AssetForm()
+    session_user_type = request.session.get('session_user_type')
+    if session_user_type != 1:
+        raise Http404("You are not allowed to access this page.")
 
-        return render(request, 'purchase/user_admin/purchase_view.html', {
+    # Get supply_id and req_id from request
+    supply_id = request.GET.get('supply_id')
+    req_id = request.GET.get('req_id')
 
-            'purchase_form': purchase_form, 'supply_form': supply_form, 'asset_form': asset_form,
-            'delivery_form': delivery_form, 'supply_id': supply_id, 'req_id': req_id
-        })
+    # Create forms
+    purchase_form = PurchaseOrderForm()
+    delivery_form = DeliveryOrderForm()
+    supply_form = SupplyForm()
+    asset_form = AssetForm()
+
+    # Prepare context for rendering
+    context = {
+        'purchase_form': purchase_form,
+        'supply_form': supply_form,
+        'asset_form': asset_form,
+        'delivery_form': delivery_form,
+        'supply_id': supply_id,
+        'req_id': req_id
+    }
+
+    # Render the purchase view with the context
+    return render(request, 'purchase/user_admin/purchase_view.html', context)
 
 
 # ---------- STAFF REQUISITION SECTION ------------ #
@@ -704,48 +718,62 @@ def get_purchase_req_id(request, req_id):
 # Purchase Order posting data
 def post_purchase_requisition_info(request):
     req_id = request.POST.get('reqId')
-    selected_supplier = request.POST.get('choose_supplier', None)
-    selected_type = request.POST.get('choose_type', None)
-    selected_name = request.POST.get('choose_name', None)
-    selected_requestor = request.POST.get('choose_requestor', None)
-    selected_qty = request.POST.get('choose_qty', None)
+    selected_supplier = request.POST.get('choose_supplier')
+    selected_type = request.POST.get('choose_type')
+    selected_name = request.POST.get('choose_name')
+    selected_requestor = request.POST.get('choose_requestor')
+    selected_qty = request.POST.get('choose_qty')
     selected_receiver = request.POST.get('choose_receiver')
 
     try:
-        if req_id != '':
-            req_instance = Requisition.objects.get(pk=req_id)
+        if not req_id:
+            req_instance = None
         else:
-            req_instance = None  # Set req_instance to None if req_id is None
-        if selected_supplier is not None:
-            supplier_instance = Supplier.objects.get(pk=selected_supplier)
+            req_instance = get_object_or_404(Requisition, pk=req_id)
 
-            # Check if the supplier is blacklisted
-            if supplier_instance.supplier_status.name == 'Blacklisted':
-                messages.error(request, 'Selected supplier is blacklisted. Cannot proceed with the purchase.')
-                return JsonResponse({'message': 'Supplier is blacklisted'})
-
-            receiver_instance = User_Account.objects.get(pk=selected_receiver)
-
-            purchase = Purchase_Order.objects.create(
-                purch_status=1,
-                req=req_instance,
-                supplier=supplier_instance,
-                purch_item_type=selected_type,
-                purch_item_name=selected_name,
-                purch_requestor=selected_requestor,
-                purch_qty=selected_qty
-            )
-            delivery = Delivery.objects.create(
-                order_receive_by=receiver_instance,
-                delivery_status=1,  # You need to set the appropriate status here
-                purch=purchase  # Associate the Delivery with the Purchase_Order
-            )
-
-            messages.success(request, 'Your purchase has been completed successfully!')
-            return JsonResponse({'message': 'success'})
-        else:
+        if selected_supplier is None:
             messages.error(request, 'Invalid request data')
             return JsonResponse({'message': 'Invalid Request Data'})
+
+        supplier_instance = get_object_or_404(Supplier, pk=selected_supplier)
+
+        if supplier_instance.supplier_status.name == 'Blacklisted':
+            messages.error(request, 'Selected supplier is blacklisted. Cannot proceed with the purchase.')
+            return JsonResponse({'message': 'Supplier is blacklisted'})
+
+        receiver_instance = get_object_or_404(User_Account, pk=selected_receiver)
+
+        purchase = Purchase_Order.objects.create(
+            purch_status=1,
+            req=req_instance,
+            supplier=supplier_instance,
+            purch_item_type=selected_type,
+            purch_item_name=selected_name,
+            purch_requestor=selected_requestor,
+            purch_qty=selected_qty
+        )
+
+        delivery = Delivery.objects.create(
+            order_receive_by=receiver_instance,
+            delivery_status=1,  # Set the appropriate status here
+            purch=purchase  # Associate the Delivery with the Purchase_Order
+        )
+
+        messages.success(request, 'Your purchase has been completed successfully!')
+        return JsonResponse({'message': 'success'})
+
+    except Requisition.DoesNotExist:
+        messages.warning(request, 'Requisition does not exist.')
+        return JsonResponse({'message': 'Requisition does not exist'})
+
+    except Supplier.DoesNotExist:
+        messages.warning(request, 'Supplier does not exist.')
+        return JsonResponse({'message': 'Supplier does not exist'})
+
+    except User_Account.DoesNotExist:
+        messages.warning(request, 'Receiver does not exist.')
+        return JsonResponse({'message': 'Receiver does not exist'})
+
     except Exception as e:
         messages.warning(request, 'Unable to complete purchase, please input all fields.')
         return JsonResponse({'success': False, 'error': str(e)})
