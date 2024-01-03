@@ -71,43 +71,6 @@ class User_Account(models.Model):
         verbose_name = 'User Account'
 
 
-# def starting_activity_id():
-#     last_id = Activity_Log.objects.order_by('-activity_id').first()
-#     if last_id:
-#         last_numeric_part = int(last_id.activity_id.split('-')[-1])
-#         new_numeric_part = last_numeric_part + 1
-#         num_digits = len(str(new_numeric_part))
-#         new_id = f'LOG-{new_numeric_part:0{num_digits}}'
-#         return new_id
-#     else:
-#         return 'LOG-101'
-
-
-# class Activity_Log(models.Model):
-#     EVENT_CHOICES = (
-#         (0, 'LOGOUT'),
-#         (1, 'LOGIN'),
-#         (2, 'ADD'),
-#         (3, 'UPDATE'),
-#         (4, 'DELETE'),
-#         (5, 'SUSPEND'),
-#         (6, 'RESTORE'),
-#     )
-#
-#     activity_id = models.CharField(primary_key=True, default=starting_activity_id, max_length=255)
-#     activity_event_name = models.CharField(max_length=40)
-#     activity_description = models.CharField(max_length=255)
-#     activity_event_type = models.IntegerField(choices=EVENT_CHOICES, default=0)
-#     activity_date = models.DateTimeField(auto_now_add=True)
-#     table_affected = models.CharField(max_length=40)
-#     activity_user_id = models.ForeignKey(User_Account, on_delete=models.CASCADE)
-#
-#     class Meta:
-#         db_table = 'activity_log'
-#         verbose_name = 'Activity Log'
-#         verbose_name_plural = 'Activity Logs'
-
-
 def starting_supplier_id():
     last_id = Supplier.objects.order_by('-supplier_id').first()
     if last_id:
@@ -167,12 +130,24 @@ class Supplier(models.Model):
         db_table = 'supplier'
         verbose_name = 'Supplier'
 
-# class LoggedInSession(models.Model):
-#     session_key = models.CharField(primary_key=True, max_length=255)
-#     session_data = models.TextField()
-#     expire_date = models.DateTimeField()
-#     is_logged_in = models.IntegerField(default=1)
-#
-#     class Meta:
-#         db_table = 'logged_in_session'
-#         verbose_name = 'LoggedInSession'
+
+# Model for Notification
+class NotificationTitle(models.Model):
+    title_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title
+
+
+class Notification(models.Model):
+    notification_id = models.AutoField(primary_key=True)
+    notification_title = models.ForeignKey(NotificationTitle, on_delete=models.CASCADE)
+    notification_message = models.TextField()
+    notification_date = models.DateTimeField(auto_now_add=True)
+    notification_is_read = models.BooleanField(default=False)
+    user_id = models.ForeignKey(User_Account, on_delete=models.CASCADE, db_column='user_id')
+
+    class Meta:
+        db_table = 'notification'
+        verbose_name = 'Notification'

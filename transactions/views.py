@@ -732,7 +732,8 @@ def post_purchase_requisition_info(request):
         if supplier_instance.supplier_status.name == 'Blacklisted':
             messages.error(request, 'Selected supplier is blacklisted. Cannot proceed with the purchase.')
             return JsonResponse({'message': 'Supplier is blacklisted'})
-
+        if selected_requestor == '':
+            selected_requestor = 'Admin (Me)'
         receiver_instance = get_object_or_404(User_Account, pk=selected_receiver)
 
         purchase = Purchase_Order.objects.create(
