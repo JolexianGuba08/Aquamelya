@@ -55,9 +55,9 @@ def dashboard_context(request):
                                                              'unit': supply.supply_unit.name}
         context = {
             'supplier_count': supplier_count,
-            'pending_req_count': 0,
-            'pending_orders_count': 0,
-            'low_stock_list': 0,
+            'pending_req_count': request_pending_count,
+            'pending_orders_count': order_count,
+            'low_stock_list': low_stock_list,
         }
         return context
     else:
