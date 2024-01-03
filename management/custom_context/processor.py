@@ -1,5 +1,7 @@
+from inventory.models import Supply
 from management.models import User_Account, Supplier
 from login.views import user_already_logged_in
+from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order
 
 
 def get_user_info(request):
@@ -35,22 +37,22 @@ def dashboard_context(request):
     if user_already_logged_in(request):
 
         supplier_count = Supplier.objects.filter(supplier_status__name='Active').count()
-        # supply_req_pending = Request_Supply.objects.filter(req_status__name='Pending').count()
-        # asset_req_pending = Request_Assets.objects.filter(req_status__name='Pending').count()
-        # job_order_pending = Job_Order.objects.filter(req_status__name='Pending').count()
-        # request_pending_count = supply_req_pending + asset_req_pending + job_order_pending
-        #
-        # order_count = Purchase_Order.objects.exclude(purch_status=3).count()
-        # supplies = Supply.objects.filter(supply_status=1)
-        # low_stock_list = {}
-        # for supply in supplies:
-        #     if supply.supply_on_hand <= supply.supply_reorder_lvl:
-        #         result = supply.supply_reorder_lvl - supply.supply_on_hand
-        #         low_stock_list[supply.supply_description] = {'on_hand': supply.supply_on_hand, 'id': supply.supply_id,
-        #                                                      'type': supply.supply_type.name,
-        #                                                      'reorder': supply.supply_reorder_lvl,
-        #                                                      'result': result,
-        #                                                      'unit': supply.supply_unit.name}
+        supply_req_pending = Request_Supply.objects.filter(req_status__name='Pending').count()
+        asset_req_pending = Request_Assets.objects.filter(req_status__name='Pending').count()
+        job_order_pending = Job_Order.objects.filter(req_status__name='Pending').count()
+        request_pending_count = supply_req_pending + asset_req_pending + job_order_pending
+
+        order_count = Purchase_Order.objects.exclude(purch_status=3).count()
+        supplies = Supply.objects.filter(supply_status=1)
+        low_stock_list = {}
+        for supply in supplies:
+            if supply.supply_on_hand <= supply.supply_reorder_lvl:
+                result = supply.supply_reorder_lvl - supply.supply_on_hand
+                low_stock_list[supply.supply_description] = {'on_hand': supply.supply_on_hand, 'id': supply.supply_id,
+                                                             'type': supply.supply_type.name,
+                                                             'reorder': supply.supply_reorder_lvl,
+                                                             'result': result,
+                                                             'unit': supply.supply_unit.name}
         context = {
             'supplier_count': supplier_count,
             'pending_req_count': 0,
