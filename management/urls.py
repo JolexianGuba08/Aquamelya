@@ -25,7 +25,9 @@ urlpatterns = [
     path('staff/add/', views.CreateStaffView.as_view(), name='add_staff'),
     path('staff/update/<int:pk>/', views.AdminStaffView.as_view(), name='admin_staff_info'),
     path('staff/delete/<int:pk>/', views.DeleteStaff.as_view(), name='delete_staff'),
-    
+
     # -------------------- STAFF SECTION ------------------
     # path('staff-requisition/', views.staff_requisition_view, name='staff_requisition_url'),
+    path('reports_data/', views.reports_data, name='reports_data'),
+
 ]

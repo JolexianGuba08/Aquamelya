@@ -2,14 +2,18 @@ from bootstrap_modal_forms.generic import (
     BSModalCreateView,
     BSModalUpdateView,
 )
+
 from django.contrib import messages
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic, View
+
+from transactions.models import Request_Supply, Job_Order, Request_Assets
 from .forms import *
 from .models import Supplier, SupplierStatus, User_Account
+from datetime import datetime, timedelta
 
 
 # ------------------DASHBOARD PAGE------------------#
@@ -236,3 +240,101 @@ def logout_view(request):
 
 def error_404_view(request, exception):
     return render(request, '404.html')
+
+
+# ------------------REPORTS DASHBOARD------------------#
+
+def reports_data(request):
+    filter_type = request.GET.get('filter_type')
+
+    today = datetime.now().date()
+    current_year = today.year
+    current_month = today.month
+    start_of_month = today.replace(day=1)
+    start_of_year = today.replace(month=1, day=1)
+    last_year = start_of_year - timedelta(days=365)
+
+    if filter_type == 'this_day':
+        data = fetch_data_for_day(today)
+    elif filter_type == 'this_month':
+        data = fetch_data_for_month(current_year, current_month)
+    elif filter_type == 'this_year':
+        data = fetch_data_for_year(current_year)
+    elif filter_type == 'last_year':
+        data = fetch_data_for_last_year(last_year.year)
+    else:
+        data = fetch_default_data()
+
+    return JsonResponse(data)
+
+
+def fetch_data_for_day(date_now):
+    # Fetching counts for each type of request for the current day
+    supplies_count = Request_Supply.objects.filter(req_id__req_date__date=date_now).count()
+    assets_count = Request_Assets.objects.filter(req_id__req_date__date=date_now).count()
+    job_orders_count = Job_Order.objects.filter(req_id__req_date__date=date_now).count()
+
+    return {
+        'Supplies': supplies_count,
+        'Assets': assets_count,
+        'Job Orders': job_orders_count
+    }
+
+
+def fetch_data_for_month(year, month):
+    # Fetching counts for each type of request for the current month and year
+    supplies_count = Request_Supply.objects.filter(
+        req_id__req_date__year=year, req_id__req_date__month=month
+    ).count()
+    assets_count = Request_Assets.objects.filter(
+        req_id__req_date__year=year, req_id__req_date__month=month
+    ).count()
+    job_orders_count = Job_Order.objects.filter(
+        req_id__req_date__year=year, req_id__req_date__month=month
+    ).count()
+
+    return {
+        'Supplies': supplies_count,
+        'Assets': assets_count,
+        'Job Orders': job_orders_count
+    }
+
+
+def fetch_data_for_year(current_year):
+    # Fetching counts for each type of request for the current year
+    supplies_count = Request_Supply.objects.filter(req_id__req_date__year=current_year).count()
+    assets_count = Request_Assets.objects.filter(req_id__req_date__year=current_year).count()
+    job_orders_count = Job_Order.objects.filter(req_id__req_date__year=current_year).count()
+
+    return {
+        'Supplies': supplies_count,
+        'Assets': assets_count,
+        'Job Orders': job_orders_count
+    }
+
+
+def fetch_data_for_last_year(last_year):
+    # Fetching counts for each type of request for the last year
+    supplies_count = Request_Supply.objects.filter(req_id__req_date__year=last_year).count()
+    assets_count = Request_Assets.objects.filter(req_id__req_date__year=last_year).count()
+    job_orders_count = Job_Order.objects.filter(req_id__req_date__year=last_year).count()
+
+    return {
+        'Supplies': supplies_count,
+        'Assets': assets_count,
+        'Job Orders': job_orders_count
+    }
+
+
+def fetch_default_data():
+    # Fetching counts for each type of request for the current day
+    today = datetime.now().date()
+    supplies_count = Request_Supply.objects.filter(req_id__req_date__date=today).count()
+    assets_count = Request_Assets.objects.filter(req_id__req_date__date=today).count()
+    job_orders_count = Job_Order.objects.filter(req_id__req_date__date=today).count()
+
+    return {
+        'Supplies': supplies_count,
+        'Assets': assets_count,
+        'Job Orders': job_orders_count
+    }
