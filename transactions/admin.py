@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import *
+
 # Register your models here.
 admin.site.register(RequisitionStatus)
 admin.site.register(Requisition)
@@ -11,3 +12,4 @@ admin.site.register(Job_Order)
 admin.site.register(Acknowledgement_Job)
 admin.site.register(Acknowledgement_Purch)
 admin.site.register(RequestType)
+admin.site.register(RequestStatus)
