@@ -367,8 +367,10 @@ def staff_requisition_asset_view(request):
             messages.error(request, 'Error submitting request!')
     else:
         asset_form = RequestAssetsForm()
+    request_form = RequisitionNoteForm()
     return render(request, 'request/user_staff/asset/staff_requisition_asset.html', {
         'asset_form': asset_form,
+        'req_form': request_form,
     })
 
 

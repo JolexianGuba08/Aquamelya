@@ -8,35 +8,292 @@
 {% block requisition %}
     class="nav-link"
 {% endblock requisition %}
-{% block asset %} class="active" {% endblock%}
+{% block asset %} class="active" {% endblock %}
 {# Content #}
 {% block content %}
+    <style>
+        /* CSS for increment and decrement buttons */
+        .quantity-controls button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0.5em;
+            margin: 0;
+            transition: background-color 0.3s ease;
+            width: 30px; /* Adjust width as needed */
+            height: 30px; /* Adjust height as needed */
+            border-radius: 50%; /* Makes buttons circular */
+        }
 
-{# Simple Datatables CSS #}
-<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+        .quantity-controls button.increment {
+            background-color: blue;
+        }
 
-<main id="main" class="main">
-<div class="pagetitle">
-  <h1>REQUISITION</h1>
-</div><!-- End Page Title -->
+        .quantity-controls button.decrement {
+            background-color: red;
+        }
 
-<section class="section dashboard">
-<div class="row">
-    <!-- Left side columns -->
-    <div class="col-lg-12" id="left">
-        {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
-    </div>
+        .quantity-controls button:hover {
+            filter: brightness(1.2); /* Adds a brightness effect on hover */
+        }
 
-</div>
-</section>
+        .quantity {
+            display: inline-block;
+            min-width: 2em;
+            text-align: center;
+            padding: 0.5em;
+            margin: 0 0.5em;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-</main><!-- End #main -->
+    </style>
+    {# Simple Datatables CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
-{# jQuery #}
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-{# TINYMCE #}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-{# Simple Datatables js#}
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>REQUISITION</h1>
+        </div><!-- End Page Title -->
 
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-12" id="left">
+                    {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
+                </div>
+
+
+                <table class="table table-hover" id="supplier_table">
+                    <thead class="text-center">
+                    <tr>
+                        <th scope="col" class="text-center">Asset Name</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col" class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-center">
+                    </tbody>
+                </table>
+                <div class="row mb-3">
+                    <label class="col-sm-6 col-form-label"></label>
+                    <div class="col-sm-6 justify-content-end" id="req_btn">
+                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main><!-- End #main -->
+
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    {# TINYMCE #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    {# Simple Datatables js#}
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+    <script>
+
+        /*$(document).ready(function () {
+            $('#asset_name').change(function () {
+                var selectedId = $(this).val(); // Retrieve the selected ID
+                var selectedName = $(this).find('option:selected').text(); // Retrieve the selected name
+
+                // Perform actions using the selected ID and name
+                console.log('Selected ID:', selectedId);
+                console.log('Selected Name:', selectedName);
+
+                // You can utilize these selected values as needed in your JavaScript logic
+                // For example, making AJAX requests or manipulating other DOM elements
+            });
+        });*/
+        $(document).ready(function () {
+            loadExistingData();
+        });
+
+        function mySave() {
+            var asset_quantity = $('#asset_quantity').val();
+            var asset_id = $('#asset_name').val();
+            var asset_name = $('#asset_name').find('option:selected').text();
+
+            if (asset_quantity <= 0) {
+                alert('Quantity must be greater than 0.');
+                return
+            }
+
+            if (asset_name && asset_quantity) {
+                var existingAsset = checkAndUpdateAsset(asset_id, asset_quantity);
+
+                if (existingAsset !== null && !existingAsset) {
+                    var newAsset = {
+                        'asset_quantity': asset_quantity,
+                        'asset_id': asset_id,
+                        'asset_name': asset_name
+                    };
+
+                    addOrUpdateAsset(newAsset);
+                    saveToLocalStorage(newAsset);
+
+                    // Clear the form
+                    $('#asset_name').val('');
+                    $('#asset_quantity').val('');
+
+                }
+            } else {
+                alert("Please fill in both Asset Name and Quantity before saving.");
+            }
+        }
+
+        function addOrUpdateAsset(asset) {
+            var tableBody = $('#supplier_table tbody');
+            var existingRow = tableBody.find(`tr[data-asset-id="${asset.asset_id}"]`);
+
+            if (existingRow.length) {
+                existingRow.find('.text-center:eq(1) .quantity').text(asset.asset_quantity); // Update quantity only
+
+                // You might also need to update local storage here if required
+                updateLocalStorage(asset.asset_id, asset.asset_quantity);
+            } else {
+                var newRow = `<tr data-asset-id="${asset.asset_id}">
+            <td class="text-center align-middle">${asset.asset_name}</td>
+            <td class="text-center align-middle">
+                <button class="decrement" onclick="decrementQuantity(this)">-</button>
+                <span class="quantity">${asset.asset_quantity}</span>
+                <button class="increment" onclick="incrementQuantity(this)">+</button>
+            </td>
+            <td class="text-center align-middle">
+                <button style="background-color: transparent; border-color: transparent;" type="button"
+                    class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bi bi-three-dots" style="color: black;"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="delete-supplier dropdown-item">Delete Asset</a>
+                </div>
+            </td>
+        </tr>`;
+                tableBody.append(newRow);
+                $('#no-supply-message').remove(); // Remove the "No supply inserted" message
+
+                // Save to local storage for the new asset
+                saveToLocalStorage(asset);
+            }
+        }
+
+
+        // Function to handle inline quantity increment and update local storage
+        function incrementQuantity(btn) {
+            var row = $(btn).closest('tr');
+            var quantitySpan = row.find('.quantity');
+            var currentQuantity = parseInt(quantitySpan.text()) || 0;
+            var assetId = row.attr('data-asset-id');
+
+            quantitySpan.text(currentQuantity + 1);
+            updateLocalStorage(assetId, currentQuantity + 1);
+        }
+
+        // Function to handle inline quantity decrement and update local storage
+        function decrementQuantity(btn) {
+            var row = $(btn).closest('tr');
+            var quantitySpan = row.find('.quantity');
+            var currentQuantity = parseInt(quantitySpan.text()) || 0;
+            var assetId = row.attr('data-asset-id');
+
+            if (currentQuantity > 1) { // Limit decrement until it hits 1
+                quantitySpan.text(currentQuantity - 1);
+                updateLocalStorage(assetId, currentQuantity - 1);
+            } else if (currentQuantity === 1) { // Prevent decrement below 1
+                quantitySpan.text(1);
+                updateLocalStorage(assetId, 1);
+                // Optionally, you can display a message indicating the minimum quantity is reached
+                // alert("Minimum quantity reached.");
+            }
+        }
+
+        // Function to update local storage with the new quantity
+        function updateLocalStorage(assetId, newQuantity) {
+            var storedData = localStorage.getItem("request_asset");
+            var suppliesArray = [];
+
+            if (storedData) {
+                suppliesArray = JSON.parse(storedData);
+            }
+
+            var existingAsset = suppliesArray.find(item => item.asset_id === assetId);
+
+            if (existingAsset) {
+                existingAsset.asset_quantity = newQuantity;
+            }
+
+            localStorage.setItem("request_asset", JSON.stringify(suppliesArray));
+        }
+
+
+        function saveToLocalStorage(asset) {
+            var storedData = localStorage.getItem("request_asset");
+            var suppliesArray = [];
+
+            if (storedData) {
+                suppliesArray = JSON.parse(storedData);
+            }
+
+            var existingAssetIndex = suppliesArray.findIndex(item => item.asset_id === asset.asset_id);
+            if (existingAssetIndex !== -1) {
+                suppliesArray[existingAssetIndex].asset_quantity = asset.asset_quantity;
+            } else {
+                suppliesArray.push(asset);
+            }
+
+            localStorage.setItem("request_asset", JSON.stringify(suppliesArray));
+        }
+
+        function loadExistingData() {
+            var storedData = localStorage.getItem("request_asset");
+            var tableBody = $('#supplier_table tbody');
+
+            if (storedData) {
+                var suppliesArray = JSON.parse(storedData);
+                suppliesArray.forEach(function (asset) {
+                    addOrUpdateAsset(asset);
+                });
+            } else {
+                tableBody.append('<tr id="no-supply-message"><td colspan="3" class="text-center">No asset inserted</td></tr>');
+            }
+        }
+
+        function checkAndUpdateAsset(assetId, newQuantity) {
+            var storedData = localStorage.getItem("request_asset");
+
+            if (storedData) {
+                var suppliesArray = JSON.parse(storedData);
+                for (var i = 0; i < suppliesArray.length; i++) {
+                    if (suppliesArray[i].asset_id === assetId) {
+                        var existingQuantity = suppliesArray[i].asset_quantity;
+                        var confirmUpdate = confirm("The item is already added. Do you want to add the quantity?");
+                        if (confirmUpdate) {
+                            suppliesArray[i].asset_quantity = parseInt(existingQuantity) + parseInt(newQuantity);
+                            saveToLocalStorage(suppliesArray[i]);
+                            addOrUpdateAsset(suppliesArray[i]); // Update the table immediately
+                            // Clear the form
+                            $('#asset_name').val('');
+                            $('#asset_quantity').val('');
+                            return true;
+                        } else {
+                            return null; // Return null if user cancels
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+
+    </script>
 {% endblock content %}
