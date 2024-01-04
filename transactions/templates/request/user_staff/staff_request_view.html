@@ -2,12 +2,8 @@
 {% load static %}
 
 {# Requisition Title #}
-{% block title %} Requisition | AquaMelya {% endblock title %}
+{% block title %} Requisition | {{ req_id }} {% endblock title %}
 
-{# Requisition Active #}
-{% block requisitiontable %}
-    <a class="nav-link" href="{% url 'requisition_table' %}"/>
-{% endblock requisitiontable %}
 
 {% block asset %} class="active" {% endblock %}
 {# Content #}
@@ -18,17 +14,79 @@
     {% include 'request/user_staff/confirm_cancel.html' %}
     <main id="main" class="main">
         <div>
-            <h1>REQUESTIONS</h1>
+            <h1>REQUEST VIEW : {{ requisition_data.req_description }}</h1>
         </div>
         <section class="section dashboard">
             <div style="display: block;">
                 <div class="card" style="padding-bottom: 27px;">
                     <div class="card-body">
-                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp; My
-                            Request Forms</h2>
-                        {% include 'request/user_staff/include_request_table.html' %}
+                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;Request
+                            Info
+                        </h2>
+
                     </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="card-text"><b>Request Type:</b> {{ requisition_data.req_type }}</p>
+                                <p class="card-text"><b>Request Status:</b>
+                                    {% if requisition_data.req_status|lower == 'pending' %}
+                                        <span class="badge bg-warning">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'incomplete' %}
+                                        <span class="badge bg-primary">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'cancelled' %}
+                                        <span class="badge bg-danger">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'completed' %}
+                                        <span class="badge bg-success">{{ requisition_data.req_status }}</span>
+                                    {% endif %}</p>
+                                <p class="card-text"><b>Request Date:</b> {{ requisition_data.req_date_requested }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                {% if requisition_data.requestor_notes %}
+                                    <p class="card-text"><b>Request Notes:</b> {{ requisition_data.requestor_notes }}
+                                    </p>
+                                {% else %}
+                                    <p class="card-text"><b>Request Notes:</b> No request notes available</p>
+                                {% endif %}
+
+                                {% if requisition_data.req_reviewer_notes %}
+                                    <p class="card-text"><b>Reviewer
+                                        Notes:</b> {{ requisition_data.req_reviewer_notes }}
+                                    </p>
+                                {% else %}
+                                    <p class="card-text"><b>Reviewer Notes:</b> No reviewer notes available</p>
+                                {% endif %}
+
+                                {#                                {% if requisition_data.reviewed_date %}#}
+                                {#                                    <p class="card-text"><b>Reviewed Date:</b> {{ requisition_data.reviewed_date }}</p>#}
+                                {#                                {% endif %}#}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        {% if requisition_data.req_status|lower == 'cancelled' %}
+                            <button style="float: right; margin-right: 20px;" s
+                                    class=" cancel-request btn btn-secondary"
+                                    disabled>
+                                Cancelled
+                            </button>
+                        {% else %}
+                            <button class="cancel-request btn btn-warning" style="float: right; margin-right: 20px;"
+                                    data-pk="{{ requisition_data.req_id }}" onclick="cancelRequestModal()">
+                                Cancel Request
+                            </button>
+                        {% endif %}
+                    </div>
+
+
                 </div>
+
+            </div>
+
+            <div class="card">
+                {% include 'request/user_staff/staff_request_table_view.html' %}
             </div>
         </section>
     </main>
@@ -126,21 +184,8 @@
         }
 
         // cancel get request function
-        function cancelRequestGet(req_id) {
-            $.ajax({
-                url: `/transactions/cancel_request/${req_id}/`,
-                method: 'GET',
-                success: function (data) {
-                    $('#cancel_message').text(data.req_description);
-                    $('#req_id').val(data.req_id);
-                    $('#confirmationModal').modal('show');
-                },
-                error: function (error) {
-                    console.error('Error canceling request:', error);
-
-                }
-            });
-
+        function cancelRequestModal() {
+            $('#confirmationModal').modal('show');
         }
 
         // for post cancel request
@@ -157,7 +202,7 @@
                         console.log(data.status);
                         window.location.reload();
                     } else {
-                        console.log('Error updating data', data.status, data.message);
+                        console.log('Error updating data');
                         window.location.reload();
                     }
                 },
@@ -185,13 +230,16 @@
 
             $('.cancel-request').on('click', function () {
                 var reqId = $(this).data('pk');
-                cancelRequestGet(reqId);
+                $('#req_id').val(reqId);
+                console.log(reqId);
 
             });
 
             $('#confirm-cancel-btn').on('click', function () {
                 var reqId = $(req_id).val();
-                cancelRequestPost(reqId);
+                console.log(reqId);
+                const pk_id = parseInt(reqId);
+                cancelRequestPost(pk_id);
             });
 
 

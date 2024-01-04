@@ -66,7 +66,9 @@
                     {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
                 </div>
 
-
+                <br>
+                <hr>
+                <p>Request Supply List</p>
                 <table class="table table-hover" id="supplier_table">
                     <thead class="text-center">
                     <tr>
@@ -81,7 +83,9 @@
                 <div class="row mb-3">
                     <label class="col-sm-6 col-form-label"></label>
                     <div class="col-sm-6 justify-content-end" id="req_btn">
-                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT
+                        <button type="submit" class="submitBtn btn btn" id="submit_btn"
+                                onclick="saveFromLocalStorage()"><i class="bi bi-cursor"></i>
+                            SUBMIT
                         </button>
                     </div>
                 </div>
@@ -140,7 +144,7 @@
 
                     addOrUpdateAsset(newAsset);
                     saveToLocalStorage(newAsset);
-
+                    $('.submitBtn').show();
                     // Clear the form
                     $('#asset_name').val('');
                     $('#asset_quantity').val('');
@@ -264,6 +268,8 @@
                     addOrUpdateAsset(asset);
                 });
             } else {
+                //hide the submit button
+                $('.submitBtn').hide();
                 tableBody.append('<tr id="no-supply-message"><td colspan="3" class="text-center">No asset inserted</td></tr>');
             }
         }
@@ -292,6 +298,39 @@
                 }
             }
             return false;
+        }
+
+        function saveFromLocalStorage() {
+            console.log("Saving data from local storage...");
+            var assetArray = localStorage.getItem("request_asset");
+
+            if (assetArray) {
+                assetArray = JSON.parse(assetArray);
+                $.ajax({
+                    url: "{% url 'staff_requisition_asset_view_endpoint' %}",
+                    type: "POST",
+                    data: {
+                        'requestor_notes': $('#requestor_notes').val(),
+                        'action': 'save_from_local_storage',
+                        'asset_data': JSON.stringify(assetArray),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.success === true) {
+                            console.log("Data from local storage saved successfully!");
+                            // Optionally, you can clear local storage after successful save
+
+                            localStorage.removeItem("request_asset");
+                            window.location.reload();
+                        } else {
+                            console.error("Error saving data from local storage:", response.error_message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("AJAX request failed:", error);
+                    }
+                });
+            }
         }
 
 

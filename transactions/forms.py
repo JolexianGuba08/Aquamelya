@@ -20,7 +20,6 @@ class RequestSupplyForm(forms.ModelForm):
         required=True,
     )
 
-
     req_supply_qty = forms.IntegerField(
         validators=[MinValueValidator(1)])
 
@@ -103,3 +102,9 @@ class AssetForm(forms.ModelForm):
     class Meta:
         model = Assets
         fields = ['asset_description']
+
+
+class MyRequestForm(forms.ModelForm):
+    class Meta:
+        model = Requisition
+        fields = ['requestor_notes']
