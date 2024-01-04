@@ -547,7 +547,7 @@ class StaffDeliveryIndexView(ListView):
 
 # Delivery Info modal
 def get_delivery_info(request, pk):
-    if request.session.get('session_user_type') == 0:
+    if request.session.get('session_user_type') == 1:
         raise Http404("You are not allowed to access this page.")
     try:
         delivery = get_object_or_404(Delivery, pk=pk)
