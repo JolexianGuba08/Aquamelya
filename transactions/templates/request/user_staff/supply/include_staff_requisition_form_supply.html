@@ -35,11 +35,18 @@
                             {% endfor %}
                         </div>
                      </div>
+                <div class="row mb-3">
+                    <label class="col-sm-6 col-form-label"></label>
+                    <div class="col-sm-6 justify-content-end" id="req_btn">
 
-
+                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i>ADD</button>
+                    </div>
+                </div>
+                    <br>
                     <!-- Supply Notes input -->
+                    <hr>
                      <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Notes</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label">Additional Notes</label>
                         <div class="col-sm-12">
                             {% render_field supply_form.notes class="form-control" rows="5" %}
                         </div>
@@ -49,13 +56,6 @@
                             {% endfor %}
                         </div>
                      </div>
-                </div>
-            <div class="row mb-3">
-                    <label class="col-sm-6 col-form-label"></label>
-                    <div class="col-sm-6 justify-content-end" id="req_btn">
-
-                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT</button>
-                    </div>
                 </div>
 
             </form>
