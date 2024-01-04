@@ -73,8 +73,8 @@
                     $('#request_description').text(data.req_requestor);
                     $('#req_date_last_mod').text(data.req_date_last_mod);
                     $('#req_date_requested').text(data.req_date_requested);
-                    $('#req_notes').text(data.req_notes);
-                    $('#req_reviewer_notes').text(data.req_reviewer_notes);
+                    $('#req_notes').text(data.requestor_notes);
+                    $('#req_reviewer_notes').text(data.reviewer_notes);
                     var reqId = String(data.req_id);
                     // check if request is done then disable all the buttons and inputs, Then hiding the low stock message
                     if (data.req_status === 'Done' || data.req_status === 'Cancelled' || data.req_status === 'Declined' || data.req_status === 'Approved') {

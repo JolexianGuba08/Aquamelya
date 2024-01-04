@@ -39,4 +39,9 @@ urlpatterns = [
     # -------------STAFF DELIVERY URLS-----------------
     path('staff_delivery/', views.StaffDeliveryIndexView.as_view(), name='staff_delivery_url'),
 
+    # -------------END POINT-----------------
+    path('staff_requisition_supply_view_endpoint/', views.staff_requisition_supply_view_endpoint, name='staff_requisition_supply_view_endpoint'),
+
+
+
 ]
