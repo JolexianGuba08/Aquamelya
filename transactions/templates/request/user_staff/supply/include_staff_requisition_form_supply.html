@@ -15,7 +15,7 @@
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-12 col-form-label form_label">Supply List</label>
                         <div class="col-sm-12">
-                            {% render_field supply_form.supply class="form-control" %}
+                            {{supply_form.supply|add_class:"form-control"|attr:"id:supply_name"}}
                         </div>
                         <div class="{% if supply_form.supply.errors %} invalid {% endif %}">
                             {% for error in supply_form.supply.errors %}
@@ -27,7 +27,7 @@
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-12 col-form-label form_label">Quantity</label>
                         <div class="col-sm-12">
-                            {% render_field supply_form.req_supply_qty class="form-control" %}
+                            {% render_field supply_form.req_supply_qty class="form-control" id="supply_quantity"%}
                         </div>
                         <div class="{% if supply_form.req_supply_qty.errors %} invalid {% endif %}">
                             {% for error in supply_form.req_supply_qty.errors %}
@@ -38,8 +38,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-6 col-form-label"></label>
                         <div class="col-sm-6 justify-content-end" id="req_btn">
-
-                            <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i>ADD
+                        <button type="button" class="btn btn" id="submit_btn" onclick="mySave()"><i class="bi bi-cursor"></i>ADD
                             </button>
                         </div>
                     </div>
@@ -49,7 +48,7 @@
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-12 col-form-label form_label">Additional Notes</label>
                         <div class="col-sm-12">
-                            {% render_field req_form.requestor_notes class="form-control" rows="5" %}
+                            {% render_field req_form.requestor_notes class="form-control" rows="5" id="requestor_notes"%}
                         </div>
                         <div class="{% if supply_form.notes.errors %} invalid {% endif %}">
                             {% for error in supply_form.notes.errors %}
@@ -64,7 +63,4 @@
         <!-- End General Form Elements -->
     </div>
 </div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 

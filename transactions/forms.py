@@ -16,7 +16,11 @@ class RequisitionForm(forms.ModelForm):
 class RequestSupplyForm(forms.ModelForm):
     supply = forms.ModelChoiceField(
         queryset=Supply.objects.filter(supply_status=1),
-        empty_label='Select', required=True)
+        empty_label='Select',
+        required=True,
+    )
+
+
     req_supply_qty = forms.IntegerField(
         validators=[MinValueValidator(1)])
 

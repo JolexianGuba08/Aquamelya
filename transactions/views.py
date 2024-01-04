@@ -34,6 +34,9 @@ def admin_transaction_requests_function(request):
                 req_id = requisition.req_id
                 req_type = requisition.req_type.name
                 req_requestor = requisition.user
+                requestor_notes = requisition.requestor_notes
+                reviewer_notes = requisition.reviewer_notes
+
                 if req_type == 'Supply':
                     req_supply_form = get_object_or_404(Request_Supply, req_id=req_id)
                     if req_supply_form:
@@ -50,7 +53,6 @@ def admin_transaction_requests_function(request):
                         req_status = req_asset_form.req_status
                 elif req_type == 'Job Order':
                     req_job_form = get_object_or_404(Job_Order, req_id=req_id)
-
                     if req_job_form:
                         req_quantity = req_job_form.worker_count
                         req_item = req_job_form.job_name
@@ -64,10 +66,13 @@ def admin_transaction_requests_function(request):
                     'req_type': req_type,
                     'req_item': req_item,
                     'req_unit_measure': req_unit_measure,
-                    'req_notes': req_notes,
+                    'requestor_notes': requestor_notes,
+                    'reviewer_notes': reviewer_notes,
                     'req_status': req_status,
                 })
+
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
+
         except Exception as e:
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
     else:
@@ -93,12 +98,12 @@ def get_requisition_info(request, pk):
 
     # Getting the specific OBJECT based on the req_type
     if data.req_type.name == "Supply":
-        req_item = get_object_or_404(Request_Supply, req_id=data.req_id)
+        req_item = Request_Supply.objects.filter(req_id_id=data.req_id)
         current_onhand_stock = req_item.supply.supply_on_hand
         req_qty = req_item.req_supply_qty
 
     elif data.req_type.name == "Asset":
-        req_item = get_object_or_404(Request_Assets, req_id=data.req_id)
+        req_item = Request_Assets.objects.filter(req_id_id=data.req_id)
         current_onhand_stock = req_item.asset.asset_on_hand
         req_qty = req_item.req_asset_qty
 
@@ -303,42 +308,67 @@ def staff_requisition_table(request):
     return render(request, 'request/user_staff/request_table.html', {'requisitions': requisition_data})
 
 
+
+def staff_requisition_supply_view_endpoint(request):
+    acc_id = request.session.get('session_user_id')
+    user_id = int(acc_id)
+    # Handle AJAX request to save data from local storage
+    try:
+        # Extract data from the AJAX request
+        supply_data = request.POST.get('supply_data')
+        requestor_notes = request.POST.get('requestor_notes')
+        supply_data = json.loads(supply_data)
+
+        # Create requisition object
+        request_form = Requisition.objects.create(
+            req_description='Supply Request',  # You can customize this
+            req_type=RequestType.objects.get(name='Supply'),
+            user_id=user_id,
+            requestor_notes=requestor_notes
+        )
+
+        # Iterate through request supply items and associate with requisition
+        for supply_item in supply_data:
+            # Get or create a Supply instance based on the name
+            print(supply_item['supply_id'])
+            supply_instance = Supply.objects.get(supply_id=supply_item['supply_id'])
+            unit_measure = supply_instance.supply_unit
+
+            # Create Request_Supply instance
+            supply = Request_Supply.objects.create(
+                supply=supply_instance,
+                req_supply_qty=supply_item['supply_quantity'],
+                req_id=request_form,
+                req_unit_measure= unit_measure
+            )
+
+        messages.success(request, 'Request submitted successfully!')
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Error submitting request!')
+        return JsonResponse({'success': False, 'error_message': str(e)})
+
+
+
 # STAFF REQUISITION PAGE TO REQUEST SUPPLY
 def staff_requisition_supply_view(request):
+    global supply_form
     request_note_form = RequisitionNoteForm()
     if request.session.get('session_user_type') == 0:
         acc_id = request.session.get('session_user_id')
         user_id = int(acc_id)
+        supply_form = RequestSupplyForm()
 
-        if request.method == 'POST':
-            supply_form = RequestSupplyForm(request.POST)
-            try:
-                if supply_form.is_valid():
-                    request_form = Requisition.objects.create(
-                        req_description=supply_form.cleaned_data['supply'],
-                        req_type=RequestType.objects.get(name='Supply'),
-                        user_id=user_id
-                    )
-
-                    supply = supply_form.save(commit=False)
-                    supply.req_id = request_form
-                    supply.save()
-                    supply_form = RequestSupplyForm()
-                    messages.success(request, 'Request submitted successfully!')
-            except Exception as e:
-                print(e)
-                messages.error(request, 'Error submitting request!')
-        else:
-            supply_form = RequestSupplyForm()
         return render(request, 'request/user_staff/supply/staff_requisition_supply.html', {
-
             'supply_form': supply_form,
             'req_form': request_note_form,
-
         })
 
     else:
         raise Http404("You are not allowed to access this page.")
+
 
 
 # STAFF REQUISITION PAGE TO REQUEST ASSET
