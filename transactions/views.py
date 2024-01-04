@@ -14,7 +14,7 @@ from inventory.models import Supply, Assets
 from management.models import Supplier, User_Account
 from management.views import user_already_logged_in
 from transactions.forms import RequestSupplyForm, RequestAssetsForm, RequestJobForm, PurchaseOrderForm, \
-    DeliveryOrderForm, SupplyForm, AssetForm
+    DeliveryOrderForm, SupplyForm, AssetForm, RequisitionNoteForm
 from transactions.models import Requisition, Request_Assets, Request_Supply, RequisitionStatus, RequestType, Job_Order, \
     Purchase_Order, Delivery
 
@@ -305,6 +305,7 @@ def staff_requisition_table(request):
 
 # STAFF REQUISITION PAGE TO REQUEST SUPPLY
 def staff_requisition_supply_view(request):
+    request_note_form = RequisitionNoteForm()
     if request.session.get('session_user_type') == 0:
         acc_id = request.session.get('session_user_id')
         user_id = int(acc_id)
@@ -332,6 +333,7 @@ def staff_requisition_supply_view(request):
         return render(request, 'request/user_staff/supply/staff_requisition_supply.html', {
 
             'supply_form': supply_form,
+            'req_form': request_note_form,
 
         })
 

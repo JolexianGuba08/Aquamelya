@@ -22,7 +22,13 @@ class RequestSupplyForm(forms.ModelForm):
 
     class Meta:
         model = Request_Supply
-        fields = ['req_supply_qty', 'supply', ]
+        fields = ['req_supply_qty', 'supply']
+
+
+class RequisitionNoteForm(forms.ModelForm):
+    class Meta:
+        model = Requisition
+        fields = ['requestor_notes']
 
 
 class RequestAssetsForm(forms.ModelForm):
@@ -34,7 +40,7 @@ class RequestAssetsForm(forms.ModelForm):
 
     class Meta:
         model = Request_Assets
-        fields = ['req_asset_qty', 'asset', ]
+        fields = ['req_asset_qty', 'asset']
 
 
 class RequestJobForm(forms.ModelForm):
