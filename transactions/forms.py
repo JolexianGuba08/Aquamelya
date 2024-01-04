@@ -58,7 +58,7 @@ class PurchaseOrderForm(forms.ModelForm):
 
     class Meta:
         model = Purchase_Order
-        fields = ['req', 'supplier', 'purch_item_type', 'purch_item_name', 'purch_requestor', 'purch_qty']
+        fields = ['req', 'supplier']
 
 
 class DeliveryOrderForm(forms.ModelForm):

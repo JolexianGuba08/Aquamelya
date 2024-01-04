@@ -159,10 +159,6 @@ class Purchase_Order(models.Model):
     purch_status = models.IntegerField(choices=PURCHASE_STATUS_CHOICES, default=1)
     purch_date = models.DateField(auto_now_add=True)
     purch_date_modified = models.DateTimeField(auto_now=True)
-    purch_item_type = models.CharField(null=True, blank=True, max_length=10)
-    purch_item_name = models.CharField(null=True, blank=True, max_length=100)
-    purch_requestor = models.CharField(null=True, blank=True, max_length=100)
-    purch_qty = models.IntegerField(null=True, blank=True)
     req = models.ForeignKey(Requisition, on_delete=models.CASCADE, null=True, blank=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
