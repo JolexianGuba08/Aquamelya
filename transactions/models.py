@@ -59,6 +59,21 @@ class RequisitionStatus(models.Model):
         verbose_name = "Requisition Status"
 
 
+class RequestStatus(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default_status(cls):
+        return RequestStatus.objects.get(name='Pending')
+
+    class Meta:
+        db_table = "request_status"
+        verbose_name = "Request Status"
+
+
 class RequestType(models.Model):
     name = models.CharField(max_length=15, unique=True)
 
@@ -78,6 +93,9 @@ class Requisition(models.Model):
     req_reviewed_by = models.CharField(max_length=50, default='Admin')
     req_reviewed_date = models.DateTimeField(auto_now=True)
     reviewer_notes = models.TextField(blank=True, null=True)
+    requestor_notes = models.TextField(blank=True, null=True)
+    request_status = models.ForeignKey(RequestStatus, on_delete=models.CASCADE,
+                                       default=RequestStatus.get_default_status)
     user = models.ForeignKey(User_Account, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -93,7 +111,6 @@ class Request_Supply(models.Model):
     req_supply_qty = models.IntegerField()
     req_unit_measure = models.CharField(max_length=10, null=True, blank=True)
     supply = models.ForeignKey(Supply, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True, null=True)
     req_status = models.ForeignKey(RequisitionStatus, on_delete=models.CASCADE,
                                    default=RequisitionStatus.get_default_status)
     req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
@@ -107,7 +124,6 @@ class Request_Assets(models.Model):
     req_asset_id = models.IntegerField(primary_key=True, default=default_req_asset_id)
     req_asset_qty = models.IntegerField()
     asset = models.ForeignKey(Assets, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True, null=True)
     req_status = models.ForeignKey(RequisitionStatus, on_delete=models.CASCADE,
                                    default=RequisitionStatus.get_default_status)
     req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
