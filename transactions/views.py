@@ -3,6 +3,7 @@ import json
 from bootstrap_modal_forms.generic import BSModalUpdateView
 from django.contrib import messages
 from django.core.serializers import serialize
+from django.db.models import F
 from django.db.models.functions import TruncDate
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -16,7 +17,29 @@ from management.views import user_already_logged_in
 from transactions.forms import RequestSupplyForm, RequestAssetsForm, RequestJobForm, PurchaseOrderForm, \
     DeliveryOrderForm, SupplyForm, AssetForm, RequisitionNoteForm, MyRequestForm
 from transactions.models import Requisition, Request_Assets, Request_Supply, RequisitionStatus, RequestType, Job_Order, \
-    Purchase_Order, Delivery, RequestStatus
+    Purchase_Order, Delivery, RequestStatus, DeliverySupply, DeliveryAsset
+
+
+def staff_required(function):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.session.get('session_user_type') == 1:
+            raise Http404("You are not allowed to access this page.")
+        if not user_already_logged_in(request):
+            return redirect('login')
+        return function(request, *args, **kwargs)
+
+    return _wrapped_view
+
+
+def admin_required(function):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.session.get('session_user_type') == 0:
+            raise Http404("You are not allowed to access this page.")
+        if not user_already_logged_in(request):
+            return redirect('login')
+        return function(request, *args, **kwargs)
+
+    return _wrapped_view
 
 
 # ---------- ADMIN REQUISITION SECTION ------------ #
@@ -60,6 +83,7 @@ def admin_transaction_requests_function(request):
     else:
         raise Http404("You are not allowed to access this page.")
 
+
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
 def get_requisition_info(request, pk, supply_description):
     global current_onhand_stock, req_qty, request_statuses, item_name
@@ -99,7 +123,7 @@ def get_requisition_info(request, pk, supply_description):
                     # Include only 'Pending' and 'In Process' statuses when stock is insufficient
                     request_statuses = RequisitionStatus.objects.filter(
                         name__in=['In Process', 'Pending', 'Declined']).values(
-                'id', 'name')
+                        'id', 'name')
 
         if req_status == 'Approved':
             request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
@@ -116,9 +140,9 @@ def get_requisition_info(request, pk, supply_description):
 
     return JsonResponse(data)
 
+
 # ADD NOTE BUTTON ENDPOINT
 def update_note(request, req_id):
-
     if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
     try:
@@ -136,6 +160,7 @@ def update_note(request, req_id):
         messages.error(request, 'Error updating note!')
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
+
 def updateJoborder(request, req_id):
     if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
@@ -146,16 +171,20 @@ def updateJoborder(request, req_id):
 
         if job_order_status == 'Approved':
             messages.warning(request, 'Cannot update job order. Job order is already approved.')
-            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
         elif job_order_status == 'Done':
             messages.warning(request, 'Cannot update job order. Job order is already completed.')
-            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
         elif job_order_status == 'Declined':
             messages.warning(request, 'Cannot update job order. Job order is already declined.')
-            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
         elif job_order_status == 'Cancelled':
             messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
-            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
 
         req = get_object_or_404(Job_Order, req_id=req_id)
         req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
@@ -256,14 +285,12 @@ def post_requisition_info(request, req_id):
         else:
             message_context = "Request updated successfully!"
 
-
         # Check if there are any changes made
         if req_form.req_status_id == int(
                 request.POST.get('req_status')) and req_form.job_start_date == request.POST.get(
             'job_order_start') and req_form.job_end_date == request.POST.get(
             'job_order_end') and req_form.worker_count == request.POST.get('worker_count'):
             message_context = "No Changes were made"
-
 
         # Updating and Saving the current request fields
         req_form.req_status_id = request.POST.get('req_status')
@@ -293,7 +320,6 @@ def release_items(request, req_id):
                 return JsonResponse(
                     {'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
 
-
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
 
@@ -307,13 +333,14 @@ def release_items(request, req_id):
                         approved_items.append(item)
                     elif item.req_status.name in ['Declined', 'Cancelled']:
                         declined_items.append(item)
-                    elif item.req_status.name in ['Pending','In Process']:
+                    elif item.req_status.name in ['Pending', 'In Process']:
                         pending_items.append(item)
 
                 if pending_items:
                     messages.warning(request, 'Cannot release items. Some items are still pending')
                     return JsonResponse(
-                        {'status': 'error', 'message': 'Cannot release items. Some items are still pending / in process.'})
+                        {'status': 'error',
+                         'message': 'Cannot release items. Some items are still pending / in process.'})
 
                 if not approved_items:
                     messages.warning(request, 'Cannot release items. No approved items.')
@@ -322,7 +349,6 @@ def release_items(request, req_id):
                     return JsonResponse(
                         {'status': 'error', 'message': 'Cannot release items. No approved items.'})
 
-                
                 # Update the approved items
                 for item in approved_items:
                     current_stock = get_object_or_404(Supply, supply_id=item.supply.supply_id)
@@ -350,12 +376,13 @@ def release_items(request, req_id):
                         approved_items.append(item)
                     elif item.req_status.name in ['Declined', 'Cancelled']:
                         declined_items.append(item)
-                    elif item.req_status.name in ['Pending','In Process']:
+                    elif item.req_status.name in ['Pending', 'In Process']:
                         pending_items.append(item)
 
                 if pending_items:
                     messages.warning(request, 'Cannot release items. Some items are still pending.')
-                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Some items are still pending.'})
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot release items. Some items are still pending.'})
 
                 if not approved_items:
                     messages.warning(request, 'Cannot release items. No approved request items yet.')
@@ -363,7 +390,6 @@ def release_items(request, req_id):
                     requisition.save()
                     return JsonResponse(
                         {'status': 'error', 'message': 'Cannot release items. No approved items.'})
-
 
                 # Perform actions for approved items
                 for item in approved_items:
@@ -466,28 +492,28 @@ def request_item_end_point(request, req_id):
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
-    # Get supply_id and req_id from request
-    supply_id = request.GET.get('supply_id')
-    req_id = request.GET.get('req_id')
+    purchase = Purchase_Order.objects.all().order_by('-purch_id')
+    purchase_data = []
 
-    # Create forms
-    purchase_form = PurchaseOrderForm()
-    delivery_form = DeliveryOrderForm()
-    supply_form = SupplyForm()
-    asset_form = AssetForm()
-
-    # Prepare context for rendering
-    context = {
-        'purchase_form': purchase_form,
-        'supply_form': supply_form,
-        'asset_form': asset_form,
-        'delivery_form': delivery_form,
-        'supply_id': supply_id,
-        'req_id': req_id
-    }
+    for purchase_item in purchase:
+        purchase_id = purchase_item.purch_id
+        purchase_date = purchase_item.purch_date.strftime('%Y-%m-%d') if purchase_item.purch_date else "None"
+        purchase_status = purchase_item.get_purch_status_display()
+        req_id = purchase_item.req_id
+        requisition = Requisition.objects.get(req_id=req_id)
+        requestor = requisition.user
+        requestor_name = requestor.user_first_name + " " + requestor.user_last_name
+        description = requisition.req_description
+        purchase_data.append({
+            'purchase_description': description,
+            'purchase_id': purchase_id,
+            'purchase_date': purchase_date,
+            'purchase_status': purchase_status,
+            'requestor': requestor_name,
+        })
 
     # Render the purchase view with the context
-    return render(request, 'purchase/user_admin/purchase_view.html', context)
+    return render(request, 'purchase/user_admin/purchase_view.html', {'purchases': purchase_data})
 
 
 # ---------- STAFF REQUISITION SECTION ------------ #
@@ -512,7 +538,6 @@ def staff_requisition_table(request):
             'date_added': date_added,
             'req_status': req_status,
         })
-
 
     return render(request, 'request/user_staff/request_table.html', {'requisitions': requisition_data})
 
@@ -833,7 +858,6 @@ def post_requisition_info_staff(request, req_id):
         elif req_type == "Job Order":
             req_form = get_object_or_404(Job_Order, req_id=req_id)
 
-
         if select_status == 'Pending':
             print("Pending")
         current_status = req_form.req_status
@@ -1118,7 +1142,6 @@ def get_supplier_offers(request, supplier_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-
 # ---------- ADMIN DELIVERY SECTION ------------ #
 class DeliveryIndexView(ListView):
     model = Delivery
@@ -1154,3 +1177,222 @@ class DeliveryUpdateView(BSModalUpdateView):
 
 def delivery_items(request):
     return render(request, 'delivery/user_admin/delivery_items.html')
+
+
+def purchase_requisition_function(request):
+    return render(request, 'purchase/user_admin/generate_purchase.html')
+
+
+@admin_required
+def generate_purchase_requisition(request, req_id):
+    try:
+        requisition = get_object_or_404(Requisition, req_id=req_id)
+        requisition_type = requisition.req_type.name
+        requestor = requisition.user
+        date_requested = requisition.req_date.strftime('%Y-%m-%d') if requisition.req_date else "None"
+
+        requisition = {
+            'req_id': req_id,
+            'req_type': requisition_type,
+            'req_description': requisition.req_description,
+            'req_date': date_requested,
+            'requestor': requestor,
+        }
+        supplier_data = Supplier.objects.all()
+        req_items = None
+        if requisition_type == 'Supply':
+            supply_data = Request_Supply.objects.filter(req_id=req_id)
+
+            req_items = []
+            for supply in supply_data:
+                supply_on_hand = supply.supply.supply_on_hand
+                request_quantity = supply.req_supply_qty
+
+                if request_quantity >= supply_on_hand:
+                    req_items.append({
+                        'reqs_id': supply.supply.supply_id,
+                        'description': supply.supply.supply_description,
+                        'quantity': supply.req_supply_qty,
+                        'unit': supply.req_unit_measure,
+                        'req_status': supply.req_status,
+                    })
+            print(req_items)
+        elif requisition_type == 'Asset':
+            asset_data = Request_Assets.objects.filter(req_id=req_id)
+            req_items = []
+            for asset in asset_data:
+                on_hand = asset.asset.asset_on_hand
+                request_quantity = asset.req_asset_qty
+                if request_quantity >= on_hand:
+                    req_items.append({
+                        'reqs_id': asset.asset_id,
+                        'description': asset.asset.asset_description,
+                        'quantity': asset.req_asset_qty,
+                        'req_status': asset.req_status
+                    })
+        elif requisition_type == 'Job Order':
+            raise Http404("Job Order is not applicable for this action.")
+
+    except Requisition.DoesNotExist:
+        raise Http404("Requisition does not exist.")
+
+    return render(request, 'purchase/user_admin/generate_purchase.html',
+                  {'supplier_data': supplier_data, 'requisition': requisition, 'req_items': req_items})
+
+
+@admin_required
+def create_purchase_requisition(request, req_id, supplier_id):
+    try:
+        # check if the requisition exists
+
+        requisition = get_object_or_404(Requisition, req_id=req_id)
+        supplier = get_object_or_404(Supplier, supplier_id=supplier_id)
+        if requisition and supplier:
+            purchase_order = Purchase_Order.objects.create(
+                req_id=requisition.req_id,
+                supplier=supplier,
+            )
+            print(purchase_order)
+            messages.success(request, 'Purchase order created successfully!')
+            return JsonResponse({'success': True})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False, 'error_message': str(e)})
+
+
+@admin_required
+def purchase_order_function(request, purch_id):
+    try:
+        purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
+        purchase_order_id = purchase_order.purch_id
+        purchase_order_date = purchase_order.purch_date.strftime('%Y-%m-%d') if purchase_order.purch_date else "None"
+        purchase_order_status = purchase_order.get_purch_status_display()
+        req_id = purchase_order.req_id
+        requisition = Requisition.objects.get(req_id=req_id)
+        requestor = requisition.user
+        requestor_name = requestor.user_first_name + " " + requestor.user_last_name
+        description = requisition.req_description
+        requisition_type = requisition.req_type.name
+        supplier = purchase_order.supplier
+
+        req_items = None
+        item_status = False
+        if requisition_type == 'Supply':
+            supply_data = Request_Supply.objects.filter(req_id=req_id)
+
+            req_items = []
+            for supply in supply_data:
+                supply_on_hand = supply.supply.supply_on_hand
+                request_quantity = supply.req_supply_qty
+
+                if request_quantity >= supply_on_hand:
+                    item_status = True
+                    req_items.append({
+                        'reqs_id': supply.req_supply_id,
+                        'description': supply.supply.supply_description,
+                        'quantity': supply.req_supply_qty,
+                        'unit': supply.req_unit_measure,
+                        'req_status': supply.req_status,
+                    })
+            print(req_items)
+        elif requisition_type == 'Asset':
+            asset_data = Request_Assets.objects.filter(req_id=req_id)
+            req_items = []
+            for asset in asset_data:
+                on_hand = asset.asset.asset_on_hand
+                request_quantity = asset.req_asset_qty
+                if request_quantity >= on_hand:
+                    item_status = True
+                    req_items.append({
+                        'reqs_id': asset.req_asset_id,
+                        'description': asset.asset.asset_description,
+                        'quantity': asset.req_asset_qty,
+                        'req_status': asset.req_status,
+                    })
+        elif requisition_type == 'Job Order':
+            raise Http404("Job Order is not applicable for this action.")
+
+        purchase_order_data = {
+            'purchase_description': description,
+            'purchase_id': purchase_order_id,
+            'purchase_date': purchase_order_date,
+            'purchase_status': purchase_order_status,
+            'requestor': requestor_name,
+            'request_type': requisition_type,
+            'supplier': supplier,
+            'item_status': item_status,
+        }
+        return render(request, 'purchase/user_admin/purchase_table_data_view.html',
+                      {'purchase': purchase_order_data, 'req_items': req_items})
+    except Purchase_Order.DoesNotExist:
+        raise Http404("Purchase Order does not exist.")
+    except Requisition.DoesNotExist:
+        raise Http404("Requisition does not exist.")
+    except Exception as e:
+        print(e)
+        raise Http404("Error")
+
+
+def purchase_order_approved(request, purch_id):
+    try:
+        purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
+        purchase_order.purch_status = 3
+        purchase_order.save()
+
+        req_id = purchase_order.req_id
+        # get all the item to that request that is below the on hand
+        requisition = Requisition.objects.get(req_id=req_id)
+        requisition_type = requisition.req_type.name
+        user_id = request.session.get('session_user_id')
+        user = User_Account.objects.get(user_id=user_id)
+
+        if requisition_type == 'Supply':
+            supply_data = Request_Supply.objects.filter(req_id=req_id)
+
+            for supply in supply_data:
+                supply_on_hand = supply.supply.supply_on_hand
+                request_quantity = supply.req_supply_qty
+
+                if request_quantity >= supply_on_hand:
+                    # add it to delivery
+                    delivery = Delivery.objects.create(
+                        purch=purchase_order,
+                        delivery_status=1,
+                        order_receive_by=user
+                    )
+                    delivery.save()
+
+                    # add each item to delivery supply
+                    delivery_supply = DeliverySupply.objects.create(
+                        delivery=delivery,
+                        req_supply=supply,
+                    )
+                    delivery_supply.save()
+        elif requisition_type == 'Asset':
+            asset_data = Request_Assets.objects.filter(req_id=req_id)
+            for asset in asset_data:
+                on_hand = asset.asset.asset_on_hand
+                request_quantity = asset.req_asset_qty
+                if request_quantity >= on_hand:
+                    # add it to delivery
+                    delivery = Delivery.objects.create(
+                        purch=purchase_order,
+                        delivery_status=1,
+                        order_receive_by=1001
+                    )
+                    delivery.save()
+
+                    # add each item to delivery supply
+                    delivery_asset = DeliveryAsset.objects.create(
+                        delivery=delivery,
+                        req_asset=asset.req_asset_id
+                    )
+                    delivery_asset.save()
+
+        messages.success(request, 'Purchase order approved successfully!')
+        return JsonResponse({'success': True})
+    except Purchase_Order.DoesNotExist:
+        raise Http404("Purchase Order does not exist.")
+    except Exception as e:
+        print(e)
+        raise Http404("Error")

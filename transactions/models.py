@@ -152,8 +152,9 @@ class Job_Order(models.Model):
 class Purchase_Order(models.Model):
     purch_id = models.IntegerField(primary_key=True, default=default_purch_id)
     PURCHASE_STATUS_CHOICES = (
-        (1, 'In Process'),
-        (2, 'Done'),
+        (1, 'Pending'),
+        (2, 'Cancelled'),
+        (3, 'Approved')
     )
     purch_status = models.IntegerField(choices=PURCHASE_STATUS_CHOICES, default=1)
     purch_date = models.DateField(auto_now_add=True)
@@ -215,7 +216,7 @@ class DeliveryStatus(models.Model):
 
     @classmethod
     def get_default_status(cls):
-        return DeliveryStatus.objects.get(name='Pending')
+        return DeliveryStatus.objects.get(name='In Process')
 
     class Meta:
         db_table = "delivery_status"

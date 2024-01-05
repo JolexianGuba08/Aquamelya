@@ -1,0 +1,183 @@
+{% extends 'user_admin/admin_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Aquamelya | Generate Purchase Order{% endblock title %}
+
+{# Requisition Active #}
+{% block delivery %}
+    <a class="nav-link" href=""/>
+{% endblock delivery %}
+{% block content %}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    {% include 'acknowledgement/staff_delivery_modal.html' %}
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>GENERATE PURCHASE ORDER</h1>
+        </div>
+        <section>
+            <div class="col-lg-12" id="delivery" data-pk="{{ requisition.req_id }}">
+                {% csrf_token %}
+                <div class="card" id="right_section">
+                    <div class="card-body" id="right_body">
+                        <div class="row mt-4">
+                            <div class="col-md-3">
+                                <label class="form-label" style="font-weight: 600">Requestor's Name</label>
+                                <input type="text" class="form-control" value="{{ requisition.requestor }}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" style="font-weight: 600">Request Type</label>
+                                <input type="text" class="form-control" value="{{ requisition.req_type }}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" style="font-weight: 600">Date Requested</label>
+                                <input type="text" class="form-control" value="{{ requisition.req_date }}" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" style="font-weight: 600">Select Supplier</label>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle form-control" type="button"
+                                            id="supplierDropdown"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        Select Supplier
+                                    </button>
+                                    <ul class="dropdown-menu form-control" aria-labelledby="supplierDropdown">
+                                        <!-- Jinja loop to display suppliers with their IDs -->
+                                        {% if supplier_data %}
+                                            {% for supplier in supplier_data %}
+                                                <li><a class="dropdown-item" href="#"
+                                                       data-pk="{{ supplier.supplier_id }}">{{ supplier }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li><a class="dropdown-item text-center" href="#">No suppliers available</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <!-- Left column for Requested Items -->
+                            <div class="col-md-6">
+                                <h5 class="card-title">Requested Items</h5>
+                                <div class="table-responsive">
+                                    <!-- Table content remains unchanged -->
+                                </div>
+                            </div>
+                            <!-- Right column for Select Supplier -->
+                            <div class="col-md-6 text-md-end">
+
+                            </div>
+                        </div>
+
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Request Item</th>
+                                    <th scope="col">Quantity</th>
+                                    {% if requisition.req_type == 'Supply' %}
+                                        <th scope="col">Unit</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <!-- Loop through request items and quantities -->
+                                {% if req_items %}
+                                    {% for item in req_items %}
+                                        <tr data-pk="{{ item.reqs_id }}">
+                                            <td>{{ item.description }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            {% if requisition.req_type == 'Supply' %}
+                                                <td>{{ item.unit }}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="text-center" colspan="2">No items requested</td>
+                                    </tr>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-dark"
+                                        onclick="goBackrequest({{ requisition.req_id }})">Back
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+
+                                <button type="button" id="createPurchase" class="btn btn-primary ms-2">Create Purchase
+                                    Order
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script>
+        function goBackrequest(param) {
+            window.location.href = `/transactions/request_item_end_point/${param}`;
+        }
+
+        $(document).ready(function () {
+            const csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+            let selectedSupplierID; // Variable to store the selected supplier ID
+
+            // Add a click event listener to the dropdown items
+            $('.dropdown-item').on('click', function (event) {
+                event.preventDefault(); // Prevent default action
+
+                const selectedSupplier = $(this).text();
+                $('#supplierDropdown').text(selectedSupplier);
+                selectedSupplierID = $(this).data('pk');
+            });
+
+            $('#createPurchase').on('click', function () {
+                const requisitionID = $('#delivery').data('pk');
+
+                // Check if a supplier is selected
+                if (selectedSupplierID === undefined || isNaN(selectedSupplierID)) {
+                    alert('Please select a valid supplier');
+                    return;
+                }
+
+                // Send a POST request to create a purchase requisition
+                $.ajax({
+                    type: 'POST',
+                    url: `/transactions/create_purchase_requisition/req=${requisitionID}/supplier=${selectedSupplierID}`,
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log('Purchase Order created successfully');
+                            window.location.href = '/transactions/purchase/';
+                        } else {
+                            console.log('Error creating Purchase Order')
+                        }
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log('Error:', xhr.status + ": " + xhr.responseText);
+                        // Handle errors
+                    }
+                });
+            });
+        });
+
+    </script>
+
+{% endblock content %}
