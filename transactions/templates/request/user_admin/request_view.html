@@ -11,7 +11,7 @@
             <h3 style="font-weight: bold"> Transactions</h3>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Transactions</a></li>
+                    <li class="breadcrumb-item"><a href="#">Transactions</a></li>
                     <li class="breadcrumb-item active">Requests</li>
                 </ol>
             </nav>
@@ -27,12 +27,12 @@
                             <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
                                 <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
                                     <input type="text" id="search_input" name="query" class="form-control"
-                                           placeholder="Search"
-                                           title="Enter search keyword">
+                                           placeholder="Enter ID or Name to search"
+                                         >
                                 </div>
                                 <div class="col-md-2 mb-2" style="margin-right: 5px; ">
                                     <select class="form-select" id="request_type_filter">
-                                        <option selected value="all">Supplier Type: All</option>
+                                        <option selected value="all">Request Type:</option>
                                         <option value="Asset">Asset</option>
                                         <option value="Supply">Supply</option>
                                         <option value="Job Order">Job Order</option>
@@ -43,11 +43,9 @@
                                     <select class="form-select" id="request_status_filter">
                                         <option selected value="all">By Status: All</option>
                                         <option value="Pending">Pending</option>
-                                        <option value="In Process">In Process</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Declined">Declined</option>
-                                        <option value="Done">Done</option>
                                         <option value="Cancelled">Cancelled</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Incomplete">Incomplete</option>
                                     </select>
                                 </div>
                             </div>
@@ -62,118 +60,13 @@
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-        function fetchDataAndUpdateModal(pk) {
-            $.ajax({
-                url: `/transactions/get_data/${pk}/`,
-                method: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    $('#req_id').val(data.req_id);
-                    $('#req_type').val(data.req_type);
-                    $('#request_description').text(data.req_requestor);
-                    $('#req_date_last_mod').text(data.req_date_last_mod);
-                    $('#req_date_requested').text(data.req_date_requested);
-                    $('#req_notes').text(data.req_notes);
-                    $('#req_reviewer_notes').text(data.req_reviewer_notes);
-                    var reqId = String(data.req_id);
-                    // check if request is done then disable all the buttons and inputs, Then hiding the low stock message
-                    if (data.req_status === 'Done' || data.req_status === 'Cancelled' || data.req_status === 'Declined' || data.req_status === 'Approved') {
-                        $(' #textarea, #status_select, #request_submt_btn').prop('disabled', true);
-                        $('#low_stock_message').hide();
-                    }
-                    // default values will be set
-                    else {
-                        $('#textarea, #status_select, #request_submt_btn').prop('disabled', false);
-                        $('#low_stock_message').show();
-                    }
-
-                    // check stock is sufficient
-                    if (data.low_stock === true) {
-                        $('#low_stock_div').show();
-                        $('#low_stock_message').html("Warning: You have <a href='/transactions/purchase/?req_id=" + reqId + "'>insufficient stock</a> for this");
-
-
-                    } else {
-                        $('#low_stock_div').hide();
-                    }
-
-                    // Dropdown population
-                    var dropdown = $('#status_select');
-                    dropdown.empty();
-                    data.req_status_list.forEach(function (status) {
-                        var option = $('<option>', {
-                            value: status.id,
-                            text: status.name
-                        });
-
-                        // Check if the status ID matches the current req_status
-                        if (status.name === data.req_status) {
-                            option.attr('selected', 'selected');
-                        }
-                        dropdown.append(option);
-                    });
-
-                    // for job order request
-                    if (data.req_type === 'Job Order') {
-                        $('#job_order_start').val(data.job_start_date);
-                        $('#job_order_end').val(data.job_end_date);
-                        $('#worker_count').val(data.worker_count);
-                        $('#job_order_div').show();
-                    } else {
-                        $('#job_order_div').hide();
-                    }
-
-                    $('#myModal').modal('show');
-                },
-                error: function () {
-                    console.error('Error fetching data');
-                }
-            });
-        }
-
-        function updateData(req_id) {
-            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-            var req_type = $('#req_type').val()
-            var postData = {
-                req_reviewer_notes: $('#req_reviewer_notes').val(),
-                req_status: $('#status_select').val(),
-                req_type: req_type,
-            };
-
-            if (req_type === 'Job Order') {
-                postData.job_order_start = $('#job_order_start').val();
-                postData.job_order_end = $('#job_order_end').val();
-                postData.worker_count = $('#worker_count').val();
-            }
-
-            $.ajax({
-                url: `/transactions/post_data/${req_id}/`,
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrf_token
-                },
-                data: postData,
-                success: function (response) {
-                    if (response.status === 'success') {
-                        console.log(postData)
-                        console.log(response.status);
-                        window.location.reload();
-                    } else {
-                        console.error('Error updating data');
-                        window.location.reload();
-                    }
-                },
-            });
-        }
-
-
         $(document).ready(function () {
 
             $('#job_order_div').hide();
             $('#low_stock_div').hide();
             $('#requisition_table tbody').on('click', 'tr', function () {
                 const pk = $(this).data('pk');
-                fetchDataAndUpdateModal(pk);
+                window.location.href = '/transactions/request_item_end_point/' + pk + '/';
             });
             $('#req_id').on('submit', function (e) {
                 e.preventDefault();
@@ -184,34 +77,33 @@
             // Handle dropdown change events for both type and status filters
             // and input event for search
             $('#request_type_filter, #request_status_filter, #search_input').on('change input', function () {
-                // Get the selected values for both filters
-                selectedType = $('#request_type_filter').val();
-                selectedStatus = $('#request_status_filter').val();
+            // Get the selected values for both filters
+            var selectedType = $('#request_type_filter').val();
+            var selectedStatus = $('#request_status_filter').val();
 
-                // Get the search query
-                var query = $('#search_input').val().toLowerCase();
+            console.log(selectedType, selectedStatus)
+            // Get the search query
+            var query = $('#search_input').val().toLowerCase();
 
-                // Show/hide rows based on the selected type, status, and search query
-                $('#requisition_table tbody tr').each(function () {
-                    var rowType = $(this).data('type');
-                    var rowStatus = $(this).data('status');
-                    var rowName = $(this).data('name').toLowerCase();
+            // Show/hide rows based on the selected type, status, and search query
+            $('#requisition_table tbody tr').each(function () {
+                var rowType = $(this).data('type');
+                var rowStatus = $(this).data('status');
+                var rowName = $(this).data('name').toLowerCase();
+                var rowPk = $(this).data('pk').toString().toLowerCase();
 
-                    // If the selected type is 'all' or matches the row's type,
-                    // and the selected status is 'all' or matches the row's status,
-                    // and the row's name includes the search query or the query is empty, show it
-                    if ((selectedType === 'all' || rowType === selectedType) &&
-                        (selectedStatus === 'all' || rowStatus === selectedStatus) &&
-                        (rowName.includes(query) || query === '')) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
+                if ((selectedType === 'all' || rowType === selectedType) &&
+                    (selectedStatus === 'all' || rowStatus === selectedStatus) &&
+                    (rowName.includes(query) || rowPk.includes(query) || query === '')) {
+                    $(this).show();
+
+                } else {
+                    $(this).hide();
+                }
             });
-
         });
 
+        });
     </script>
     <!-- End #main -->
 {% endblock %}

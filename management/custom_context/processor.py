@@ -19,6 +19,8 @@ def get_user_info(request):
                 'fullname': f"{user.user_first_name} {middle_initial} {user.user_last_name}".upper(),
                 'profile_picture': user.user_profile_pic,
                 'first_name': user.user_first_name.upper(),
+                'last_name': user.user_last_name.upper(),
+                'middle_name': user.user_middle_name,
                 'user_id': user.user_id,
                 'user_type': usr_type,
                 'user_email': user.user_email,

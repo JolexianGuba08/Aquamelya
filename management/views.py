@@ -1,16 +1,21 @@
+import bcrypt
 from bootstrap_modal_forms.generic import (
     BSModalCreateView,
     BSModalUpdateView,
 )
-
+import cloudinary.uploader
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic, View
+from django.views.decorators.http import require_POST
 
+from Aquamelya import settings
 from transactions.models import Request_Supply, Job_Order, Request_Assets
+from .custom_context.processor import get_user_info
 from .forms import *
 from .models import Supplier, SupplierStatus, User_Account
 from datetime import datetime, timedelta
@@ -208,7 +213,8 @@ def admin_profile_function(request):
         return redirect('login')
     user_type = request.session['session_user_type']
     if user_type == 0:
-        staff_profile_edit = StaffProfileEdit()
+        context_data = get_user_info(request)
+        staff_profile_edit = StaffProfileEdit(user_info=context_data)
         staff_change_password = StaffChangePasswordForm()
         return render(request, 'user_staff/staff_profile.html',
                       {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
@@ -338,3 +344,161 @@ def fetch_default_data():
         'Assets': assets_count,
         'Job Orders': job_orders_count
     }
+
+
+def upload_to_cloudinary(file):
+    folder = settings.CLOUDINARY_STORAGE.get('FOLDER', None)
+
+    upload_options = {
+        'api_key': settings.CLOUDINARY_STORAGE['API_KEY'],
+        'api_secret': settings.CLOUDINARY_STORAGE['API_SECRET'],
+        'cloud_name': settings.CLOUDINARY_STORAGE['CLOUD_NAME'],
+        'folder': folder,
+    }
+
+    cloudinary_response = cloudinary.uploader.upload(file, **upload_options)
+    print(cloudinary_response['url'])
+    if cloudinary_response:
+        return cloudinary_response['url']
+    else:
+        return None
+
+
+# Edit Profile Section
+def staff_profile_edit(request):
+    if not user_already_logged_in(request):
+        return redirect('login')
+    if request.method == 'POST':
+        user_id = request.session.get('session_user_id')
+        if not user_id:
+            messages.error(request, 'User ID not found.')
+            return JsonResponse({'success': False, 'error': 'User ID not found.'})
+
+        try:
+            user = User_Account.objects.get(user_id=user_id)
+
+            staff_fname = request.POST.get('staff_fname')
+            staff_mname = request.POST.get('staff_mname')
+            staff_lname = request.POST.get('staff_lname')
+            staff_birthdate = request.POST.get('staff_birthdate')
+            staff_picture = request.FILES.get('profile_pic')
+
+            if user.user_first_name and not staff_fname:
+                messages.warning(request, 'First name is required.')
+                return JsonResponse({'success': False, 'error': 'First name is required.'})
+            if user.user_middle_name and not staff_mname:
+                messages.warning(request, 'Middle name is required.')
+                return JsonResponse({'success': False, 'error': 'Middle name is required.'})
+            if user.user_last_name and not staff_lname:
+                messages.warning(request, 'Last name is required.')
+                return JsonResponse({'success': False, 'error': 'Last name is required.'})
+
+            # Keep track of changes
+            changes = {}
+
+            # Update user data if there are changes
+            if staff_fname != user.user_first_name:
+                user.user_first_name = staff_fname
+                changes['user_first_name'] = staff_fname
+            if staff_mname != user.user_middle_name:
+                user.user_middle_name = staff_mname
+                changes['user_middle_name'] = staff_mname
+            if staff_lname != user.user_last_name:
+                user.user_last_name = staff_lname
+                changes['user_last_name'] = staff_lname
+            if staff_birthdate != user.user_birthdate.strftime('%Y-%m-%d'):
+                user.user_birthdate = staff_birthdate
+                changes['user_birthdate'] = staff_birthdate
+            if staff_picture:
+                # Upload profile picture to Cloudinary
+                profile_pic_url = upload_to_cloudinary(staff_picture)
+                if profile_pic_url:
+                    user.user_profile_pic = profile_pic_url
+                    changes['user_profile_pic'] = profile_pic_url
+                else:
+                    messages.error(request, 'Error uploading profile picture to Cloudinary.')
+                    return JsonResponse({'success': False, 'error': 'Error uploading profile picture to Cloudinary.'})
+
+            if changes:
+                user.save()
+                messages.success(request, 'Profile successfully updated.')
+                return JsonResponse({'success': True, 'changes_made': True, 'changes': changes})
+            else:
+                messages.info(request, 'Data remains the same. No changes made.')
+                return JsonResponse({'success': True, 'changes_made': False})
+
+        except User_Account.DoesNotExist:
+            messages.error(request, 'User account does not exist.')
+            return JsonResponse({'success': False, 'error': 'User account does not exist.'})
+        except Exception as e:
+            messages.error(request, f'Error updating profile: {str(e)}')
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    else:
+        # Handle other HTTP methods if needed
+        messages.error(request, 'Invalid request method.')
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+
+@require_POST
+def check_password(request):
+    try:
+        user_id = request.session.get('session_user_id')
+        password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        print(new_password)
+        print(confirm_password)
+        print(password)
+        acc_id = int(user_id)
+        print('Check password')
+        # Retrieve the account using the user_id
+        account = User_Account.objects.get(user_id=acc_id)
+
+        if account and check_password_change(password, account.user_password):
+            return JsonResponse({'success': True, 'message': 'Password matched successfully'})
+        else:
+            return JsonResponse({'success': False, 'error': 'Password does not match'})
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False, 'error': 'User account not found'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 'Invalid request'})
+
+
+def check_password_change(input_password, user_password):
+    # Assuming input_password is the password entered by a user
+    input_password_bytes = input_password.encode('utf-8')  # Convert the input password to bytes
+    stored_password_bytes = user_password.encode('utf-8')  # Convert the stored password to bytes
+    print(bcrypt.checkpw(input_password_bytes, stored_password_bytes))
+    return bcrypt.checkpw(input_password_bytes, stored_password_bytes)
+
+
+@require_POST
+def change_password(request):
+    try:
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        print('New: ', new_password)
+        if not new_password or new_password != confirm_password:
+            return JsonResponse({'success': False, 'errors': 'Passwords do not match or empty'})
+
+        session_user_id = int(request.session.get('session_user_id'))
+        account = User_Account.objects.get(user_id=session_user_id)
+
+        account.user_password = new_password
+
+        try:
+            # Validate that the new password is not empty or null
+            account.full_clean()
+        except ValidationError as e:
+            return JsonResponse({'success': False, 'errors': e.message_dict})
+
+        account.save()
+        messages.success(request, 'Password successfully changed.')
+        return JsonResponse({'success': True})
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False, 'error': 'User account not found'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 'Invalid request'})

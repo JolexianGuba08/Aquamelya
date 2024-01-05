@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django import forms
 from management.models import Supplier, SupplierStatus
 from bootstrap_modal_forms.forms import BSModalModelForm
@@ -20,46 +20,64 @@ class UserForm(forms.Form):
 class StaffProfileEdit(forms.Form):
     staff_fname = forms.CharField(
         label='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'form_edit', 'value': 'Gianni Dylan'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_staff_fname'})
     )
 
     staff_mname = forms.CharField(
         label='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'form_edit', 'value': 'Icot'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_staff_mname'})
     )
 
     staff_lname = forms.CharField(
         label='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'form_edit', 'value': 'Cabahug'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_staff_lname'})
     )
 
-    staff_birthdate = forms.DateField(
-        label='',
-        widget=forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control', 'id': 'forms_edit'}),
-        initial='2002-10-11'
-    )
-
-    staff_email = forms.EmailField(
-        label='',
-        widget=forms.EmailInput(
-            attrs={'class': 'form-control', 'id': 'form_edit', 'value': 'giannidylan.cabahug@ctu.edu.ph'})
-    )
+    def __init__(self, *args, **kwargs):
+        user_info = kwargs.pop('user_info')
+        super(StaffProfileEdit, self).__init__(*args, **kwargs)
+        if user_info:
+            self.fields['staff_fname'].widget.attrs['value'] = user_info.get('first_name', '')
+            self.fields['staff_mname'].widget.attrs['value'] = user_info.get('middle_name', '')
+            self.fields['staff_lname'].widget.attrs['value'] = user_info.get('last_name', '')
+            self.fields['staff_birthdate'] = forms.DateField(
+                label='',
+                widget=forms.widgets.DateInput(
+                    attrs={
+                        'type': 'date',
+                        'class': 'form-control',
+                        'id': 'id_staff_birthdate',
+                        'max': (datetime.now() - timedelta(days=(17 * 365))).strftime('%Y-%m-%d')
+                    }
+                )
+            )
+            self.fields['staff_birthdate'].widget.attrs['value'] = user_info.get('user_birthdate', '')
 
 
 class StaffChangePasswordForm(forms.Form):
     staff_current_password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'form_edit', 'disabled': True})
+
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'id': 'old_password',
+            'name': 'old_password'})
     )
 
     staff_new_password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'form_edit'})
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'id': 'new_password',
+            'name': 'new_password'})
     )
 
     staff_confirm_password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'form_edit'})
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'id': 'confirm_password',
+            'name': 'confirm_password'})
     )
 
 

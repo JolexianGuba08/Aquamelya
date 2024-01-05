@@ -29,5 +29,7 @@ urlpatterns = [
     # -------------------- STAFF SECTION ------------------
     # path('staff-requisition/', views.staff_requisition_view, name='staff_requisition_url'),
     path('reports_data/', views.reports_data, name='reports_data'),
-
+    path('staff_profile_edit/', views.staff_profile_edit, name='staff_profile_edit'),
+    path('check_old_password/', views.check_password, name='check_password'),
+    path('change_password/', views.change_password, name='staff_change_password'),
 ]

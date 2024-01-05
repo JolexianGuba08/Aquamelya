@@ -16,13 +16,22 @@ class RequisitionForm(forms.ModelForm):
 class RequestSupplyForm(forms.ModelForm):
     supply = forms.ModelChoiceField(
         queryset=Supply.objects.filter(supply_status=1),
-        empty_label='Select', required=True)
+        empty_label='Select',
+        required=True,
+    )
+
     req_supply_qty = forms.IntegerField(
         validators=[MinValueValidator(1)])
 
     class Meta:
         model = Request_Supply
-        fields = ['req_supply_qty', 'supply', 'notes']
+        fields = ['req_supply_qty', 'supply']
+
+
+class RequisitionNoteForm(forms.ModelForm):
+    class Meta:
+        model = Requisition
+        fields = ['requestor_notes']
 
 
 class RequestAssetsForm(forms.ModelForm):
@@ -34,7 +43,7 @@ class RequestAssetsForm(forms.ModelForm):
 
     class Meta:
         model = Request_Assets
-        fields = ['req_asset_qty', 'asset', 'notes']
+        fields = ['req_asset_qty', 'asset']
 
 
 class RequestJobForm(forms.ModelForm):
@@ -58,7 +67,7 @@ class PurchaseOrderForm(forms.ModelForm):
 
     class Meta:
         model = Purchase_Order
-        fields = ['req', 'supplier', 'purch_item_type', 'purch_item_name', 'purch_requestor', 'purch_qty']
+        fields = ['req', 'supplier']
 
 
 class DeliveryOrderForm(forms.ModelForm):
@@ -93,3 +102,9 @@ class AssetForm(forms.ModelForm):
     class Meta:
         model = Assets
         fields = ['asset_description']
+
+
+class MyRequestForm(forms.ModelForm):
+    class Meta:
+        model = Requisition
+        fields = ['requestor_notes']

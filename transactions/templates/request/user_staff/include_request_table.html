@@ -1,43 +1,21 @@
 <table class="table table-hover" id="staff_requisition_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center text-uppercase">Type</th>
-        <th scope="col" class="remove_tbl text-center text-uppercase">Request Item</th>
-        <th scope="col" class="remove_tbl text-center text-uppercase">Hired Worker</th>
-        <th scope="col" class="text-center text-uppercase">Status</th>
-        <th scope="col" class="text-center text-uppercase"></th>
+        <th scope="col" class="text-center">Type</th>
+        <th scope="col" class="text-center">Date</th>
+        <th scope="col" class="text-center">Status</th>
     </tr>
     </thead>
     <tbody class="text-center">
     {% if requisitions %}
         {% for requisition in requisitions %}
             <tr data-pk="{{ requisition.req_id }}">
-                <th class="text-center align-middle">{{ requisition.req_type }}</th>
-                <td class="remove_tbl text-center align-middle">{{ requisition.req_item }}</td>
-                <td class="remove_tbl text-center align-middle">
-                    {{ requisition.req_quantity }}
-                    {% if requisition.req_type == 'Job Order' %}
-                        {% if requisition.req_quantity > 1 %} (persons)
-                        {% else %}(person){% endif %}
-                    {% elif requisition.req_type == 'Asset' %}
-                        {% if requisition.req_quantity > 1 %}  <span>(items)</span>
-                        {% else %}(item){% endif %}
-                    {% endif %}
-                </td>
+                <td class="text-center align-middle">{{ requisition.req_type }}</td>
+                <td class="text-center align-middle">{{ requisition.date_added }}</td>
                 <td class="text-center align-middle">
-                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 80px">{{ requisition.req_status }}</span>
+                    <span class="badge bg-success">{{ requisition.req_status }}</span>
                 </td>
-                <td class="text-center align-middle">
-                    {% if requisition.req_status|lower == 'cancelled' %}
-                        <button class="cancel-request btn btn-danger" style="padding: 10px; width: 80px" disabled>
-                            CANCELLED
-                        </button>
-                    {% else %}
-                        <button class="cancel-request btn btn-danger" data-pk="{{ requisition.req_id }}">
-                            CANCEL
-                        </button>
-                    {% endif %}
-                </td>
+
             </tr>
         {% endfor %}
     {% else %}
@@ -47,4 +25,3 @@
     {% endif %}
     </tbody>
 </table>
-

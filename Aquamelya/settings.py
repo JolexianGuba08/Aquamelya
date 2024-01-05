@@ -81,23 +81,23 @@ WSGI_APPLICATION = 'Aquamelya.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "def0q1kcon4vdu",
-        "USER": "dyxoexaqolgpch",
-        "PASSWORD": "2a9fa421f72f179ad80b43c8abaaef121be76483344285899f38af569bfec5b8",
-        "HOST": "ec2-54-164-138-85.compute-1.amazonaws.com",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "def0q1kcon4vdu",
+#         "USER": "dyxoexaqolgpch",
+#         "PASSWORD": "2a9fa421f72f179ad80b43c8abaaef121be76483344285899f38af569bfec5b8",
+#         "HOST": "ec2-54-164-138-85.compute-1.amazonaws.com",
+#         "PORT": "5432",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -139,3 +139,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'duku3q6xf',
+    'API_KEY': '115844867368111',
+    'API_SECRET': 'h6ouKH9XFwrHR1alaf4qta1tpiU',
+    'FOLDER': 'Aquamelya',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

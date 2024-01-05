@@ -59,6 +59,21 @@ class RequisitionStatus(models.Model):
         verbose_name = "Requisition Status"
 
 
+class RequestStatus(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default_status(cls):
+        return RequestStatus.objects.get(name='Pending')
+
+    class Meta:
+        db_table = "request_status"
+        verbose_name = "Request Status"
+
+
 class RequestType(models.Model):
     name = models.CharField(max_length=15, unique=True)
 
@@ -78,6 +93,9 @@ class Requisition(models.Model):
     req_reviewed_by = models.CharField(max_length=50, default='Admin')
     req_reviewed_date = models.DateTimeField(auto_now=True)
     reviewer_notes = models.TextField(blank=True, null=True)
+    requestor_notes = models.TextField(blank=True, null=True)
+    request_status = models.ForeignKey(RequestStatus, on_delete=models.CASCADE,
+                                       default=RequestStatus.get_default_status)
     user = models.ForeignKey(User_Account, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -91,9 +109,8 @@ class Requisition(models.Model):
 class Request_Supply(models.Model):
     req_supply_id = models.IntegerField(primary_key=True, default=default_req_supply_id)
     req_supply_qty = models.IntegerField()
-    req_unit_measure = models.CharField(max_length=10, null=True, blank=True)
+    req_unit_measure = models.CharField(max_length=20, null=True, blank=True)
     supply = models.ForeignKey(Supply, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True, null=True)
     req_status = models.ForeignKey(RequisitionStatus, on_delete=models.CASCADE,
                                    default=RequisitionStatus.get_default_status)
     req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
@@ -107,7 +124,6 @@ class Request_Assets(models.Model):
     req_asset_id = models.IntegerField(primary_key=True, default=default_req_asset_id)
     req_asset_qty = models.IntegerField()
     asset = models.ForeignKey(Assets, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True, null=True)
     req_status = models.ForeignKey(RequisitionStatus, on_delete=models.CASCADE,
                                    default=RequisitionStatus.get_default_status)
     req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
@@ -137,16 +153,12 @@ class Purchase_Order(models.Model):
     purch_id = models.IntegerField(primary_key=True, default=default_purch_id)
     PURCHASE_STATUS_CHOICES = (
         (1, 'Pending'),
-        (2, 'In Process'),
-        (3, 'Done')
+        (2, 'Cancelled'),
+        (3, 'Approved')
     )
     purch_status = models.IntegerField(choices=PURCHASE_STATUS_CHOICES, default=1)
     purch_date = models.DateField(auto_now_add=True)
     purch_date_modified = models.DateTimeField(auto_now=True)
-    purch_item_type = models.CharField(null=True, blank=True, max_length=10)
-    purch_item_name = models.CharField(null=True, blank=True, max_length=100)
-    purch_requestor = models.CharField(null=True, blank=True, max_length=100)
-    purch_qty = models.IntegerField(null=True, blank=True)
     req = models.ForeignKey(Requisition, on_delete=models.CASCADE, null=True, blank=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
@@ -162,10 +174,8 @@ class Delivery(models.Model):
         (2, 'Order Received'),
     )
     delivery_status = models.IntegerField(choices=DELIVERY_STATUS_CHOICES, default=1)
-    delivery_exp_date = models.DateField(null=True, blank=True)
     order_receive_by = models.ForeignKey(User_Account, on_delete=models.CASCADE)
     order_receive_date = models.DateTimeField(null=True, blank=True)
-    reference_id = models.IntegerField(null=True, blank=True)  # Check Reference ID
     purch = models.ForeignKey(Purchase_Order, on_delete=models.CASCADE)
 
     class Meta:
@@ -196,3 +206,44 @@ class Acknowledgement_Purch(models.Model):
     class Meta:
         db_table = 'acknowledgement_purch'
         verbose_name = 'Acknowledgement_Purch'
+
+
+class DeliveryStatus(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default_status(cls):
+        return DeliveryStatus.objects.get(name='In Process')
+
+    class Meta:
+        db_table = "delivery_status"
+        verbose_name = "Delivery Status"
+
+
+class DeliverySupply(models.Model):
+    del_item_id = models.AutoField(primary_key=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    del_status = models.ForeignKey(DeliveryStatus, on_delete=models.CASCADE, default=DeliveryStatus.get_default_status)
+    req_supply = models.ForeignKey(Request_Supply, on_delete=models.CASCADE)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'delivery_supply'
+        verbose_name = 'Delivery_Supply'
+
+
+class DeliveryAsset(models.Model):
+    del_item_id = models.AutoField(primary_key=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    del_status = models.ForeignKey(DeliveryStatus, on_delete=models.CASCADE, default=DeliveryStatus.get_default_status)
+    req_asset = models.ForeignKey(Request_Assets, on_delete=models.CASCADE)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'delivery_asset'
+        verbose_name = 'Delivery_Asset'
