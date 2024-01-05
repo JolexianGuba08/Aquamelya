@@ -293,7 +293,6 @@ def release_items(request, req_id):
                 return JsonResponse(
                     {'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
 
-
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
 
@@ -371,13 +370,12 @@ def release_items(request, req_id):
                     current_stock.asset_on_hand -= item.req_asset_qty
                     current_stock.save()
 
+                requisition.request_status = RequestStatus.objects.get(name='Completed')
+                requisition.save()
                 # Check if there are declined items
                 if declined_items:
-                    requisition.request_status = RequestStatus.objects.get(name='Completed')
-                    requisition.save()
                     messages.success(request, 'Items released successfully! Some items were declined or cancelled')
                     return JsonResponse({'status': 'success'})
-
 
             elif requisition_type == 'Job Order':
                 messages.warning(request, 'Cannot release items. Job orders are not applicable for this action.')

@@ -185,9 +185,8 @@
                 success: function (response) {
                     if (response.status === 'success') {
                         window.location.reload();
-                    } else {
+                    } else if (response.status === 'failed') {
                         window.location.reload();
-
 
                     }
                 },
