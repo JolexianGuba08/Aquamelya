@@ -14,7 +14,7 @@ from inventory.models import Supply, Assets
 from management.models import Supplier, User_Account
 from management.views import user_already_logged_in
 from transactions.forms import RequestSupplyForm, RequestAssetsForm, RequestJobForm, PurchaseOrderForm, \
-    DeliveryOrderForm, SupplyForm, AssetForm, RequisitionNoteForm
+    DeliveryOrderForm, SupplyForm, AssetForm, RequisitionNoteForm, MyRequestForm
 from transactions.models import Requisition, Request_Assets, Request_Supply, RequisitionStatus, RequestType, Job_Order, \
     Purchase_Order, Delivery, RequestStatus
 
@@ -357,41 +357,39 @@ def staff_requisition_table(request):
     user_id = request.session.get('session_user_id')
     requisition_queryset = Requisition.objects.filter(user_id=user_id).order_by('-req_id')
     for requisition in requisition_queryset:
-        req_item, req_unit_measure, req_notes, req_status, req_quantity, req_unit = "", "", "", "", "", ""
         req_id = requisition.req_id
         req_type = requisition.req_type.name
-        if req_type == 'Supply':
-            req_supply_form = Request_Supply.objects.filter(req_id_id=req_id).first()
-            if req_supply_form:
-                req_item = req_supply_form.supply
-                req_unit = req_supply_form.supply.supply_unit
-                req_quantity = req_supply_form.req_supply_qty
-                req_status = req_supply_form.req_status
-        elif req_type == 'Asset':
-            req_asset_form = Request_Assets.objects.filter(req_id=req_id).first()
-            if req_asset_form:
-                req_quantity = req_asset_form.req_asset_qty
-                req_item = req_asset_form.asset
-                req_status = req_asset_form.req_status
-        elif req_type == 'Job Order':
-            req_job_form = Job_Order.objects.filter(req_id=req_id).first()
-            if req_job_form:
-                req_quantity = req_job_form.worker_count
-                req_item = req_job_form.job_name
-                req_status = req_job_form.req_status
+        req_status = requisition.request_status.name
+        date_added = requisition.req_date.strftime('%Y-%m-%d') if requisition.req_date else "None"
 
+        #     if req_type == 'Supply':
+        #         req_supply_form = Request_Supply.objects.filter(req_id_id=req_id).first()
+        #         if req_supply_form:
+        #             req_item = req_supply_form.supply
+        #             req_unit = req_supply_form.supply.supply_unit
+        #             req_quantity = req_supply_form.req_supply_qty
+        #             req_status = req_supply_form.req_status
+        #     elif req_type == 'Asset':
+        #         req_asset_form = Request_Assets.objects.filter(req_id=req_id).first()
+        #         if req_asset_form:
+        #             req_quantity = req_asset_form.req_asset_qty
+        #             req_item = req_asset_form.asset
+        #             req_status = req_asset_form.req_status
+        #     elif req_type == 'Job Order':
+        #         req_job_form = Job_Order.objects.filter(req_id=req_id).first()
+        #         if req_job_form:
+        #             req_quantity = req_job_form.worker_count
+        #             req_item = req_job_form.job_name
+        #             req_status = req_job_form.req_status
+        #
         requisition_data.append({
             'req_id': req_id,
-            'req_quantity': req_quantity,
-            'req_unit': req_unit,
             'req_type': req_type,
-            'req_item': req_item,
-            'req_unit_measure': req_unit_measure,
+            'date_added': date_added,
             'req_status': req_status,
         })
 
     return render(request, 'request/user_staff/request_table.html', {'requisitions': requisition_data})
-
 
 
 def staff_requisition_supply_view_endpoint(request):
@@ -424,7 +422,7 @@ def staff_requisition_supply_view_endpoint(request):
                 supply=supply_instance,
                 req_supply_qty=supply_item['supply_quantity'],
                 req_id=request_form,
-                req_unit_measure= unit_measure
+                req_unit_measure=unit_measure
             )
 
         messages.success(request, 'Request submitted successfully!')
@@ -435,6 +433,45 @@ def staff_requisition_supply_view_endpoint(request):
         messages.error(request, 'Error submitting request!')
         return JsonResponse({'success': False, 'error_message': str(e)})
 
+
+def staff_requisition_asset_view_endpoint(request):
+    acc_id = request.session.get('session_user_id')
+    user_id = int(acc_id)
+    # Handle AJAX request to save data from local storage
+    try:
+        # Extract data from the AJAX request
+        asset_data = request.POST.get('asset_data')
+        requestor_notes = request.POST.get('requestor_notes')
+        asset_data = json.loads(asset_data)
+
+        # Create requisition object
+        request_form = Requisition.objects.create(
+            req_description='Asset Request',  # You can customize this
+            req_type=RequestType.objects.get(name='Asset'),
+            user_id=user_id,
+            requestor_notes=requestor_notes
+        )
+
+        # Iterate through request supply items and associate with requisition
+        for asset_item in asset_data:
+            # Get or create a Supply instance based on the name
+            print(asset_item['asset_id'])
+            asset_instance = Assets.objects.get(asset_id=asset_item['asset_id'])
+
+            # Create Request_Supply instance
+            asset = Request_Assets.objects.create(
+                asset=asset_instance,
+                req_asset_qty=asset_item['asset_quantity'],
+                req_id=request_form,
+            )
+
+        messages.success(request, 'Request submitted successfully!')
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Error submitting request!')
+        return JsonResponse({'success': False, 'error_message': str(e)})
 
 
 # STAFF REQUISITION PAGE TO REQUEST SUPPLY
@@ -453,7 +490,6 @@ def staff_requisition_supply_view(request):
 
     else:
         raise Http404("You are not allowed to access this page.")
-
 
 
 # STAFF REQUISITION PAGE TO REQUEST ASSET
@@ -482,8 +518,10 @@ def staff_requisition_asset_view(request):
             messages.error(request, 'Error submitting request!')
     else:
         asset_form = RequestAssetsForm()
+    request_form = RequisitionNoteForm()
     return render(request, 'request/user_staff/asset/staff_requisition_asset.html', {
         'asset_form': asset_form,
+        'req_form': request_form,
     })
 
 
@@ -567,53 +605,99 @@ def get_requisition_info_staff(request, pk):
         raise Http404("You are not allowed to access this page.")
 
 
+def get_requisition_info_staff_view(request, pk):
+    if request.session.get('session_user_type') == 0:
+        requisition = get_object_or_404(Requisition, req_id=pk)
+        req_items = None
+        qty = None
+
+        if requisition.req_type.name == 'Supply':
+            supply_requests = Request_Supply.objects.filter(req_id=pk)
+            req_items = [{'description': supply.supply_description, 'quantity': supply.req_supply_qty,
+                          'req_status': supply.req_status} for supply in supply_requests]
+        elif requisition.req_type.name == 'Asset':
+            asset_requests = Request_Assets.objects.filter(req_id=pk)
+            req_items = [{'description': asset.asset.asset_description, 'quantity': asset.req_asset_qty,
+                          'req_status': asset.req_status} for asset in asset_requests]
+        elif requisition.req_type.name == 'Job Order':
+            job_order = get_object_or_404(Job_Order, req_id=pk)
+            req_items = [{'description': job_order.job_name, 'quantity': None}]
+
+        requisition_data = {
+            'req_id': requisition.req_id,
+            'req_description': requisition.req_description,
+            'req_requestor': requisition.req_description,
+            'req_reviewer_notes': requisition.reviewer_notes,
+            'requestor_notes': requisition.requestor_notes,
+            'req_type': requisition.req_type.name,
+            'req_status': requisition.request_status.name,
+            'req_date_requested': requisition.req_date if requisition.req_date else "None",
+            'reviewed_date': requisition.req_reviewed_date if requisition.req_reviewed_date else "None",
+        }
+        request_data = {
+            'req_item': req_items,
+            'req_status': requisition.request_status.name,
+            'req_quantity': qty,
+            'req_date_requested': requisition.req_date.strftime('%Y-%m-%d') if requisition.req_date else "None",
+        }
+
+        return render(request, 'request/user_staff/staff_request_view.html',
+                      {'req_id': pk, 'requisition_data': requisition_data, 'request_data': request_data,
+                       'req_items': req_items, })
+    else:
+        raise Http404("You are not allowed to access this page.")
+
+
 # STAFF REQUISITION  CANCEL REQUEST POST METHOD
 def cancel_request(request, req_id):
     if request.session.get('session_user_type') == 1:
         raise Http404("You are not allowed to access this page.")
 
-    if request.method == 'POST':
-        req_type = get_object_or_404(Requisition, req_id=req_id).req_type
+    try:
 
-        if req_type == RequestType.objects.get(name='Supply'):
-            data = get_object_or_404(Request_Supply, req_id=req_id)
+        requisition = get_object_or_404(Requisition, req_id=req_id)
+        current_status = requisition.request_status.name
+        if current_status != 'Pending':
+            messages.error(request, 'Request can only be cancelled if the status is Pending.')
+            return JsonResponse(
+                {'status': 'error', 'message': 'Request can only be cancelled if the status is Pending.'})
 
-        elif req_type == RequestType.objects.get(name='Asset'):
-            data = get_object_or_404(Request_Assets, req_id=req_id)
-        else:
-            data = get_object_or_404(Job_Order, req_id=req_id)
+        cancelled_status = RequestStatus.objects.get(name='Cancelled')
+        requisition.request_status = cancelled_status
+        requisition.save()
 
-        if data.req_status == RequisitionStatus.objects.get(name='Pending'):
-            data.req_status = RequisitionStatus.objects.get(name='Cancelled')
-            data.save()
-            print("Successfully Cancelled")
-            messages.success(request, 'Request cancelled successfully!')
-            return JsonResponse({'status': 'success'})
-        elif data.req_status == RequisitionStatus.objects.get(name='Cancelled'):
-            messages.warning(request, 'Request is already cancelled')
-            return JsonResponse({'status': 'error', 'message': 'Request already cancelled'})
+        requisition_type = requisition.req_type.name
+        cancelled_requisition_status = RequisitionStatus.objects.get(name='Cancelled')
 
-        elif data.req_status == RequisitionStatus.objects.get(name='Approved'):
-            messages.warning(request, 'Unable to cancel, Request already approved')
-            return JsonResponse({'status': 'error', 'message': 'Unable to cancel, Request already approved'})
-        else:
-            messages.warning(request, 'Unable to cancel request')
-            return JsonResponse({'status': 'error', 'message': 'Cannot cancel request'})
+        specific_req_id = req_id
+        models_to_update = {
+            'Supply': Request_Supply,
+            'Asset': Request_Assets,
+            'Job Order': Job_Order
+        }
 
-    elif request.method == 'GET':
-        req_description = get_object_or_404(Requisition, req_id=req_id).req_description
-        return JsonResponse({'req_description': req_description, 'req_id': req_id})
-    # If the request method is not POST or GET
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+        if requisition_type in models_to_update:
+            model = models_to_update[requisition_type]
+            instances = model.objects.filter(req_id=specific_req_id)
+            for instance in instances:
+                instance.req_status = cancelled_requisition_status
+                instance.save()
+
+        messages.success(request, 'Request cancelled successfully!')
+        print("Request Cancelled")
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': f'error: {e}'})
 
 
-# STAFF REQUISITION  CANCEL REQUEST POST METHOD
+# ADMIN REQUISITION  CANCEL REQUEST POST METHOD
 def post_requisition_info_staff(request, req_id):
     global req_form
     try:
         requisition = get_object_or_404(Requisition, req_id=req_id)
         req_type = request.POST.get('req_type')
-        req_notes = request.POST.get('req_notes')
+        # req_notes = request.POST.get('req_notes')
         # Fetching the appropriate form based on req_type
         if req_type == "Supply":
             req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
@@ -624,7 +708,7 @@ def post_requisition_info_staff(request, req_id):
 
         current_status = req_form.req_status
         if current_status == RequisitionStatus.objects.get(name='Pending'):
-            req_form.notes = req_notes
+            # req_form.notes = req_notes
             req_form.save()
             messages.success(request, 'Changes saved successfully!')
             return JsonResponse({'status': 'success'})

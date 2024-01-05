@@ -10,54 +10,62 @@
                 {% csrf_token %}
                 <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
 
-              <!-- ASSET REQUEST SECTION -->
-                <div >
+                <!-- ASSET REQUEST SECTION -->
+                <div>
                     <!-- Asset List Dropdown -->
                     <div class="row mb-3">
-                         <label for="inputText" class="col-sm-12 col-form-label form_label">Asset List</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label">Asset List</label>
                         <div class="col-sm-12">
-                        {%render_field asset_form.asset  class="form-control" %}
+                            {{ asset_form.asset|add_class:"form-control"|attr:"id:asset_name" }}
                         </div>
                         <div class="{% if asset_form.asset.errors %} invalid {% endif %}">
                             {% for error in asset_form.asset.errors %}
-                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                                <p class="help-block text-danger" style="font-size: 13px;">{{ error }}</p>
                             {% endfor %}
                         </div>
                     </div>
 
-                      <!-- Supply Quantity input -->
-                     <div class="row mb-3">
+                    <!-- Supply Quantity input -->
+                    <div class="row mb-3">
                         <label for="inputText" class="col-sm-12 col-form-label form_label">Quantity</label>
                         <div class="col-sm-12">
-                            {% render_field asset_form.req_asset_qty class="form-control" %}
+                            {% render_field asset_form.req_asset_qty class="form-control" id='asset_quantity' %}
                         </div>
                         <div class="{% if asset_form.req_asset_qty.errors %} invalid {% endif %}">
                             {% for error in asset_form.req_asset_qty.errors %}
-                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                                <p class="help-block text-danger" style="font-size: 13px;">{{ error }}</p>
                             {% endfor %}
                         </div>
-                     </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-6 col-form-label"></label>
+                        <div class="col-sm-6 justify-content-end" id="req_btn">
 
-                         <!-- Supply Notes input -->
-                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Notes</label>
+                            <button type="button" class="btn btn" id="submit_btn" onclick="mySave()"><i
+                                    class="bi bi-cursor"
+                            ></i> ADD
+                            </button>
+                        </div>
+                    </div>
+
+                    <br>
+                    <hr>
+                    <!-- Supply Notes input -->
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-12 col-form-label form_label">Additional Notes</label>
                         <div class="col-sm-12">
-                            {% render_field asset_form.notes class="form-control" rows="5"%}
+                            {% render_field req_form.requestor_notes class="form-control" rows="5" id='requestor_notes' %}
                         </div>
-                        <div class="{% if asset_form.notes.errors %} invalid {% endif %}">
-                            {% for error in asset_form.notes.errors %}
-                            <p class="help-block text-danger"    style="font-size: 13px;">{{ error }}</p>
+                        <div class="{% if req_form.notes.errors %} invalid {% endif %}">
+                            {% for error in req_form.notes.errors %}
+                                <p class="help-block text-danger" style="font-size: 13px;">{{ error }}</p>
                             {% endfor %}
                         </div>
-                     </div>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-sm-6 col-form-label"></label>
-                    <div class="col-sm-6 justify-content-end" id="req_btn">
-
-                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT</button>
                     </div>
                 </div>
+                <!-- End Asset Request Section -->
+
+
             </form>
         </div>
         <!-- End General Form Elements -->
