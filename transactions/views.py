@@ -22,6 +22,8 @@ from transactions.models import Requisition, Request_Assets, Request_Supply, Req
 # ---------- ADMIN REQUISITION SECTION ------------ #
 
 def admin_transaction_requests_function(request):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     global requisition_data, req_item_count
     if not user_already_logged_in(request):
         return redirect('login')
@@ -57,7 +59,6 @@ def admin_transaction_requests_function(request):
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
     else:
         raise Http404("You are not allowed to access this page.")
-
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
 def get_requisition_info(request, pk, supply_description):
@@ -117,7 +118,7 @@ def get_requisition_info(request, pk, supply_description):
 
 # ADD NOTE BUTTON ENDPOINT
 def update_note(request, req_id):
-    print(request.session.get('session_user_type'))
+
     if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
     try:
@@ -135,53 +136,51 @@ def update_note(request, req_id):
         messages.error(request, 'Error updating note!')
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
-
 def updateJoborder(request, req_id):
-        try:
-            req_form = get_object_or_404(Requisition, req_id=req_id)
-            job_order = get_object_or_404(Job_Order, req_id=req_id)
-            job_order_status = job_order.req_status.name
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
+    try:
+        req_form = get_object_or_404(Requisition, req_id=req_id)
+        job_order = get_object_or_404(Job_Order, req_id=req_id)
+        job_order_status = job_order.req_status.name
 
-            if job_order_status == 'Approved':
-                messages.warning(request, 'Cannot update job order. Job order is already approved.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
-            elif job_order_status == 'Done':
-                messages.warning(request, 'Cannot update job order. Job order is already completed.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
-            elif job_order_status == 'Declined':
-                messages.warning(request, 'Cannot update job order. Job order is already declined.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
-            elif job_order_status == 'Cancelled':
-                messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
+        if job_order_status == 'Approved':
+            messages.warning(request, 'Cannot update job order. Job order is already approved.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
+        elif job_order_status == 'Done':
+            messages.warning(request, 'Cannot update job order. Job order is already completed.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
+        elif job_order_status == 'Declined':
+            messages.warning(request, 'Cannot update job order. Job order is already declined.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
+        elif job_order_status == 'Cancelled':
+            messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
 
-            req = get_object_or_404(Job_Order, req_id=req_id)
-            req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
-                'job_order_start') else None
-            req.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
-            req.worker_count = request.POST.get('worker_count')
-            req.save()
-            req_form.reviewer_notes = request.POST.get('reviewer_notes')
-            req_form.request_status.name = req.req_status.name
-            req_form.save()
+        req = get_object_or_404(Job_Order, req_id=req_id)
+        req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
+            'job_order_start') else None
+        req.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
+        req.worker_count = request.POST.get('worker_count')
+        req.save()
+        req_form.reviewer_notes = request.POST.get('reviewer_notes')
+        req_form.request_status.name = req.req_status.name
+        req_form.save()
 
-            messages.success(request, 'Job Order updated successfully!')
-            return JsonResponse({'status': 'success'})
-        except Exception as e:
-            print(e)
-            messages.error(request, 'Error updating job order!')
-            return JsonResponse({'status': 'error'})
+        messages.success(request, 'Job Order updated successfully!')
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Error updating job order!')
+        return JsonResponse({'status': 'error'})
 
 
 # Action to be performed when save changes in request item
 def post_requisition_info(request, req_id):
-    # if request.session.get('session_user_type') == 1:
-    #     raise Http404("You are not allowed to access this page.")
-    #
-
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     global req_form
     req_form = None  # Initialize req_form
-
     try:
 
         requisition = get_object_or_404(Requisition, req_id=req_id)
@@ -280,10 +279,8 @@ def post_requisition_info(request, req_id):
 
 
 def release_items(request, req_id):
-    # Uncomment the following block if user type check is needed
-    # if request.session.get('session_user_type') == 1:
-    #     raise Http404("You are not allowed to access this page.")
-
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
     if request.method == 'GET':
         try:
             requisition = get_object_or_404(Requisition, req_id=req_id)
