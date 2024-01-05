@@ -5,10 +5,12 @@ from . import views
 urlpatterns = [
     # -------------ADMIN URLS-----------------
     path('requests/', views.admin_transaction_requests_function, name='admin_transaction_requests_url'),
-    path('get_data/<int:pk>/', views.get_requisition_info, name='fetch_requisition_info'),
+    path('get_data/<int:pk>/<str:supply_description>', views.get_requisition_info, name='fetch_requisition_info'),
     path('post_data/<int:req_id>/', views.post_requisition_info, name='post_requisition_info'),
     path('delivery/', views.DeliveryIndexView.as_view(), name='admin_transaction_delivery_url'),
     path('purchase/', views.admin_transaction_purchase_function, name='admin_transaction_purchase_url'),
+    path('request_item_end_point/<int:req_id>/', views.request_item_end_point, name='request_item_end_point'),
+    path('release_items/<int:req_id>/', views.release_items, name='release_items'),
 
     # -------------ADMIN DELIVERY URLS-----------------
     path('delivery/update/<str:pk>', views.DeliveryUpdateView.as_view(), name='update_delivery_info'),

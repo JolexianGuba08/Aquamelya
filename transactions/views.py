@@ -30,47 +30,16 @@ def admin_transaction_requests_function(request):
             requisition_data = []
             requisition_queryset = Requisition.objects.all().order_by('-req_id')
             for requisition in requisition_queryset:
-                req_item, req_unit_measure, req_notes, req_status, req_quantity, req_unit = "", "", "", "", "", ""
                 req_id = requisition.req_id
                 req_type = requisition.req_type.name
                 req_requestor = requisition.user
-                requestor_notes = requisition.requestor_notes
-                reviewer_notes = requisition.reviewer_notes
-
-                if req_type == 'Supply':
-                    req_supply_form = get_object_or_404(Request_Supply, req_id=req_id)
-                    if req_supply_form:
-                        req_item = req_supply_form.supply
-                        req_unit = req_supply_form.supply.supply_unit
-                        req_quantity = req_supply_form.req_supply_qty
-                        req_unit_measure = req_supply_form.req_unit_measure
-                        req_status = req_supply_form.req_status
-                elif req_type == 'Asset':
-                    req_asset_form = get_object_or_404(Request_Assets, req_id=req_id)
-                    if req_asset_form:
-                        req_quantity = req_asset_form.req_asset_qty
-                        req_item = req_asset_form.asset
-                        req_status = req_asset_form.req_status
-                elif req_type == 'Job Order':
-                    req_job_form = get_object_or_404(Job_Order, req_id=req_id)
-                    if req_job_form:
-                        req_quantity = req_job_form.worker_count
-                        req_item = req_job_form.job_name
-                        req_status = req_job_form.req_status
-
+                req_status = requisition.request_status
                 requisition_data.append({
                     'req_requestor': req_requestor,
                     'req_id': req_id,
-                    'req_quantity': req_quantity,
-                    'req_unit': req_unit,
-                    'req_type': req_type,
-                    'req_item': req_item,
-                    'req_unit_measure': req_unit_measure,
-                    'requestor_notes': requestor_notes,
-                    'reviewer_notes': reviewer_notes,
                     'req_status': req_status,
+                    'req_type': req_type,
                 })
-
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
 
         except Exception as e:
@@ -80,99 +49,90 @@ def admin_transaction_requests_function(request):
 
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
-def get_requisition_info(request, pk):
+def get_requisition_info(request, pk, supply_description):
+    global current_onhand_stock, req_qty, request_statuses, item_name
     if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
-    global req_item
+
     data = get_object_or_404(Requisition, pk=pk)
-    request_statuses = RequisitionStatus.objects.exclude(name='Cancelled')
-    req_type = data.req_type.name
-    req_notes = None
-    req_status = None
-    job_start_date = None
-    job_end_date = None
-    worker_count = None
-    current_onhand_stock = None
-    req_qty = None
-    low_stock = False
+    req_item, req_status, low_stock = None, None, False
 
-    # Getting the specific OBJECT based on the req_type
     if data.req_type.name == "Supply":
-        req_item = Request_Supply.objects.filter(req_id_id=data.req_id)
-        current_onhand_stock = req_item.supply.supply_on_hand
-        req_qty = req_item.req_supply_qty
-
+        req_item = get_object_or_404(Request_Supply, req_id_id=pk, supply__supply_description=supply_description)
     elif data.req_type.name == "Asset":
-        req_item = Request_Assets.objects.filter(req_id_id=data.req_id)
-        current_onhand_stock = req_item.asset.asset_on_hand
-        req_qty = req_item.req_asset_qty
-
+        req_item = get_object_or_404(Request_Assets, req_id=pk, asset__asset_description=supply_description)
     elif data.req_type.name == "Job Order":
-        req_item = get_object_or_404(Job_Order, req_id=data.req_id)
-        job_start_date = req_item.job_start_date
-        job_end_date = req_item.job_end_date
-        worker_count = req_item.worker_count
+        req_item = get_object_or_404(Job_Order, req_id=pk)
 
     if req_item:
-        # Getting the notes and status of the request
-        req_notes = req_item.notes
+        if data.req_type.name == "Supply":
+            current_onhand_stock = req_item.supply.supply_on_hand
+            req_qty = req_item.req_supply_qty
+            item_name = req_item.supply.supply_description
+        elif data.req_type.name == "Asset":
+            current_onhand_stock = req_item.asset.asset_on_hand
+            req_qty = req_item.req_asset_qty
+            item_name = req_item.asset.asset_description
+        elif data.req_type.name == "Job Order":
+            current_onhand_stock = None
+            item_name = req_item.job_name
+            req_qty = None
+
         req_status = req_item.req_status.__str__()
-
-    if data.req_type.name == "Supply" or data.req_type.name == "Asset":
-        if current_onhand_stock < req_qty:
+        request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
+        if current_onhand_stock is not None and req_qty is not None and current_onhand_stock < req_qty:
             low_stock = True
-            if req_item.req_status.name == "Cancelled" or req_item.req_status.name == "Done" or req_item.req_status.name == "Declined" or req_item.req_status.name == "Approved":
-                # if the request is Cancelled or Approved, then render the following
-                include_names = ['Cancelled', 'Done', 'Declined', 'Approved']
-                request_statuses = RequisitionStatus.objects.filter(name__in=include_names)
-            else:
-                # Unable to approve request if stock is low
-                exclude_names = ['Cancelled', 'Done', 'Approved']
-                request_statuses = RequisitionStatus.objects.exclude(name__in=exclude_names)
 
-    # Passing the json value to front
+            # Include only 'Pending' and 'In Process' statuses when stock is insufficient
+            request_statuses = RequisitionStatus.objects.filter(name__in=['In Process', 'Pending','Declined']).values('id', 'name')
+        else:
+            # Fetching all request statuses excluding 'Cancelled'
+            request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
+
+    # Passing the JSON value to the front end
     data = {
+        'item_name': item_name,
         'req_id': data.req_id,
-        'req_requestor': data.req_description,
-        'req_notes': req_notes,
-        'req_reviewer_notes': data.reviewer_notes,
         'req_type': data.req_type.name,
         'req_status': req_status,
-        'req_status_list': [{'id': status.id, 'name': status.name} for status in request_statuses],
-        'req_date_requested': data.req_date.strftime('%Y-%m-%d') if data.req_date else "None",
-        'req_date_last_mod': data.req_reviewed_date.strftime('%Y-%m-%d') if data.req_reviewed_date else "None",
-        'job_start_date': job_start_date.strftime('%Y-%m-%d') if job_start_date else "None",
-        'job_end_date': job_end_date.strftime('%Y-%m-%d') if job_end_date else "None",
-        'worker_count': worker_count if worker_count else "None",
+        'req_status_list': list(request_statuses),
         'low_stock': low_stock
     }
+
     return JsonResponse(data)
 
 
 # POSTING REQUISITION INFO MODAL
 def post_requisition_info(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
+    # if request.session.get('session_user_type') == 1:
+    #     raise Http404("You are not allowed to access this page.")
+    #
+    print(req_id)
     global req_form
+    req_form = None  # Initialize req_form
+
     try:
         print(request.POST)
         requisition = get_object_or_404(Requisition, req_id=req_id)
-        req_type = request.POST.get('req_type')
+        req_type = requisition.req_type.name
+        item_description = request.POST.get('item_name')
         message_context = "Changes saved successfully!"
+
 
         # Fetching the appropriate OBJECT based on req_type
         if req_type == "Supply":
-            req_form = get_object_or_404(Request_Supply, req_id_id=req_id)
+            req_form = get_object_or_404(Request_Supply, req_id_id=req_id, supply__supply_description=item_description)
 
         elif req_type == "Asset":
-            req_form = get_object_or_404(Request_Assets, req_id=req_id)
+            req_form = get_object_or_404(Request_Assets, req_id=req_id, asset__asset_description=item_description)
 
         elif req_type == "Job Order":
-            req_form = get_object_or_404(Job_Order, req_id=req_id)
+            req_form = get_object_or_404(Job_Order, req_id=req_id, job_name=item_description)
             req_form.job_start_date = request.POST.get('job_order_start') if request.POST.get(
                 'job_order_start') else None
             req_form.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
             req_form.worker_count = request.POST.get('worker_count')
+
 
         # Update requisition status
         if req_type == "Supply":
@@ -183,11 +143,15 @@ def post_requisition_info(request, req_id):
                 else:
                     # need to add a CONFIRMATION MODAL BEFORE PERFORMING THE FOLLOWING ACTIONS!
                     # Updating the current stock on hand
-                    current_stock = get_object_or_404(Supply, supply_id=req_form.supply.supply_id)
-                    current_stock.supply_on_hand -= req_form.req_supply_qty
-                    current_stock.save()
+                    req_form.req_status.pk = int(request.POST.get('req_status'))
+                    req_form.save()
 
-                    # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to DONE
+                    supply_data = Request_Supply.objects.filter(req_id=req_id)
+                    if not all(item.req_status.name == 'Approved' for item in supply_data):
+                        requisition.request_status = RequestStatus.objects.get(name='Incomplete')
+                        requisition.save()
+
+
                     message_context = "Request approved successfully!"
         elif req_type == "Asset":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
@@ -196,20 +160,24 @@ def post_requisition_info(request, req_id):
                     return JsonResponse({'status': 'error', 'message': 'Cannot approve request. Not enough stock.'})
                 else:
                     # need to add a CONFIRMATION MODAL BEFORE PERFORMING THE FOLLOWING ACTIONS!
-
-                    # Updating the current stock on hand
-                    current_stock = get_object_or_404(Assets, asset_id=req_form.asset.asset_id)
-                    current_stock.asset_on_hand -= req_form.req_asset_qty
-                    current_stock.save()
-                    # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to DONE
+                    req_form.req_status = int(request.POST.get('req_status'))
+                    req_form.save()
+                    asset_data = Request_Assets.objects.filter(req_id=req_id)
+                    if not all(item.req_status.name == 'Approved' for item in asset_data):
+                        requisition.request_status = RequestStatus.objects.get(name='Incomplete')
+                        requisition.save()
+                    # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to
                     message_context = "Request approved successfully!"
+
+
 
         # For Message Context if NO CHANGES WERE MADE ON THE REQUEST
         if not req_type == "Job Order":
-            if req_form.req_status_id == int(
+            if req_form.req_status == int(
                     request.POST.get('req_status')) and requisition.reviewer_notes == request.POST.get(
                 'req_reviewer_notes'):
                 message_context = "No Changes were made"
+
         else:
             if req_form.req_status_id == int(
                     request.POST.get('req_status')) and req_form.job_start_date == request.POST.get(
@@ -233,6 +201,123 @@ def post_requisition_info(request, req_id):
         messages.error(request, f'Error saving changes!')
         return JsonResponse({'status': f'error: {e}'})
 
+
+def release_items(request, req_id):
+    # Uncomment the following block if user type check is needed
+    # if request.session.get('session_user_type') == 1:
+    #     raise Http404("You are not allowed to access this page.")
+
+    if request.method == 'GET':
+        try:
+            requisition = get_object_or_404(Requisition, req_id=req_id)
+            requisition_type = requisition.req_type.name
+            req_id = requisition.req_id
+            req_status = requisition.request_status.name
+
+            if(req_status == 'Completed'):
+                messages.warning(request, 'Cannot release items. Request is already completed.')
+                return JsonResponse({'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
+
+            if requisition_type == 'Supply':
+                supply_data = Request_Supply.objects.filter(req_id=req_id)
+
+                # Check if all items have an 'Approved' status
+                if all(item.req_status.name == 'Approved' for item in supply_data):
+                    # Perform actions when all items are approved
+                    for item in supply_data:
+                        current_stock = get_object_or_404(Supply, supply_id=item.supply.supply_id)
+                        current_stock.supply_on_hand -= item.req_supply_qty
+                        current_stock.save()
+                    requisition.request_status = RequestStatus.objects.get(name='Completed')
+                    requisition.save()
+                    messages.success(request, 'Items released successfully!')
+                    return JsonResponse({'status': 'success'})
+                else:
+                    messages.warning(request, 'Cannot release items. Not all items are approved.')
+                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+
+            elif requisition_type == 'Asset':
+                asset_data = Request_Assets.objects.filter(req_id=req_id)
+                # Check if all items have an 'Approved' status
+                if all(item.req_status.name == 'Approved' for item in asset_data):
+                    # Perform actions when all items are approved
+                    for item in asset_data:
+                        current_stock = get_object_or_404(Assets, asset_id=item.asset.asset_id)
+                        current_stock.asset_on_hand -= item.req_asset_qty
+                        current_stock.save()
+                    requisition.request_status = RequestStatus.objects.get(name='Completed')
+                    requisition.save()
+                    messages.success(request, 'Items released successfully!')
+                    return JsonResponse({'status': 'success'})
+                else:
+                    messages.warning(request, 'Cannot release items. Not all items are approved.')
+                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+
+            elif requisition_type == 'Job Order':
+                messages.warning(request, 'Cannot release items. Job orders are not applicable for this action.')
+
+        except Requisition.DoesNotExist:
+            raise Http404("Requisition does not exist.")
+    else:
+        raise Http404("Invalid request method.")
+
+
+def request_item_end_point(request, req_id):
+    # if request.session.get('session_user_type') == 1:
+    #     raise Http404("You are not allowed to access this page.")
+    if request.method == 'GET':
+        try:
+            requisition = Requisition.objects.get(req_id=req_id)
+            requisition_type = requisition.req_type.name
+            requisition_description = requisition.req_description
+            req_id = requisition.req_id
+
+            context = {
+                'req_id': req_id,
+                'req_type': requisition_type,
+                'req_description': requisition_description,
+                'req_date': requisition.req_date.strftime('%Y-%m-%d') if requisition.req_date else 'None',
+                'req_reviewed_date': requisition.req_reviewed_date.strftime(
+                    '%Y-%m-%d') if requisition.req_reviewed_date else 'None',
+                'requestor_notes': requisition.requestor_notes,
+                'reviewer_notes': requisition.reviewer_notes,
+
+            }
+
+            if requisition_type == 'Supply':
+                supply_data = Request_Supply.objects.filter(req_id=req_id).values(
+                    'req_supply_qty',
+                    'supply__supply_description',
+                    'req_id__req_type__name',
+                    'req_id',
+                    'req_status__name'# Assuming this is the field linking Request_Supply to Requisition
+                )
+
+                context['req_data'] = list(supply_data)
+            elif requisition_type == 'Asset':
+                asset_data = Request_Assets.objects.filter(req_id=requisition).values(
+                    'req_asset_qty',
+                    'asset__asset_description',
+                    'asset__asset_type__name',
+                    'asset__request_assets__req_id'
+                )
+                context['req_data'] = list(asset_data)
+
+            elif requisition_type == 'Job Order':
+                job_data = Job_Order.objects.filter(req_id=requisition).values(
+                    'worker_count',
+                    'job_name',
+                    'job_start_date',
+                    'job_end_date',
+                )
+                context['req_data'] = list(job_data)
+
+            return render(request, 'request/user_admin/request_item.html', context)
+
+        except Requisition.DoesNotExist:
+            raise Http404("Requisition does not exist.")
+    else:
+        raise Http404("Invalid request method.")
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
