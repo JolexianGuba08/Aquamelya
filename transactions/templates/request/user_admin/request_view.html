@@ -11,7 +11,7 @@
             <h3 style="font-weight: bold"> Transactions</h3>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Transactions</a></li>
+                    <li class="breadcrumb-item"><a href="#">Transactions</a></li>
                     <li class="breadcrumb-item active">Requests</li>
                 </ol>
             </nav>
@@ -27,12 +27,12 @@
                             <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
                                 <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
                                     <input type="text" id="search_input" name="query" class="form-control"
-                                           placeholder="Search"
-                                           title="Enter search keyword">
+                                           placeholder="Enter ID or Name to search"
+                                         >
                                 </div>
                                 <div class="col-md-2 mb-2" style="margin-right: 5px; ">
                                     <select class="form-select" id="request_type_filter">
-                                        <option selected value="all">Supplier Type: All</option>
+                                        <option selected value="all">Request Type:</option>
                                         <option value="Asset">Asset</option>
                                         <option value="Supply">Supply</option>
                                         <option value="Job Order">Job Order</option>
@@ -43,11 +43,9 @@
                                     <select class="form-select" id="request_status_filter">
                                         <option selected value="all">By Status: All</option>
                                         <option value="Pending">Pending</option>
-                                        <option value="In Process">In Process</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Declined">Declined</option>
-                                        <option value="Done">Done</option>
                                         <option value="Cancelled">Cancelled</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Incomplete">Incomplete</option>
                                     </select>
                                 </div>
                             </div>
@@ -62,8 +60,6 @@
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-
-
         $(document).ready(function () {
 
             $('#job_order_div').hide();
@@ -81,34 +77,33 @@
             // Handle dropdown change events for both type and status filters
             // and input event for search
             $('#request_type_filter, #request_status_filter, #search_input').on('change input', function () {
-                // Get the selected values for both filters
-                selectedType = $('#request_type_filter').val();
-                selectedStatus = $('#request_status_filter').val();
+            // Get the selected values for both filters
+            var selectedType = $('#request_type_filter').val();
+            var selectedStatus = $('#request_status_filter').val();
 
-                // Get the search query
-                var query = $('#search_input').val().toLowerCase();
+            console.log(selectedType, selectedStatus)
+            // Get the search query
+            var query = $('#search_input').val().toLowerCase();
 
-                // Show/hide rows based on the selected type, status, and search query
-                $('#requisition_table tbody tr').each(function () {
-                    var rowType = $(this).data('type');
-                    var rowStatus = $(this).data('status');
-                    var rowName = $(this).data('name').toLowerCase();
+            // Show/hide rows based on the selected type, status, and search query
+            $('#requisition_table tbody tr').each(function () {
+                var rowType = $(this).data('type');
+                var rowStatus = $(this).data('status');
+                var rowName = $(this).data('name').toLowerCase();
+                var rowPk = $(this).data('pk').toString().toLowerCase();
 
-                    // If the selected type is 'all' or matches the row's type,
-                    // and the selected status is 'all' or matches the row's status,
-                    // and the row's name includes the search query or the query is empty, show it
-                    if ((selectedType === 'all' || rowType === selectedType) &&
-                        (selectedStatus === 'all' || rowStatus === selectedStatus) &&
-                        (rowName.includes(query) || query === '')) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
+                if ((selectedType === 'all' || rowType === selectedType) &&
+                    (selectedStatus === 'all' || rowStatus === selectedStatus) &&
+                    (rowName.includes(query) || rowPk.includes(query) || query === '')) {
+                    $(this).show();
+
+                } else {
+                    $(this).hide();
+                }
             });
-
         });
 
+        });
     </script>
     <!-- End #main -->
 {% endblock %}

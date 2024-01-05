@@ -3,6 +3,7 @@
     <tr>
         <th scope="col" class="text-center">Requestor</th>
         <th scope="col" class="text-center">Type</th>
+        <th scope="col" class="text-center">Request Items</th>
         <th scope="col" class="text-center">Status</th>
         <th scope="col" class="text-center"></th>
     </tr>
@@ -11,9 +12,11 @@
     {% if requisitions %}
         {% for requisition in requisitions %}
             <tr data-pk="{{ requisition.req_id }}"
-                data-status="{{ requisition.req_status }}" data-type="{{ requisition.req_type }}">
+                data-status="{{ requisition.req_status }}" data-type="{{ requisition.req_type }}" data-name="{{ requisition.req_user }}">
                 <th scope="row" class="text-center align-middle">{{ requisition.req_requestor }}</th>
-                <td class="text-center align-middle">{{ requisition.req_type }}</td>
+                 <th scope="row" class="text-center align-middle">{{ requisition.req_type }}</th>
+                 <td class="text-center align-middle">{{ requisition.req_item_count }}</td>
+
                 <td class="text-center align-middle"><span
                         class="badge bg-success">{{ requisition.req_status }}</span>
                 </td>

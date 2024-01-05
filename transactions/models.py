@@ -109,7 +109,7 @@ class Requisition(models.Model):
 class Request_Supply(models.Model):
     req_supply_id = models.IntegerField(primary_key=True, default=default_req_supply_id)
     req_supply_qty = models.IntegerField()
-    req_unit_measure = models.CharField(max_length=10, null=True, blank=True)
+    req_unit_measure = models.CharField(max_length=20, null=True, blank=True)
     supply = models.ForeignKey(Supply, on_delete=models.CASCADE)
     req_status = models.ForeignKey(RequisitionStatus, on_delete=models.CASCADE,
                                    default=RequisitionStatus.get_default_status)

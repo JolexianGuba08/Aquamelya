@@ -12,88 +12,88 @@
 {# Content #}
 {% block content %}
     <style>
-        /* CSS for increment and decrement buttons */
-        .quantity-controls button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1em;
-            padding: 0.5em;
-            margin: 0;
-            transition: background-color 0.3s ease;
-            width: 30px; /* Adjust width as needed */
-            height: 30px; /* Adjust height as needed */
-            border-radius: 50%; /* Makes buttons circular */
-        }
+    /* CSS for increment and decrement buttons */
+    .quantity-controls button {
+        background-color: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1em;
+        padding: 0.5em;
+        margin: 0;
+        transition: background-color 0.3s ease;
+        width: 30px; /* Adjust width as needed */
+        height: 30px; /* Adjust height as needed */
+        border-radius: 50%; /* Makes buttons circular */
+    }
 
-        .quantity-controls button.increment {
-            background-color: blue;
-        }
+    .quantity-controls button.increment {
+        background-color: blue;
+    }
 
-        .quantity-controls button.decrement {
-            background-color: red;
-        }
+    .quantity-controls button.decrement {
+        background-color: red;
+    }
 
-        .quantity-controls button:hover {
-            filter: brightness(1.2); /* Adds a brightness effect on hover */
-        }
+    .quantity-controls button:hover {
+        filter: brightness(1.2); /* Adds a brightness effect on hover */
+    }
 
-        .quantity {
-            display: inline-block;
-            min-width: 2em;
-            text-align: center;
-            padding: 0.5em;
-            margin: 0 0.5em;
-            font-weight: bold;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    .quantity {
+        display: inline-block;
+        min-width: 2em;
+        text-align: center;
+        padding: 0.5em;
+        margin: 0 0.5em;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
 
-    </style>
-    {# Simple Datatables CSS #}
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+{# Simple Datatables CSS #}
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
-    <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>REQUISITION</h1>
-        </div><!-- End Page Title -->
-
+<main id="main" class="main">
+    <div class="container mt-3">
         <section class="section dashboard">
             <div class="row">
                 <!-- Left side columns -->
                 <div class="col-lg-12" id="left">
                     {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
                 </div>
+            </div>
+        </section>
 
-                <br>
-                <hr>
-                <p>Request Supply List</p>
+        <div class="card mb-3">
+            <div class="card-body">
                 <table class="table table-hover" id="supplier_table">
                     <thead class="text-center">
-                    <tr>
-                        <th scope="col" class="text-center">Asset Name</th>
-                        <th scope="col" class="text-center">Quantity</th>
-                        <th scope="col" class="text-center"></th>
-                    </tr>
+                        <tr>
+                            <th scope="col" class="text-center">Asset Name</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center"></th>
+                        </tr>
                     </thead>
                     <tbody class="text-center">
+                        <!-- Content will be dynamically added here -->
                     </tbody>
                 </table>
+
                 <div class="row mb-3">
                     <label class="col-sm-6 col-form-label"></label>
                     <div class="col-sm-6 justify-content-end" id="req_btn">
                         <button type="submit" class="submitBtn btn btn" id="submit_btn"
-                                onclick="saveFromLocalStorage()"><i class="bi bi-cursor"></i>
-                            SUBMIT
+                                onclick="saveFromLocalStorage()">
+                            <i class="bi bi-cursor"></i> SUBMIT
                         </button>
                     </div>
                 </div>
-
             </div>
-        </section>
+        </div>
+    </div>
+</main><!-- End #main -->
 
-    </main><!-- End #main -->
 
     {# jQuery #}
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

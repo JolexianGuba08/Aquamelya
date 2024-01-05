@@ -3,141 +3,166 @@
 {% block transactions %} class="nav-link" {% endblock %}
 {% block transaction_requests %}  class="active" {% endblock %}
 {% block content %}
-
     {% include 'request/user_admin/request_info.html' %}
+
 <main id="main" class="main">
-    <div class="card" style="max-height: none;overflow-y: auto;">
+    <div class="card" style="max-height: none; overflow-y: auto;">
         {% csrf_token %}
-    <div class="card-body ">
-    <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;
-                Request Info</h2>
-        <br>
-
-        <div class="col-md-6 text-center mt-4">
-            <label class="form-label" style="font-weight: 600">Date Requested</label>
-            <br>
-            <label class="form-label" id="req_date_requested">{{ req_date }}</label>
-        </div>
-        <div class="col-md-6 text-center mt-4">
-            <label class="form-label" style="font-weight: 600">Date Last Modified</label>
-            <br>
-            <label class="form-label" id="req_date_last_mod">{{ req_reviewed_date }}</label>
-        </div>
-        <br>
-        <div class="col-md-12">
-            <label class="form-label" style="font-weight: 600"> Requestor's Note</label>
-            <textarea class="form-control" placeholder="" id="req_notes"
-                      style="height: 100px; background-color: white" disabled>{{ requestor_notes }}</textarea>
-            <br>
-        </div>
-        <div class="col-md-12" style="display:flex; flex-direction: column; align-items: end;">
-            <label for="form-control" style="font-weight: 600">Reviewer's Note</label>
-            <textarea class="form-control" placeholder="" id="req_reviewer_notes"
-                      style="height: 100px; background-color: white">{{ reviewer_notes }}</textarea>
-            <br>
-        </div>
-        {% if req_type == "Job Order" %}
-        <div id="job_order_div">
-            <div class="row">
-                <!-- Your existing content here -->
-                <div class="col-md-12">
-                    <label for="start_date" style="font-weight: 600;">Worker Count</label>
-                    <label for="start_date" style="font-weight: 600; color: red;"></label>
-                    <input type="number" min="1" class="form-control" id="worker_count" value="{{ req_data.worker_count }}">
-                    <br>
-                </div>
-                <div class="col-md-6">
-                    <label for="start_date" style="font-weight: 600;">Start Date</label>
-                    <input type="date" class="form-control" id="job_order_start" value="{{ req_data.job_start_date }}">
-                </div>
-                <div class="col-md-6">
-                    <label for="end_date" style="font-weight: 600;">End Date</label>
-                    <input type="date" class="form-control" id="job_order_end" value="{{ req_data.job_end_date }}">
-                </div>
-
-            </div>
-            <br>
-        </div>
-        {% endif %}
-
-{#                    <div class="col-md-12 " id="low_stock_div">#}
-{#                        <p id="low_stock_message" class="alert-warning rounded p-2 text-center">#}
-{#                        </p>#}
-{#                    </div>#}
-
-    <button type="button" class="btn btn-primary">
-        Add Note
-    </button>
-     <button type="button" id="releaseButton" data-reqid="{{ req_id }}"  onclick="releaseItems()" class="btn btn-success">
-        Release Items
-    </button>
-
-    </div>
-     </div>
-                <!-- End Multi Columns Form -->
-
-
-    <div class="card" style="padding-bottom: 27px;">
         <div class="card-body">
-            <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;
-                Request Items</h2>
-            {#Table Request Supply #}
-            <table class="table table-striped table-hover " id="requisition_table">
-            <thead class="text-center">
-            <tr>
-                <th scope="col" class="text-center">Request Item</th>
-                <th scope="col" class="text-center">Quantity or Worker</th>
-                <th scope="col" class="text-center">Status</th>
-                 <th scope="col" class="text-center">Action</th>
-                <th scope="col" class="text-center"></th>
-            </tr>
-            </thead>
-            <tbody class="text-center">
-            {% if req_data %}
-                {% for item in req_data %}
-                    <tr data-pk="{{ item.req_id }}"
-                        data-type="{{ item.req_id__req_type__name }}">
-                        <td class="text-center align-middle">{{ item.supply__supply_description }}</td>
-                        <td class="text-center align-middle">{{ item.req_supply_qty }}
-                            {% if requisition.req_type == 'Job Order' %}
-                                {% if requisition.req_quantity > 1 %}
-                                    (workers)
-                                {% else %}
-                                    (worker)
-                                {% endif %}
-                            {% elif requisition.req_type == 'Asset' %}
-                                {% if requisition.req_quantity > 1 %}
-                                    (pieces)
-                                {% else %}
-                                    (piece)
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td class="text-center align-middle"><span
-                                class="badge bg-success">{{ item.req_status__name }}</span>
-                        </td>
-                        <td class="text-center align-middle">
-                           <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
-                                Action
-                            </button>
+            <h2 class="card-title"><i class="bi bi-envelope-paper"></i> &nbsp;Request Info</h2>
 
-                        </td>
-                        <td class="text-center align-middle">
+            <div class="row mt-4">
+                <div class="col-md-6 text-center">
+                    <label class="form-label" style="font-weight: 600">Date Requested</label>
+                    <br>
+                    <label class="form-label" id="req_date_requested">{{ req_date }}</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label class="form-label" style="font-weight: 600">Date Last Modified</label>
+                    <br>
+                    <label class="form-label" id="req_date_last_mod">{{ req_reviewed_date }}</label>
+                </div>
+            </div>
 
-                        </td>
-                    </tr>
+            {% if req_type == "Job Order" %}
+                {% for req_data in req_data %}
+                    <div class="col-md-12 mt-4" style="font-weight: 600">
+                        <label class="form-label">Requestor's Note</label>
+                        <textarea class="form-control" style="height: 100px; background-color: white" disabled>{{ req_data.notes }}</textarea>
+                    </div>
                 {% endfor %}
             {% else %}
-                <tr>
-                    <td colspan="12" class="text-center">No Requisition Found</td>
-                </tr>
+                <div class="col-md-12 mt-4">
+                    <label class="form-label" style="font-weight: 600">Requestor's Note</label>
+                    <textarea class="form-control" style="height: 100px; background-color: white" disabled>{{ requestor_notes }}</textarea>
+                </div>
             {% endif %}
-            </tbody>
-        </table>
+
+            <div class="col-md-12 mt-4" style="display:flex; flex-direction: column; align-items: end;">
+                <label class="form-label" style="font-weight: 600">Reviewer's Note</label>
+                <textarea class="form-control" id="req_reviewer_notes" style="height: 100px; background-color: white; text-align: right;">{{ reviewer_notes }}</textarea>
+            </div>
+
+            {% if req_type == "Job Order" %}
+                {% for req_data in req_data %}
+                    <div id="job_order_div" class="mt-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="worker_count" style="font-weight: 600;">Worker Count</label>
+                                <input type="number" min="1" class="form-control" id="worker_count" value="{{ req_data.worker_count }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="job_order_start" style="font-weight: 600;">Start Date</label>
+                                <input type="date" class="form-control" id="job_order_start" value="{{ req_data.job_start_date }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="job_order_end" style="font-weight: 600;">End Date</label>
+                                <input type="date" class="form-control" id="job_order_end" value="{{ req_data.job_end_date }}">
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if req_type != "Job Order" %}
+                <button type="button" class="btn btn-primary mt-4" onclick="updateNote({{ req_id }})">
+                    Add Note
+                </button>
+                <button type="button" id="releaseButton" data-reqid="{{ req_id }}" onclick="releaseItems()" class="btn btn-success mt-4">
+                    Release Items
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-success mt-4" onclick="updateJoborder({{ req_id }})">Submit</button>
+            {% endif %}
+
         </div>
     </div>
 
+    <!-- End Multi Columns Form -->
+
+    <div class="card mt-4" style="padding-bottom: 27px;">
+        <div class="card-body">
+            <h2 class="card-title"><i class="bi bi-envelope-paper"></i> &nbsp;Request Items</h2>
+
+            {# Table Request Supply #}
+            <table class="table table-striped table-hover" id="requisition_table">
+                <thead class="text-center">
+                    <tr>
+                        <th scope="col" class="text-center">Request Item</th>
+                        <th scope="col" class="text-center">Quantity or Worker</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% if req_data %}
+                        {% for item in req_data %}
+                            <tr data-pk="{{ item.req_id }}" data-type="{{ item.req_id__req_type__name }}">
+                                <td class="text-center align-middle">
+                                    {% if req_type == "Supply" %}
+                                        {{ item.supply__supply_description }}
+                                    {% elif req_type == "Asset" %}
+                                        {{ item.asset__asset_description }}
+                                    {% elif req_type == "Job Order" %}
+                                        {{ item.job_name }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% if req_type == "Supply" %}
+                                        {{ item.req_supply_qty }}
+                                    {% elif req_type == "Asset" %}
+                                        {{ item.req_asset_qty }}
+                                    {% elif req_type == "Job Order" %}
+                                        {{ item.worker_count }}
+                                    {% endif %}
+
+                                    {% if requisition.req_type == 'Job Order' %}
+                                        {% if requisition.req_quantity > 1 %}
+                                            (workers)
+                                        {% else %}
+                                            (worker)
+                                        {% endif %}
+                                    {% elif requisition.req_type == 'Asset' %}
+                                        {% if requisition.req_quantity > 1 %}
+                                            (pieces)
+                                        {% else %}
+                                            (piece)
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="badge bg-success">{{ item.req_status__name }}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% if req_type == "Supply" %}
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
+                                            Action
+                                        </button>
+                                    {% elif req_type == "Asset" %}
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.asset__asset_description }}')">
+                                            Action
+                                        </button>
+                                    {% elif req_type == "Job Order" %}
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.job_name }}')">
+                                            Action
+                                        </button>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center align-middle"></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="12" class="text-center">No Requisition Found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 function fetchDataAndUpdateModal(pk,supply_description) {
@@ -208,15 +233,9 @@ function updateData() {
         var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
         var req_id  = $('#req_id').val()
         var postData = {
-            req_status: $('#status_select').val(),
-            item_name: $('#request_description').html(),
+            'req_status': $('#status_select').val(),
+            'item_name': $('#request_description').html(),
         };
-
-        if (req_type === 'Job Order') {
-            postData.job_order_start = $('#job_order_start').val();
-            postData.job_order_end = $('#job_order_end').val();
-            postData.worker_count = $('#worker_count').val();
-        }
 
         $.ajax({
             url: `/transactions/post_data/${req_id}/`,
@@ -227,11 +246,11 @@ function updateData() {
             data: postData,
             success: function (response) {
                 if (response.status === 'success') {
-                    console.log(postData)
-                    console.log(response.status);
+                    console.log(response)
                     window.location.reload();
                 } else {
-                    console.error('Error updating data');
+                    window.location.reload();
+                    console.error(response);
 
                 }
             },
@@ -263,6 +282,60 @@ function releaseItems() {
             },
         });
     }
+function updateJoborder(req_id){
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    var postData = {
+        'req_id': req_id,
+        'worker_count': $('#worker_count').val(),
+        'job_order_start': $('#job_order_start').val(),
+        'job_order_end': $('#job_order_end').val(),
+        'reviewer_notes': $('#req_reviewer_notes').val(),
+    };
+    $.ajax({
+        url: `/transactions/updateJoborder/${req_id}/`,
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrf_token
+        },
+        data: postData,
+        success: function (response) {
+            if (response.status === 'success') {
+            window.location.reload();
+            } else {
+                window.location.reload();
+                console.error('Error updating data');
+
+            }
+        },
+    });
+}
+function updateNote(req_id){
+        var noteText = $('#req_reviewer_notes').val();
+        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+        var reqId = req_id;
+
+        // AJAX request to update the note
+        $.ajax({
+            type: 'POST',
+            url: '/transactions/update_note/' + reqId + '/',
+            headers: {
+                'X-CSRFToken': csrf_token
+            },
+            data: { 'note_text': noteText },
+            dataType: 'json',
+            success: function (data) {
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    window.location.reload();
+
+                }
+            },
+            error: function (error) {
+                alert('An error occurred while updating the note.',error);
+            }
+        });
+}
 
 </script>
 {% endblock %}

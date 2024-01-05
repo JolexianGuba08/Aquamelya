@@ -16,41 +16,49 @@
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
 <main id="main" class="main">
-<div class="pagetitle">
-  <h1>REQUISITION</h1>
-</div><!-- End Page Title -->
+    <div class="container mt-3">
 
-<section class="section dashboard">
-<div class="row">
-    <!-- Left side columns -->
-    <div class="col-lg-12" id="left">
-        {% include 'request/user_staff/supply/include_staff_requisition_form_supply.html' %}
+                <section class="section dashboard">
+                    <div class="row">
+                        <!-- Left side columns -->
+                        <div class="col-lg-12" id="left">
+                            {% include 'request/user_staff/supply/include_staff_requisition_form_supply.html' %}
+                        </div>
+                    </div>
+                </section>
+
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover" id="supplier_table">
+                        <thead class="text-center">
+                            <tr>
+                                <th scope="col" class="text-center">Supply Name</th>
+                                <th scope="col" class="text-center">Quantity</th>
+                                <th scope="col" class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <!-- Content will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-6 col-form-label"></label>
+                    <div class="col-sm-6 justify-content-end" id="req_btn">
+                        <button type="submit" class="btn btn-primary" id="submit_btn" onclick="saveFromLocalStorage()">
+                            <i class="bi bi-cursor"></i> SUBMIT
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <table class="table table-hover" id="supplier_table">
-        <thead class="text-center">
-        <tr>
-            <th scope="col" class="text-center">Supply Name</th>
-            <th scope="col" class="text-center">Quantity</th>
-            <th scope="col" class="text-center"></th>
-        </tr>
-        </thead>
-        <tbody class="text-center">
-        </tbody>
-    </table>
-
-  <div class="row mb-3">
-    <label class="col-sm-6 col-form-label"></label>
-    <div class="col-sm-6 justify-content-end" id="req_btn">
-
-        <button type="submit" class="btn btn" id="submit_btn" onclick="saveFromLocalStorage()"><i class="bi bi-cursor"></i> SUBMIT</button>
-    </div>
-  </div>
-
-
-</div>
-</section>
-
 </main><!-- End #main -->
+
+
 
 {# jQuery #}
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -140,24 +148,28 @@
     }
 
     function addSupplyTable(supply) {
-        var tableBody = $('#supplier_table tbody');
-        var newRow = `<tr>
-                            <td class="text-center align-middle">${supply.supply_name}</td>
-                            <td class="text-center align-middle">${supply.supply_quantity}</td>
-                            <td class="text-center align-middle">
-                                <button style="background-color: transparent; border-color: transparent;" type="button"
-                                    class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <i class="bi bi-three-dots" style="color: black;"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                <a class="delete-supplier dropdown-item" onclick="confirmDelete('${supply.supply_id}', '${supply.supply_name}')">Delete Asset</a>
-                                </div>
-                            </td>
-                        </tr>`;
-        tableBody.append(newRow);
-        $('#no-supply-message').remove(); // Remove the "No supply inserted" message
-    }
+    var tableBody = $('#supplier_table tbody');
+
+    var newRow = `
+        <tr>
+            <td class="text-center align-middle">${supply.supply_name}</td>
+            <td class="text-center align-middle">${supply.supply_quantity}</td>
+            <td class="text-center align-middle">
+                <button style="background-color: transparent; border-color: transparent;" type="button"
+                    class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bi bi-three-dots" style="color: black;"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="delete-supplier dropdown-item" onclick="confirmDelete('${supply.supply_id}', '${supply.supply_name}')">Delete Asset</a>
+                </div>
+            </td>
+        </tr>`;
+
+    tableBody.append(newRow);
+    $('#no-supply-message').remove(); // Remove the "No supply inserted" message
+}
+
 
     function confirmDelete(supplyId, supplyName) {
         var confirmDeletion = confirm("Are you sure you want to delete" + supplyName + "?");
@@ -249,9 +261,5 @@
         });
     }
 }
-
-
-
-
 </script>
 {% endblock content %}
