@@ -1,0 +1,118 @@
+{% extends 'user_admin/admin_base.html' %}
+{% load static %}
+
+{# Requisition Title #}
+{% block title %} Purchase | AquaMelya {% endblock title %}
+
+{% block transactions %}
+    class="nav-link"
+{% endblock %}
+{% block transaction_delivery %} class="active" {% endblock %}
+{# Content #}
+{% block content %}
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    {% include 'delivery/user_admin/update_info.html' %}
+<main id="main" class="main">
+    <div class="card" style="max-height: none; overflow-y: auto;">
+        {% csrf_token %}
+        <div class="card-body">
+           <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Info</h2>
+
+            <br>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600">Date Requested</label>
+                        <br>
+                        <label class="form-label" id="req_date_requested">{{ req_date }}</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600">Date Last Modified</label>
+                        <br>
+                        <label class="form-label" id="req_date_last_mod">{{ req_reviewed_date }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600">Requestor's Note</label>
+                        <br>
+                        <textarea class="form-control" id="req_notes" style="height: 100px; background-color: white"
+                                  disabled>{{ requestor_notes }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600">Reviewer's Note</label>
+                        <br>
+                        <textarea class="form-control" id="req_reviewer_notes" style="height: 100px; background-color: white">{{ reviewer_notes }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+     <div class="card" style="padding-bottom: 27px;">
+        <div class="card-body">
+          <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Items</h2>
+
+            {#Table Request Supply #}
+            <table class="table table-striped table-hover " id="requisition_table">
+            <thead class="text-center">
+            <tr>
+                <th scope="col" class="text-center">Item</th>
+                <th scope="col" class="text-center">Quantity</th>
+                <th scope="col" class="text-center">Supplier</th>
+                <th scope="col" class="text-center">Receiver</th>
+                <th scope="col" class="text-center">Action</th>
+                <th scope="col" class="text-center"></th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            {% if delivery %}
+                {% for item in delivery %}
+                    <tr>
+                        <td class="text-center align-middle"></td>
+                        <td class="text-center align-middle"></td>
+                        <td class="text-center align-middle"></td>
+                        <td class="text-center align-middle"></td>
+                        <td class="text-center align-middle">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#update_info_modal" onclick="update_info_modal('{{ item.id }}', '{{ item.item }}', '{{ item.quantity }}', '{{ item.supplier }}', '{{ item.receiver }}', '{{ item.status }}', '{{ item.remarks }}')">
+                                Update Info
+                            </button>
+                        </td>
+                        <td class="text-center align-middle">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item_modal" onclick="delete_item_modal('{{ item.id }}', '{{ item.item }}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center align-middle">No items found.</td>
+                </tr>
+            {% endif %}
+
+            </tbody>
+        </table>
+        </div>
+    </div>
+</main>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script></script>
+
+{% endblock content %}

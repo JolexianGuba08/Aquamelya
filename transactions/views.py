@@ -1118,6 +1118,7 @@ def get_supplier_offers(request, supplier_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+
 # ---------- ADMIN DELIVERY SECTION ------------ #
 class DeliveryIndexView(ListView):
     model = Delivery
@@ -1149,3 +1150,7 @@ class DeliveryUpdateView(BSModalUpdateView):
         if request.session.get('session_user_type') == 0:
             raise Http404("You are not allowed to access this page.")
         return super().dispatch(request, *args, **kwargs)
+
+
+def delivery_items(request):
+    return render(request, 'delivery/user_admin/delivery_items.html')

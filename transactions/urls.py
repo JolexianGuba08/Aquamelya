@@ -9,10 +9,14 @@ urlpatterns = [
     path('post_data/<int:req_id>/', views.post_requisition_info, name='post_requisition_info'),
     path('delivery/', views.DeliveryIndexView.as_view(), name='admin_transaction_delivery_url'),
     path('purchase/', views.admin_transaction_purchase_function, name='admin_transaction_purchase_url'),
+
+    # -------------END POINT-----------------
     path('request_item_end_point/<int:req_id>/', views.request_item_end_point, name='request_item_end_point'),
     path('release_items/<int:req_id>/', views.release_items, name='release_items'),
     path('updateJoborder/<int:req_id>/', views.updateJoborder, name='updateJoborder'),
     path('update_note/<int:req_id>/', views.update_note, name='update_note'),
+    path('staff_requisition_supply_view_endpoint/', views.staff_requisition_supply_view_endpoint,
+             name='staff_requisition_supply_view_endpoint'),
 
     # -------------ADMIN DELIVERY URLS-----------------
     path('delivery/update/<str:pk>', views.DeliveryUpdateView.as_view(), name='update_delivery_info'),
@@ -45,9 +49,8 @@ urlpatterns = [
     path('staff_request_info/<int:pk>/', views.get_requisition_info_staff_view, name='staff_request_info_view'),
 
     # -------------END POINT-----------------
-    path('staff_requisition_supply_view_endpoint/', views.staff_requisition_supply_view_endpoint,
-         name='staff_requisition_supply_view_endpoint'),
     path('staff_requisition_asset_view_endpoint/', views.staff_requisition_asset_view_endpoint,
          name='staff_requisition_asset_view_endpoint'),
-
+    path('delivery_items/', views.delivery_items,
+         name='delivery_items'),
 ]
