@@ -1,11 +1,11 @@
 {% load widget_tweaks %}
             <div class="modal-header">
-                <h5 class="modal-title mr-3">Staff Details</h5>
-                <button type="button" class="btn btn-primary ml-auto" style="margin-left:240px; background-color: transparent; border-color: #2eca6a; color:#2eca6a;" id="purchaseBtn" onclick="enableForm()"> Edit</button>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">STAFF DETAILS</h5>
+                <button type="button" class="btn btn-primary" style="background-color: #0d6dfc; border: none; color: #ffffff;" id="purchaseBtn" onclick="enableForm()"> EDIT</button>
+{#                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
             </div>
             <div class="modal-body">
-                <form class="row g-3" id="myForm" action="#" method="post" novalidate>
+                <form class="edit_staff_modal row g-3" id="myForm" action="#" method="post" novalidate>
                     {% csrf_token %}
                     <div class="col-md-6">
                     <label for="inputName5" class="form-label">FIRST NAME</label>
@@ -75,20 +75,20 @@
                         <hr>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            <label class="form-label">Date Added</label>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--c1); font-weight: bold;">DATE ADDED</label>
                             <label class="form-label" style="display: block; margin-bottom: 8px;">{{ user_account.user_date_added }}</label>
                         </div>
 
-                        <div class="col-md-6 text-center">
-                            <label class="form-label">Date Modified</label>
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: var(--c1); font-weight: bold;">DATE MODIFIED</label>
                             <label class="form-label" style="display: block; margin-bottom: 8px;">{{ user_account.user_date_modified }}</label>
                         </div>
                     </div>
 
                     <div class="modal-footer justify-content-end">
-                        <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary invisible" id="saveBtn">Save Changes</button>
+                        <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal" style="background-color: red; border: none; width: 100px">CLOSE</button>
+                        <button type="submit" class="btn btn-primary invisible" id="saveBtn" style="background-color: #00d320; border: none; width: 160px">SAVE CHANGES</button>
                     </div>
                 </form><!-- End Multi Columns Form -->
 

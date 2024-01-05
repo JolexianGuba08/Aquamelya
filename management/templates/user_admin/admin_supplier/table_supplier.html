@@ -1,11 +1,40 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    #supplier_table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+    }
+
+    @media (width < 960px) {
+      table .remove_tbl {
+        display: none !important;
+      }
+}
+</style>
+
 <table class="table table-hover" id="supplier_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Name</th>
-        <th scope="col" class="text-center">Contact Number</th>
-        <th scope="col" class="text-center">Email</th>
-        <th scope="col" class="text-center">Address</th>
-        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center">NAME</th>
+        <th scope="col" class="remove_tbl text-center">CONTACT NO.</th>
+        <th scope="col" class="remove_tbl text-center">EMAIL</th>
+        <th scope="col" class="remove_tbl text-center">ADDRESS</th>
+        <th scope="col" class="remove_tbl text-center">STATUS</th>
         <th scope="col" class="text-center"></th>
     </tr>
     </thead>
@@ -15,14 +44,14 @@
             <tr class="update_supplier" data-form-url="{% url 'supplier_update' supplier.pk %}"
                 data-name="{{ supplier.supplier_name }}">
                 <th scope="row" class="text-center align-middle">{{ supplier.supplier_name }}</th>
-                <td class="text-center align-middle">{{ supplier.supplier_primary_contact }}</td>
-                <td class="text-center align-middle">{{ supplier.supplier_email }}</td>
-                <td class="text-center align-middle">{{ supplier.supplier_address }}</td>
+                <td class="remove_tbl text-center align-middle">{{ supplier.supplier_primary_contact }}</td>
+                <td class="remove_tbl text-center align-middle">{{ supplier.supplier_email }}</td>
+                <td class="remove_tbl text-center align-middle">{{ supplier.supplier_address }}</td>
                 <td class="text-center align-middle">
                     {% if supplier.supplier_status|lower == 'blacklisted' %}
-                        <span class="badge bg-danger">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
                     {% else %}
-                        <span class="badge bg-success">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
                     {% endif %}
 
                 </td>
@@ -46,3 +75,13 @@
     {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#supplier_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>

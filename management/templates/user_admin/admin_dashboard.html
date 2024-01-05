@@ -1,397 +1,350 @@
 {% extends 'user_admin/admin_base.html' %}
-{% block title %}Aquamelya{% endblock %}
+{% load static %}
+{% block title %}AquaMelya{% endblock %}
 {% block dashboard %} class="nav-link" {% endblock %}
 {% block content %}
-    <main id="main" class="main">
-        <style>
-            #midtitle {
-                color: #012970;
-                transition: 0.2s;
-                font-size: 15px;
-
-            }
-
-            .lowstock:hover #midtitle {
-                font-size: 17px;
-                color: #F15BB7 !important;; /* Change the color on hover */
-            }
-
-            #middesc {
-                color: green;
-                transition: 0.2s;
-            }
-
-            .lowstock:hover #middesc {
-                font-size: 14px;
-                color: #35b435;
-                font-weight: bold !important;; /* Change the color on hover */
-            }
-
-
-            .lowstock {
-                /* Your regular styles go here */
-                transition: 0.2s; /* Add a smooth transition effect */
-                transform: scale(1); /* Initial scale value */
-
-            }
-
-            .result {
-                background-color: white;
-                transition: 0.2s; /* Add a smooth transition effect */
-                transform: scale(1);
-            }
-
-            .lowstock:hover .result {
-                transform: scale(1.05); /* Increase the scale on hover */
-                box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.24); /* Add box-shadow on hover */
-                /* Add any additional styles you want for the hover state */
-            }
-
-            .logodiv {
-                color: gray;
-                transition: 0.2s;
-            }
-
-            .lowstock:hover {
-                color: #F15BB7;
-                transform: scale(1.05); /* Increase the scale on hover */
-                background-color: rgba(0, 0, 0, 0.1) !important; /* Change the background color on hover */
-                /* Add any additional styles you want for the hover state */
-            }
-
-            /* Define styles for the hover state of logodiv when lowstock is being hovered */
-            .lowstock:hover .logodiv {
-                box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.24); /* Add box-shadow on hover */
-                background-color: rgba(241, 91, 183, 0.53); /* Change the background color on hover to dark pastel blue */
-                color: white;
-            }
-
-            .dashboard .news span {
-                color: #012970;
-                transition: 0.2s;
-                margin-left: 20px;
-            }
-
-            .dashboard .news span:hover {
-                color: #4154f1;
-            }
-
-            .dashboard .news p {
-                font-size: 13px;
-                color: #777777;
-                margin-left: 20px;
-            }
-        </style>
-        <div class="page-title">
-
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
-
-        <section class="section dashboard">
+<!-- Main -->
+<main id="main" class="main">
+   <style>
+      #midtitle {
+      color: #012970;
+      transition: 0.2s;
+      font-size: 15px;
+      width: 100% !important;
+      }
+      .lowstock:hover #midtitle {
+      {#font-size: 17px;#}
+      color: #F15BB7 !important;; /* Change the color on hover */
+      font-weight: bold !important;; /* Change the color on hover */
+      }
+      #middesc {
+      color: green;
+      transition: 0.2s;
+      }
+      .lowstock:hover #middesc {
+      {#font-size: 14px;#}
+      color: #35b435;
+      font-weight: bold !important;; /* Change the color on hover */
+      }
+      .lowstock {
+      /* Your regular styles go here */
+      transition: 0.2s; /* Add a smooth transition effect */
+      transform: scale(1); /* Initial scale value */
+      }
+      .result {
+      background-color: white;
+      transition: 0.2s; /* Add a smooth transition effect */
+      transform: scale(1);
+      }
+      .lowstock:hover .result {
+      transform: scale(1.05); /* Increase the scale on hover */
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.24); /* Add box-shadow on hover */
+      /* Add any additional styles you want for the hover state */
+      }
+      .logodiv {
+      color: gray;
+      transition: 0.2s;
+      }
+      .lowstock:hover {
+      color: #F15BB7;
+      transform: scale(1.05); /* Increase the scale on hover */
+      /* Add any additional styles you want for the hover state */
+      }
+      /* Define styles for the hover state of logodiv when lowstock is being hovered */
+      .lowstock .logodiv {
+      border-radius: 50% !important;
+      }
+      .lowstock:hover .logodiv {
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.24); /* Add box-shadow on hover */
+      background-color: rgba(241, 91, 183, 0.53); /* Change the background color on hover to dark pastel blue */
+      color: white;
+      }
+      .dashboard .news span {
+      color: #012970;
+      transition: 0.2s;
+      margin-left: 20px;
+      }
+      .dashboard .news span:hover {
+      color: #4154f1;
+      }
+      .dashboard .news p {
+      font-size: 13px;
+      color: #777777;
+      margin-left: 20px;
+      }
+   </style>
+   <!-- Page Title -->
+   <div class="pagetitle">
+      <h1>DASHBOARD</h1>
+   </div>
+   <!-- End Page Title -->
+   <!-- Dashboard Section -->
+   <section class="section dashboard">
+      <div class="contain row">
+         <!-- Left side columns -->
+         <div class="left col-lg-8">
             <div class="row">
-
-                <!-- Left side columns -->
-                <div class="col-lg-8">
-                    <div class="row">
-
-                        <!-- Pending Requests -->
-                        <div class="col-xxl-4 col-md-6" id="pendingRequestsDiv" onclick="redirectToRequisitionPage()">
-                            <div class="card info-card sales-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>No. of pending requisition forms</h6>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Requests <span>| Pending</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>{{ pending_req_count }}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+               <!-- Pending Requests -->
+               <div class="col-xxl-4 col-md-6" id="pendingRequestsDiv" onclick="redirectToRequisitionPage()">
+                  <div class="card info-card request-card">
+                     <!-- <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>No. of pending requisition forms</h6>
+                            </li>
+                        </ul>
+                        </div> -->
+                     <div class="card-body">
+                        <h5 class="card-title">Requests <span>| Pending</span></h5>
+                        <div class="d-flex align-items-center">
+                           <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i class="bi bi-file-earmark-text"></i>
+                           </div>
+                           <div class="ps-3">
+                              <h6>{{ pending_req_count }}</h6>
+                           </div>
                         </div>
-
-                        <script>
-                            function redirectToRequisitionPage() {
-                                // Redirect to another HTML file
-                                window.location.href = '{% url 'admin_transaction_requests_url' %}';
-                            }
-                        </script>
-                        <!-- End Pending Requests -->
-
-                        <!-- Pending Orders -->
-                        <div class="col-xxl-4 col-md-6" onclick="redirectToPurchaseOrderPage()">
-                            <div class="card info-card revenue-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>No. of pending purchase orders</h6>
-                                        </li>
-
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Orders <span>| Pending</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-cart-dash"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>{{ pending_orders_count }}</h6>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+                     </div>
+                  </div>
+               </div>
+               <script>
+                  function redirectToRequisitionPage() {
+                      // Redirect to another HTML file
+                      window.location.href = '{% url 'admin_transaction_requests_url' %}';
+                  }
+               </script>
+               <!-- End Pending Requests -->
+               <!-- Pending Orders -->
+               <div class="col-xxl-4 col-md-6" onclick="redirectToPurchaseOrderPage()">
+                  <div class="card info-card order-card">
+                     <!-- <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>No. of pending purchase orders</h6>
+                            </li>
+                        </ul>
+                        </div> -->
+                     <div class="card-body">
+                        <h5 class="card-title">Orders <span>| Pending</span></h5>
+                        <div class="d-flex align-items-center">
+                           <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i class="bi bi-cart-dash"></i>
+                           </div>
+                           <div class="ps-3">
+                              <h6>{{ pending_orders_count }}</h6>
+                           </div>
                         </div>
-                        <script>
-                            function redirectToPurchaseOrderPage() {
-                                // Redirect to another HTML file
-                                window.location.href = '{% url 'admin_transaction_purchase_url' %}';
-                            }
-                        </script>
-                        <!-- End Pending Orders-->
-
-                        <!-- Suppliers Card -->
-                        <div class="col-xxl-4 col-xl-12" onclick="redirectToSuppliersPage()">
-
-                            <div class="card info-card customers-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>No. of current suppliers</h6>
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Supplier <span>| Count</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-people"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>{{ supplier_count }}</h6>
-
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
+                     </div>
+                  </div>
+               </div>
+               <script>
+                  function redirectToPurchaseOrderPage() {
+                      // Redirect to another HTML file
+                      window.location.href = '{% url 'admin_transaction_purchase_url' %}';
+                  }
+               </script>
+               <!-- End Pending Orders-->
+               <!-- Suppliers Card -->
+               <div class="col-xxl-4 col-xl-12" onclick="redirectToSuppliersPage()">
+                  <div class="card info-card supplier-card">
+                     <!-- <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>No. of current suppliers</h6>
+                            </li>
+                        </ul>
+                        </div> -->
+                     <div class="card-body">
+                        <h5 class="card-title">Supplier <span>| Count</span></h5>
+                        <div class="d-flex align-items-center">
+                           <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i class="bi bi-people"></i>
+                           </div>
+                           <div class="ps-3">
+                              <h6>{{ supplier_count }}</h6>
+                           </div>
                         </div>
-                        <script>
-                            function redirectToSuppliersPage() {
-                                // Redirect to another HTML file
-                                window.location.href = '{% url 'supplier_index' %}';
-                            }
-                        </script>
-                        <!-- End Suppliers Card
+                     </div>
+                  </div>
+               </div>
+               <script>
+                  function redirectToSuppliersPage() {
+                      // Redirect to another HTML file
+                      window.location.href = '{% url 'supplier_index' %}';
+                  }
+               </script>
+               <!-- End Suppliers Card -->
+               <!-- Reports -->
+               <div class="col-12">
+                  <div class="report-section card">
+                     <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                           <li class="dropdown-header text-start">
+                              <h6>Filter</h6>
+                           </li>
+                           <li><a class="dropdown-item" id="report_filter" href="#" data-filter="this_day">Today</a></li>
+                           <li><a class="dropdown-item" id="report_filter" href="#" data-filter="this_month">This Month</a>
+                           </li>
+                           <li><a class="dropdown-item" id="report_filter" href="#" data-filter="this_year">This Year</a></li>
+                           <li><a class="dropdown-item" id="report_filter" href="#" data-filter="last_year">Last Year</a></li>
+                        </ul>
+                     </div>
+                     <div class="card-body">
+                        <h5 class="card-title">Reports <span>/Today</span></h5>
+                        <!-- Line Chart -->
+                        <div id="reportsChart"></div>
+                        <!-- End Line Chart -->
+                     </div>
+                  </div>
+               </div>
+               <!-- Report Script -->
+               <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+               <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+               <script>
+                  $(document).ready(function () {
+                      $('#report_filter').click(function (event) {
+                          event.preventDefault();
+                          var filterType = $(this).data('filter');
+                          fetchReportsData(filterType);
+                      });
 
-                       Reports -->
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-                                        <li><a class="dropdown-item" href="#" data-filter="this_day">Today</a></li>
-                                        <li><a class="dropdown-item" href="#" data-filter="this_month">This Month</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="#" data-filter="this_year">This Year</a></li>
-                                        <li><a class="dropdown-item" href="#" data-filter="last_year">Last Year</a></li>
-                                    </ul>
-                                </div>
+                      function fetchReportsData(filterType) {
+                          $.ajax({
+                              url: '/reports_data/',
+                              method: 'GET',
+                              data: {'filter_type': filterType},
+                              success: function (data) {
+                                  renderChart(data);
+                                  updateFilterText(filterType);
+                              },
+                              error: function (error) {
+                                  console.log('Error fetching data:', error);
+                              }
+                          });
+                      }
 
-                                <div class="card-body">
-                                    <h5 class="card-title">Reports <span>/Today</span></h5>
+                      function updateFilterText(filterType) {
+                          $('.card-title span').text('/' + filterType.replaceAll('_', ' ').capitalize());
+                      }
 
-                                    <!-- Line Chart -->
-                                    <div id="reportsChart"></div>
-                                    <!-- End Line Chart -->
+                      function renderChart(data) {
+                          var reportsChart = new ApexCharts(document.querySelector("#reportsChart"), {
+                              series: [{
+                                  name: 'Supplies',
+                                  data: data.Supplies,
+                              }, {
+                                  name: 'Assets',
+                                  data: data.Assets
+                              }, {
+                                  name: 'Job Orders',
+                                  data: data['Job Orders']
+                              }],
+                              chart: {
+                                  height: 350,
+                                  type: 'area',
+                                  toolbar: {
+                                      show: false
+                                  },
+                              },
+                              // ... (rest of your chart configuration)
+                              xaxis: {
+                                  type: 'datetime',
+                                  categories: data.categories
+                              },
+                              // ... (rest of your chart configuration)
+                          });
 
-                                </div>
-                            </div>
-                        </div>
+                          reportsChart.render();
+                      }
 
-                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-                        <script>
-                            $(document).ready(function () {
-                                $('.dropdown-item').click(function (event) {
-                                    event.preventDefault();
-                                    var filterType = $(this).data('filter');
-                                    fetchReportsData(filterType);
-                                });
-
-                                function fetchReportsData(filterType) {
-                                    $.ajax({
-                                        url: '/reports_data/',
-                                        method: 'GET',
-                                        data: {'filter_type': filterType},
-                                        success: function (data) {
-                                            renderChart(data);
-                                            updateFilterText(filterType);
-                                        },
-                                        error: function (error) {
-                                            console.log('Error fetching data:', error);
-                                        }
-                                    });
-                                }
-
-                                function updateFilterText(filterType) {
-                                    $('.card-title span').text('/' + filterType.replaceAll('_', ' ').capitalize());
-                                }
-
-                                function renderChart(data) {
-                                    var reportsChart = new ApexCharts(document.querySelector("#reportsChart"), {
-                                        series: [{
-                                            name: 'Supplies',
-                                            data: data.Supplies,
-                                        }, {
-                                            name: 'Assets',
-                                            data: data.Assets
-                                        }, {
-                                            name: 'Job Orders',
-                                            data: data['Job Orders']
-                                        }],
-                                        chart: {
-                                            height: 350,
-                                            type: 'area',
-                                            toolbar: {
-                                                show: false
-                                            },
-                                        },
-                                        // ... (rest of your chart configuration)
-                                        xaxis: {
-                                            type: 'datetime',
-                                            categories: data.categories
-                                        },
-                                        // ... (rest of your chart configuration)
-                                    });
-
-                                    reportsChart.render();
-                                }
-
-                                // Helper function to capitalize the first letter of a string
-                                String.prototype.capitalize = function () {
-                                    return this.charAt(0).toUpperCase() + this.slice(1);
-                                };
-                            });
-                        </script>
-
-
-                    </div>
-                </div><!-- End Left side columns -->
-
-                <!-- Right side columns -->
-                <div class="col-lg-4">
-
-                    <!-- Job Orders news in css -->
-
-                    <div style="background-color: white;" class="rounded">
-                        <div class="filter">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Low Stock Supply<span> | Updates</span></h5>
-                            <div class="news">
-                                {% if low_stock_list %}
-                                    {% for supply_name, supply_info in low_stock_list.items %}
-                                        <a href="transactions/purchase/?supply_id={{ supply_info.id }}">
-                                            <div class="post-item clearfix lowstock p-2 m-2"
-                                                 data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="{{ supply_name }} is low in stock, purchase {{ supply_info.result }} more {{ supply_info.unit }} to satisfy re-order level"
-                                                 style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; background-color: #ffffff; border-radius: 20px;">
-                                                <div class="row align-items-center justify-content-start">
-                                                    <!-- Left Div for Logo -->
-                                                    <div class="col-auto logodiv"
-                                                         style=" margin-left: 15px;border-radius: 12px; padding:8px 15px 8px 15px">
-                                                        {% if supply_info.type == 'Sanitizing' %}
-                                                            <i class="bi bi-clipboard2-plus-fill"
-                                                               style="font-size: 2em;"></i>
-                                                        {% elif supply_info.type == 'Container' %}
-                                                            <i class="bi bi-box-fill"
-                                                               style="font-size: 2em;"></i>
-                                                        {% elif supply_info.type == 'Packaging' %}
-                                                            <i class="bi bi-dropbox"
-                                                               style="font-size: 2em;"></i>
-                                                        {% endif %}
-                                                    </div>
-
-                                                    <!-- Middle Div for Text (Upper and Lower) -->
-                                                    <div class="col mb-0 midlabel">
-                                                        <div>
-                                                            <span id="midtitle"
-                                                                  style="font-weight: 600; "
-                                                                  class="d-flex align-content-center text-center">{{ supply_name }}</span>
-                                                        </div>
-                                                        <div>
-
-                                                            <p id="middesc" style="margin-left: 50px;"
-                                                               class="d-flex align-content-center text-center">Current
-                                                                Stock: {{ supply_info.on_hand }}</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Rightmost Div for Another Logo -->
-                                                    <div class="col-auto d-inline-flex result"
-                                                         style="margin-right: 20px;border-radius: 12px;">
-                                                        <i class="bi bi-caret-down-fill"
-                                                           style="color: red; font-weight: bold;"></i>
-                                                        <label style="color: black; font-weight: 600;">
-                                                            {{ supply_info.result }}
-                                                        </label>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    {% endfor %}
-                                {% else %}
-                                    <p>No supplies are currently low in stock.</p>
-                                {% endif %}
-                            </div><!-- End sidebar recent posts-->
-
-                        </div><!-- End sidebar recent posts-->
-
-                    </div>
-                </div><!-- End Job Orders -->
-
-            </div><!-- End Right side columns -->
-
+                      // Helper function to capitalize the first letter of a string
+                      String.prototype.capitalize = function () {
+                          return this.charAt(0).toUpperCase() + this.slice(1);
+                      };
+                  });
+               </script>
+               <!-- End Report Script -->
             </div>
-        </section>
-
-    </main><!-- End #main -->
+         </div>
+         <!-- End Left side columns -->
+         <!-- Right side columns -->
+         <div class="right-section col-lg-4">
+            <!-- Job Orders news in css -->
+            <div style="background-color: white;" class="stock-section ">
+               <div class="filter">
+               </div>
+               <div class="card-body">
+                  <h5 class="card-title">Supply<span> | Updates</span></h5>
+                  <div class="news">
+                     {% if low_stock_list %}
+                     {% for supply_name, supply_info in low_stock_list.items %}
+                     <a href="transactions/purchase/?supply_id={{ supply_info.id }}">
+                        <div class="post-item clearfix lowstock p-3 m-2 "
+                           data-bs-toggle="tooltip" data-bs-placement="bottom"
+                           title="{{ supply_name }} is low in stock, purchase {{ supply_info.result }} more {{ supply_info.unit }} to satisfy re-order level"
+                           style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; background-color: #ffffff; border-radius: 20px;">
+                           <div class="row d-flex align-items-center justify-content-start">
+                              <!-- Left Div for Logo -->
+                              <div class="col-auto logodiv"
+                                 style=" margin-left: 15px;border-radius: 0px; padding:8px 15px 8px 15px">
+                                 {% if supply_info.type == 'Sanitizing' %}
+                                 <i class="bi bi-clipboard2-plus-fill"
+                                    style="font-size: 2em;"></i>
+                                 {% elif supply_info.type == 'Container' %}
+                                 <i class="bi bi-box-fill"
+                                    style="font-size: 2em;"></i>
+                                 {% elif supply_info.type == 'Packaging' %}
+                                 <i class="bi bi-dropbox"
+                                    style="font-size: 2em;"></i>
+                                 {% endif %}
+                              </div>
+                              <!-- Middle Div for Text (Upper and Lower) -->
+                              <div class="col mb-0 midlabel d-flex flex-column">
+                                 <div class="mt-3">
+                                    <span id="midtitle"
+                                       style="font-weight: 600; "
+                                       class="ml-0 text-left">{{ supply_name }}
+                                    </span>
+                                 </div>
+                                 <div class="d-inline-block">
+                                    <p id="middesc" class="d-inline-block pb-0" style=""
+                                       class="ml-0 text-left">Current
+                                       Stock: {{ supply_info.on_hand }}
+                                    </p>
+                                 </div>
+                              </div>
+                              <!-- Rightmost Div for Another Logo -->
+                              <div class="col-auto d-inline-flex result"
+                                 style="margin-right: 15px;border-radius: 50%;">
+                                 <!-- <i class="bi bi-caret-down-fill"
+                                    style="color: var(--c1); font-weight: bold;"></i> -->
+                                 <label style="color: black; font-weight: 600; font-size: xx-large">
+                                 {{ supply_info.result }}
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </a>
+                     {% endfor %}
+                     {% else %}
+                     <p>No supplies are currently low in stock.</p>
+                     {% endif %}
+                  </div>
+                  <!-- End sidebar recent posts-->
+               </div>
+               <!-- End sidebar recent posts-->
+            </div>
+         </div>
+         <!-- End Job Orders -->
+      </div>
+      <!-- End Right side columns -->
+      </div>
+   </section>
+   <!-- End Dashboard Section -->
+</main>
+<!-- End #main -->
 {% endblock %}
