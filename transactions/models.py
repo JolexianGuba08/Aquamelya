@@ -152,9 +152,8 @@ class Job_Order(models.Model):
 class Purchase_Order(models.Model):
     purch_id = models.IntegerField(primary_key=True, default=default_purch_id)
     PURCHASE_STATUS_CHOICES = (
-        (1, 'Pending'),
-        (2, 'In Process'),
-        (3, 'Done')
+        (1, 'In Process'),
+        (2, 'Done'),
     )
     purch_status = models.IntegerField(choices=PURCHASE_STATUS_CHOICES, default=1)
     purch_date = models.DateField(auto_now_add=True)
