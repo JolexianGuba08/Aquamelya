@@ -24,53 +24,71 @@
             <label class="form-label" id="req_date_last_mod">{{ req_reviewed_date }}</label>
         </div>
         <br>
-        <div class="col-md-12">
+        {% if req_type == "Job Order" %}
+            {% for req_data in req_data %}
+            <div class="col-md-12" style="font-weight: 600">
+                <label for="form-control" style="font-weight: 600">Requestor's Note</label>
+                <textarea class="form-control" placeholder=""
+                          style="height: 100px; background-color: white" disabled>{{ req_data.notes }}</textarea>
+                <br>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-12">
             <label class="form-label" style="font-weight: 600"> Requestor's Note</label>
             <textarea class="form-control" placeholder="" id="req_notes"
                       style="height: 100px; background-color: white" disabled>{{ requestor_notes }}</textarea>
             <br>
         </div>
+        {% endif %}
+
         <div class="col-md-12" style="display:flex; flex-direction: column; align-items: end;">
             <label for="form-control" style="font-weight: 600">Reviewer's Note</label>
             <textarea class="form-control" placeholder="" id="req_reviewer_notes"
-                      style="height: 100px; background-color: white">{{ reviewer_notes }}</textarea>
+                      style="height: 100px; background-color: white; text-align: right;" >{{ reviewer_notes }}</textarea>
             <br>
         </div>
-        {% if req_type == "Job Order" %}
-        <div id="job_order_div">
-            <div class="row">
-                <!-- Your existing content here -->
-                <div class="col-md-12">
-                    <label for="start_date" style="font-weight: 600;">Worker Count</label>
-                    <label for="start_date" style="font-weight: 600; color: red;"></label>
-                    <input type="number" min="1" class="form-control" id="worker_count" value="{{ req_data.worker_count }}">
-                    <br>
-                </div>
-                <div class="col-md-6">
-                    <label for="start_date" style="font-weight: 600;">Start Date</label>
-                    <input type="date" class="form-control" id="job_order_start" value="{{ req_data.job_start_date }}">
-                </div>
-                <div class="col-md-6">
-                    <label for="end_date" style="font-weight: 600;">End Date</label>
-                    <input type="date" class="form-control" id="job_order_end" value="{{ req_data.job_end_date }}">
-                </div>
 
+        {% if req_type == "Job Order" %}
+            {% for req_data in req_data %}
+            <div id="job_order_div">
+                <div class="row">
+                    <!-- Your existing content here -->
+                    <div class="col-md-12">
+                        <label for="start_date" style="font-weight: 600;">Worker Count</label>
+                        <label for="start_date" style="font-weight: 600; color: red;"></label>
+                        <input type="number" min="1" class="form-control" id="worker_count" value="{{ req_data.worker_count }}">
+
+
+                        <br>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="start_date" style="font-weight: 600;">Start Date</label>
+                        <input type="date" class="form-control" id="job_order_start" value="{{ req_data.job_start_date }}">
+
+                    </div>
+                    <div class="col-md-6">
+                        <label for="end_date" style="font-weight: 600;">End Date</label>
+                        <input type="date" class="form-control" id="job_order_end" value="{{ req_data.job_end_date }}">
+                    </div>
+
+                </div>
+                <br>
             </div>
-            <br>
-        </div>
+            {% endfor %}
         {% endif %}
 
-{#                    <div class="col-md-12 " id="low_stock_div">#}
-{#                        <p id="low_stock_message" class="alert-warning rounded p-2 text-center">#}
-{#                        </p>#}
-{#                    </div>#}
 
+    {% if req_type != "Job Order" %}
     <button type="button" class="btn btn-primary">
         Add Note
     </button>
      <button type="button" id="releaseButton" data-reqid="{{ req_id }}"  onclick="releaseItems()" class="btn btn-success">
         Release Items
     </button>
+    {% else %}
+    <button type="button" class="btn btn-success" onclick="updateJoborder({{ req_id }})"> Submit</button>
+    {% endif %}
 
     </div>
      </div>
@@ -97,8 +115,24 @@
                 {% for item in req_data %}
                     <tr data-pk="{{ item.req_id }}"
                         data-type="{{ item.req_id__req_type__name }}">
-                        <td class="text-center align-middle">{{ item.supply__supply_description }}</td>
-                        <td class="text-center align-middle">{{ item.req_supply_qty }}
+                        <td class="text-center align-middle">
+                            {% if req_type == "Supply" %}
+                            {{ item.supply__supply_description }}
+                            {% elif req_type == "Asset" %}
+                            {{ item.asset__asset_description }}
+                            {% elif req_type == "Job Order" %}
+                            {{ item.job_name }}
+                            {% endif %}
+                        </td>
+                        <td class="text-center align-middle">
+                            {% if req_type == "Supply" %}
+                            {{ item.req_supply_qty }}
+                            {% elif req_type == "Asset" %}
+                            {{ item.req_asset_qty }}
+                            {% elif req_type == "Job Order" %}
+                            {{ item.worker_count }}
+                            {% endif %}
+
                             {% if requisition.req_type == 'Job Order' %}
                                 {% if requisition.req_quantity > 1 %}
                                     (workers)
@@ -117,9 +151,19 @@
                                 class="badge bg-success">{{ item.req_status__name }}</span>
                         </td>
                         <td class="text-center align-middle">
-                           <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
+                            {% if req_type == "Supply" %}
+                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
                                 Action
                             </button>
+                            {% elif req_type == "Asset" %}
+                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.asset__asset_description }}')">
+                                Action
+                            </button>
+                            {% elif req_type == "Job Order" %}
+                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.job_name }}')">
+                                Action
+                            </button>
+                            {% endif %}
 
                         </td>
                         <td class="text-center align-middle">
@@ -139,6 +183,23 @@
 
 </main>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Your Django template with Jinja variables representing dates -->
+{% with start_date="2024-01-05" end_date="2024-01-07" %}
+    <script>
+        // Access the Jinja variables representing dates in JavaScript
+        var job_order_start_date = "{{ start_date }}";
+        var job_order_end_date = "{{ end_date }}";
+
+        // Assuming you want to format the dates in a specific way
+        var formatted_start_date = new Date(job_order_start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        var formatted_end_date = new Date(job_order_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        // Output the formatted dates
+        console.log("Formatted Start Date:", formatted_start_date);  // Output: Formatted Start Date: Jan 5, 2024
+        console.log("Formatted End Date:", formatted_end_date);      // Output: Formatted End Date: Jan 7, 2024
+    </script>
+{% endwith %}
+
 <script>
 function fetchDataAndUpdateModal(pk,supply_description) {
     $.ajax({
@@ -263,6 +324,33 @@ function releaseItems() {
             },
         });
     }
+
+function updateJoborder(req_id){
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    var postData = {
+        'req_id': req_id,
+        'worker_count': $('#worker_count').val(),
+        'job_order_start': $('#job_order_start').val(),
+        'job_order_end': $('#job_order_end').val(),
+        'reviewer_notes': $('#req_reviewer_notes').val(),
+    };
+    $.ajax({
+        url: `/transactions/updateJoborder/${req_id}/`,
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrf_token
+        },
+        data: postData,
+        success: function (response) {
+            if (response.status === 'success') {
+            window.location.reload();
+            } else {
+                console.error('Error updating data');
+
+            }
+        },
+    });
+}
 
 </script>
 {% endblock %}

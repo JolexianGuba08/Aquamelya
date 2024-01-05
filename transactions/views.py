@@ -80,13 +80,15 @@ def get_requisition_info(request, pk, supply_description):
 
         req_status = req_item.req_status.__str__()
         request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
-        if current_onhand_stock is not None and req_qty is not None and current_onhand_stock < req_qty:
-            low_stock = True
+        if data.req_type.name == 'Supply' or data.req_type.name == 'Asset':
+            if current_onhand_stock < req_qty:
+                low_stock = True
+                if low_stock:
+                    # Include only 'Pending' and 'In Process' statuses when stock is insufficient
+                    request_statuses = RequisitionStatus.objects.filter(
+                        name__in=['In Process', 'Pending', 'Declined']).values('id', 'name')
 
-            # Include only 'Pending' and 'In Process' statuses when stock is insufficient
-            request_statuses = RequisitionStatus.objects.filter(name__in=['In Process', 'Pending','Declined']).values('id', 'name')
-        else:
-            # Fetching all request statuses excluding 'Cancelled'
+        if req_status == 'Approved':
             request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
 
     # Passing the JSON value to the front end
@@ -101,6 +103,28 @@ def get_requisition_info(request, pk, supply_description):
 
     return JsonResponse(data)
 
+def updateJoborder(request, req_id):
+    if request.method == 'POST':
+        try:
+            req_form = get_object_or_404(Requisition, req_id=req_id)
+            req = get_object_or_404(Job_Order, req_id=req_id)
+            req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
+                'job_order_start') else None
+            req.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
+            req.worker_count = request.POST.get('worker_count')
+            req.save()
+            req_form.reviewer_notes = request.POST.get('reviewer_notes')
+            req_form.request_status.name = req.req_status.name
+            req_form.save()
+
+            messages.success(request, 'Job Order updated successfully!')
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Error updating job order!')
+            return JsonResponse({'status': 'error'})
+    else:
+        raise Http404("Invalid request method.")
 
 # POSTING REQUISITION INFO MODAL
 def post_requisition_info(request, req_id):
@@ -110,14 +134,12 @@ def post_requisition_info(request, req_id):
     print(req_id)
     global req_form
     req_form = None  # Initialize req_form
-
     try:
         print(request.POST)
         requisition = get_object_or_404(Requisition, req_id=req_id)
         req_type = requisition.req_type.name
         item_description = request.POST.get('item_name')
         message_context = "Changes saved successfully!"
-
 
         # Fetching the appropriate OBJECT based on req_type
         if req_type == "Supply":
@@ -132,7 +154,6 @@ def post_requisition_info(request, req_id):
                 'job_order_start') else None
             req_form.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
             req_form.worker_count = request.POST.get('worker_count')
-
 
         # Update requisition status
         if req_type == "Supply":
@@ -151,7 +172,6 @@ def post_requisition_info(request, req_id):
                         requisition.request_status = RequestStatus.objects.get(name='Incomplete')
                         requisition.save()
 
-
                     message_context = "Request approved successfully!"
         elif req_type == "Asset":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
@@ -169,6 +189,9 @@ def post_requisition_info(request, req_id):
                     # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to
                     message_context = "Request approved successfully!"
 
+        elif req_type == "Job Order":
+            requisition.request_status = int(request.POST.get('req_status'))
+            message_context = "Request approved successfully!"
 
 
         # For Message Context if NO CHANGES WERE MADE ON THE REQUEST
@@ -214,9 +237,10 @@ def release_items(request, req_id):
             req_id = requisition.req_id
             req_status = requisition.request_status.name
 
-            if(req_status == 'Completed'):
+            if (req_status == 'Completed'):
                 messages.warning(request, 'Cannot release items. Request is already completed.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
 
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
@@ -234,7 +258,8 @@ def release_items(request, req_id):
                     return JsonResponse({'status': 'success'})
                 else:
                     messages.warning(request, 'Cannot release items. Not all items are approved.')
-                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
 
             elif requisition_type == 'Asset':
                 asset_data = Request_Assets.objects.filter(req_id=req_id)
@@ -251,7 +276,8 @@ def release_items(request, req_id):
                     return JsonResponse({'status': 'success'})
                 else:
                     messages.warning(request, 'Cannot release items. Not all items are approved.')
-                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
 
             elif requisition_type == 'Job Order':
                 messages.warning(request, 'Cannot release items. Job orders are not applicable for this action.')
@@ -280,7 +306,7 @@ def request_item_end_point(request, req_id):
                 'req_reviewed_date': requisition.req_reviewed_date.strftime(
                     '%Y-%m-%d') if requisition.req_reviewed_date else 'None',
                 'requestor_notes': requisition.requestor_notes,
-                'reviewer_notes': requisition.reviewer_notes,
+                'reviewer_notes': requisition.reviewer_notes if requisition.reviewer_notes else '',
 
             }
 
@@ -289,8 +315,7 @@ def request_item_end_point(request, req_id):
                     'req_supply_qty',
                     'supply__supply_description',
                     'req_id__req_type__name',
-                    'req_id',
-                    'req_status__name'# Assuming this is the field linking Request_Supply to Requisition
+                    'req_status__name'  # Assuming this is the field linking Request_Supply to Requisition
                 )
 
                 context['req_data'] = list(supply_data)
@@ -299,7 +324,7 @@ def request_item_end_point(request, req_id):
                     'req_asset_qty',
                     'asset__asset_description',
                     'asset__asset_type__name',
-                    'asset__request_assets__req_id'
+                    'req_status__name'
                 )
                 context['req_data'] = list(asset_data)
 
@@ -309,8 +334,26 @@ def request_item_end_point(request, req_id):
                     'job_name',
                     'job_start_date',
                     'job_end_date',
+                    'req_status__name',
+                    'notes'
                 )
-                context['req_data'] = list(job_data)
+                formatted_job_data = []
+                for job_item in job_data:
+                    formatted_item = {
+                        'worker_count': job_item['worker_count'],
+                        'job_name': job_item['job_name'],
+                        'job_start_date': job_item['job_start_date'].strftime('%Y-%m-%d') if job_item[
+                            'job_start_date'] else None,
+                        'job_end_date': job_item['job_end_date'].strftime('%Y-%m-%d') if job_item[
+                            'job_end_date'] else None,
+                        'req_status__name': job_item['req_status__name'],
+                        'notes': job_item['notes']
+
+                    }
+                    formatted_job_data.append(formatted_item)
+                    print(formatted_job_data)
+
+                context['req_data'] = formatted_job_data
 
             return render(request, 'request/user_admin/request_item.html', context)
 
@@ -318,6 +361,7 @@ def request_item_end_point(request, req_id):
             raise Http404("Requisition does not exist.")
     else:
         raise Http404("Invalid request method.")
+
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
