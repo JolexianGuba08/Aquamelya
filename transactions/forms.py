@@ -49,7 +49,7 @@ class RequestAssetsForm(forms.ModelForm):
 class RequestJobForm(forms.ModelForm):
     class Meta:
         model = Job_Order
-        fields = ['job_name', ]
+        fields = ['job_name', 'notes']
 
 
 class PurchaseOrderForm(forms.ModelForm):
