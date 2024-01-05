@@ -12,6 +12,7 @@ urlpatterns = [
     path('request_item_end_point/<int:req_id>/', views.request_item_end_point, name='request_item_end_point'),
     path('release_items/<int:req_id>/', views.release_items, name='release_items'),
     path('updateJoborder/<int:req_id>/', views.updateJoborder, name='updateJoborder'),
+    path('update_note/<int:req_id>/', views.update_note, name='update_note'),
 
     # -------------ADMIN DELIVERY URLS-----------------
     path('delivery/update/<str:pk>', views.DeliveryUpdateView.as_view(), name='update_delivery_info'),

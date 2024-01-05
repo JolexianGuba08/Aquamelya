@@ -3,8 +3,8 @@
 {% block transactions %} class="nav-link" {% endblock %}
 {% block transaction_requests %}  class="active" {% endblock %}
 {% block content %}
-
     {% include 'request/user_admin/request_info.html' %}
+
 <main id="main" class="main">
     <div class="card" style="max-height: none;overflow-y: auto;">
         {% csrf_token %}
@@ -44,8 +44,8 @@
 
         <div class="col-md-12" style="display:flex; flex-direction: column; align-items: end;">
             <label for="form-control" style="font-weight: 600">Reviewer's Note</label>
-            <textarea class="form-control" placeholder="" id="req_reviewer_notes"
-                      style="height: 100px; background-color: white; text-align: right;" >{{ reviewer_notes }}</textarea>
+            <textarea class="form-control" placeholder="" id="req_reviewer_notes" value="{{ reviewer_notes }}"
+                      style="height: 100px; background-color: white; text-align: right;">{{ reviewer_notes }}</textarea>
             <br>
         </div>
 
@@ -80,7 +80,7 @@
 
 
     {% if req_type != "Job Order" %}
-    <button type="button" class="btn btn-primary">
+    <button type="button" class="btn btn-primary" onclick="updateNote({{ req_id }})">
         Add Note
     </button>
      <button type="button" id="releaseButton" data-reqid="{{ req_id }}"  onclick="releaseItems()" class="btn btn-success">
@@ -93,7 +93,6 @@
     </div>
      </div>
                 <!-- End Multi Columns Form -->
-
 
     <div class="card" style="padding-bottom: 27px;">
         <div class="card-body">
@@ -180,26 +179,8 @@
         </table>
         </div>
     </div>
-
 </main>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <!-- Your Django template with Jinja variables representing dates -->
-{% with start_date="2024-01-05" end_date="2024-01-07" %}
-    <script>
-        // Access the Jinja variables representing dates in JavaScript
-        var job_order_start_date = "{{ start_date }}";
-        var job_order_end_date = "{{ end_date }}";
-
-        // Assuming you want to format the dates in a specific way
-        var formatted_start_date = new Date(job_order_start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        var formatted_end_date = new Date(job_order_end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-
-        // Output the formatted dates
-        console.log("Formatted Start Date:", formatted_start_date);  // Output: Formatted Start Date: Jan 5, 2024
-        console.log("Formatted End Date:", formatted_end_date);      // Output: Formatted End Date: Jan 7, 2024
-    </script>
-{% endwith %}
-
 <script>
 function fetchDataAndUpdateModal(pk,supply_description) {
     $.ajax({
@@ -269,15 +250,9 @@ function updateData() {
         var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
         var req_id  = $('#req_id').val()
         var postData = {
-            req_status: $('#status_select').val(),
-            item_name: $('#request_description').html(),
+            'req_status': $('#status_select').val(),
+            'item_name': $('#request_description').html(),
         };
-
-        if (req_type === 'Job Order') {
-            postData.job_order_start = $('#job_order_start').val();
-            postData.job_order_end = $('#job_order_end').val();
-            postData.worker_count = $('#worker_count').val();
-        }
 
         $.ajax({
             url: `/transactions/post_data/${req_id}/`,
@@ -288,11 +263,11 @@ function updateData() {
             data: postData,
             success: function (response) {
                 if (response.status === 'success') {
-                    console.log(postData)
-                    console.log(response.status);
+                    console.log(response)
                     window.location.reload();
                 } else {
-                    console.error('Error updating data');
+                    window.location.reload();
+                    console.error(response);
 
                 }
             },
@@ -324,7 +299,6 @@ function releaseItems() {
             },
         });
     }
-
 function updateJoborder(req_id){
     var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
     var postData = {
@@ -345,11 +319,39 @@ function updateJoborder(req_id){
             if (response.status === 'success') {
             window.location.reload();
             } else {
+                window.location.reload();
                 console.error('Error updating data');
 
             }
         },
     });
+}
+function updateNote(req_id){
+        var noteText = $('#req_reviewer_notes').val();
+        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+        var reqId = req_id;
+
+        // AJAX request to update the note
+        $.ajax({
+            type: 'POST',
+            url: '/transactions/update_note/' + reqId + '/',
+            headers: {
+                'X-CSRFToken': csrf_token
+            },
+            data: { 'note_text': noteText },
+            dataType: 'json',
+            success: function (data) {
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    window.location.reload();
+
+                }
+            },
+            error: function (error) {
+                alert('An error occurred while updating the note.',error);
+            }
+        });
 }
 
 </script>
