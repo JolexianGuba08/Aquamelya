@@ -86,7 +86,8 @@ def get_requisition_info(request, pk, supply_description):
                 if low_stock:
                     # Include only 'Pending' and 'In Process' statuses when stock is insufficient
                     request_statuses = RequisitionStatus.objects.filter(
-                        name__in=['In Process', 'Pending', 'Declined']).values('id', 'name')
+                        name__in=['In Process', 'Pending', 'Declined']).values(
+                'id', 'name')
 
         if req_status == 'Approved':
             request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
@@ -134,12 +135,14 @@ def post_requisition_info(request, req_id):
     print(req_id)
     global req_form
     req_form = None  # Initialize req_form
+
     try:
         print(request.POST)
         requisition = get_object_or_404(Requisition, req_id=req_id)
         req_type = requisition.req_type.name
         item_description = request.POST.get('item_name')
         message_context = "Changes saved successfully!"
+
 
         # Fetching the appropriate OBJECT based on req_type
         if req_type == "Supply":
@@ -154,6 +157,7 @@ def post_requisition_info(request, req_id):
                 'job_order_start') else None
             req_form.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
             req_form.worker_count = request.POST.get('worker_count')
+
 
         # Update requisition status
         if req_type == "Supply":
@@ -171,6 +175,7 @@ def post_requisition_info(request, req_id):
                     if not all(item.req_status.name == 'Approved' for item in supply_data):
                         requisition.request_status = RequestStatus.objects.get(name='Incomplete')
                         requisition.save()
+
 
                     message_context = "Request approved successfully!"
         elif req_type == "Asset":
@@ -361,7 +366,6 @@ def request_item_end_point(request, req_id):
             raise Http404("Requisition does not exist.")
     else:
         raise Http404("Invalid request method.")
-
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
@@ -657,7 +661,7 @@ def get_requisition_info_staff_view(request, pk):
 
         if requisition.req_type.name == 'Supply':
             supply_requests = Request_Supply.objects.filter(req_id=pk)
-            req_items = [{'description': supply.supply_description, 'quantity': supply.req_supply_qty,
+            req_items = [{'description': supply.supply.supply_description, 'quantity': supply.req_supply_qty,
                           'req_status': supply.req_status} for supply in supply_requests]
         elif requisition.req_type.name == 'Asset':
             asset_requests = Request_Assets.objects.filter(req_id=pk)
@@ -665,7 +669,8 @@ def get_requisition_info_staff_view(request, pk):
                           'req_status': asset.req_status} for asset in asset_requests]
         elif requisition.req_type.name == 'Job Order':
             job_order = get_object_or_404(Job_Order, req_id=pk)
-            req_items = [{'description': job_order.job_name, 'quantity': None}]
+            req_items = [
+                {'description': job_order.job_name, 'req_status': job_order.req_status, 'job_notes': job_order.notes}]
 
         requisition_data = {
             'req_id': requisition.req_id,
