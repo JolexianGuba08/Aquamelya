@@ -43,18 +43,23 @@
                                 <p class="card-text"><b>Request Date:</b> {{ requisition_data.req_date_requested }}</p>
                             </div>
                             <div class="col-md-6">
-                                {% if requisition_data.requestor_notes %}
+
+
+                                {% if requisition_data.requestor_notes and  requisition_data.req_type != 'Job Order' %}
                                     <p class="card-text"><b>Request Notes:</b>
-                                        {% if  requisition_data.req_type == 'Job Order' %}
-                                            {% for items in req_items %}
-                                                {{ items.job_notes }}
-                                            {% endfor %}
-                                        {% else %}
-                                            {{ requisition_data.requestor_notes }}
-                                        {% endif %}
+                                        {{ requisition_data.requestor_notes }}
                                     </p>
                                 {% else %}
-                                    <p class="card-text"><b>Request Notes:</b> No request notes available</p>
+                                    {% if  requisition_data.req_type == 'Job Order' %}
+                                        {% for items in req_items %}
+                                            <p class="card-text"><b>Request Notes:</b>
+                                                {{ items.job_notes }}
+                                            </p>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="card-text"><b>Request Notes:</b> No request notes available</p>
+                                    {% endif %}
+
                                 {% endif %}
 
                                 {% if requisition_data.req_reviewer_notes %}
