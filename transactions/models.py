@@ -174,10 +174,8 @@ class Delivery(models.Model):
         (2, 'Order Received'),
     )
     delivery_status = models.IntegerField(choices=DELIVERY_STATUS_CHOICES, default=1)
-    delivery_exp_date = models.DateField(null=True, blank=True)
     order_receive_by = models.ForeignKey(User_Account, on_delete=models.CASCADE)
     order_receive_date = models.DateTimeField(null=True, blank=True)
-    reference_id = models.IntegerField(null=True, blank=True)  # Check Reference ID
     purch = models.ForeignKey(Purchase_Order, on_delete=models.CASCADE)
 
     class Meta:
@@ -208,3 +206,44 @@ class Acknowledgement_Purch(models.Model):
     class Meta:
         db_table = 'acknowledgement_purch'
         verbose_name = 'Acknowledgement_Purch'
+
+
+class DeliveryStatus(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default_status(cls):
+        return DeliveryStatus.objects.get(name='Pending')
+
+    class Meta:
+        db_table = "delivery_status"
+        verbose_name = "Delivery Status"
+
+
+class DeliverySupply(models.Model):
+    del_item_id = models.AutoField(primary_key=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    del_status = models.ForeignKey(DeliveryStatus, on_delete=models.CASCADE, default=DeliveryStatus.get_default_status)
+    req_supply = models.ForeignKey(Request_Supply, on_delete=models.CASCADE)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'delivery_supply'
+        verbose_name = 'Delivery_Supply'
+
+
+class DeliveryAsset(models.Model):
+    del_item_id = models.AutoField(primary_key=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    del_status = models.ForeignKey(DeliveryStatus, on_delete=models.CASCADE, default=DeliveryStatus.get_default_status)
+    req_asset = models.ForeignKey(Request_Assets, on_delete=models.CASCADE)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'delivery_asset'
+        verbose_name = 'Delivery_Asset'

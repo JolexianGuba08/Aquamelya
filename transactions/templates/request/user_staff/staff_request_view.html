@@ -78,13 +78,7 @@
                     </div>
 
                     <div>
-                        {% if requisition_data.req_status|lower == 'cancelled'  or requisition_data.req_status|lower == 'incomplete' %}
-                            <button style="display:none;"
-                                    class=" cancel-request btn btn-secondary"
-                                    disabled>
-                                Cancelled
-                            </button>
-                        {% else %}
+                        {% if requisition_data.req_status|lower == 'pending' %}
                             <button class="cancel-request btn btn-warning" style="float: right; margin-right: 20px;"
                                     data-pk="{{ requisition_data.req_id }}" onclick="cancelRequestModal()">
                                 Cancel Request
