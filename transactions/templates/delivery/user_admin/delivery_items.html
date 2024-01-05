@@ -11,108 +11,213 @@
 {# Content #}
 {% block content %}
 
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
     {% include 'delivery/user_admin/update_info.html' %}
 <main id="main" class="main">
     <div class="card" style="max-height: none; overflow-y: auto;">
         {% csrf_token %}
         <div class="card-body">
-           <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Info</h2>
-
+            <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Info ({{ delivery.delivery_id }})
+               </h2>
             <br>
-            <div class="row mt-4">
+            <div class="row mt-5">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="form-label" style="font-weight: 600">Date Requested</label>
+                        <label class="form-label fw-600">Purchase Date</label>
                         <br>
-                        <label class="form-label" id="req_date_requested">{{ req_date }}</label>
+                        <label class="form-label fw-bold" id="req_date_requested">{{ delivery.purchase_date }}</label>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="form-label" style="font-weight: 600">Date Last Modified</label>
+                        <label class="form-label fw-600">Order Received Date</label>
                         <br>
-                        <label class="form-label" id="req_date_last_mod">{{ req_reviewed_date }}</label>
+                        <label class="form-label fw-bold" id="req_date_last_mod" >
+                            {% if delivery.order_receive_date == None %}
+                                <span class="text-danger">Not yet received</span>
+                            {% else %}
+                            {{ delivery.order_receive_date }}
+                            {% endif %}
+                        </label>
                     </div>
                 </div>
             </div>
 
             <div class="row mt-4">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label class="form-label" style="font-weight: 600">Requestor's Note</label>
+                        <label class="form-label fw-600">Delivery Item's Type</label>
                         <br>
-                        <textarea class="form-control" id="req_notes" style="height: 100px; background-color: white"
-                                  disabled>{{ requestor_notes }}</textarea>
+                        <label class="form-label fw-bold" id="item_type">{{ delivery.item_type }}</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label fw-600">Supplier</label>
+                        <br>
+                        <label class="form-label fw-bold" id="supplier">{{ delivery.supplier }}</label>
                     </div>
                 </div>
             </div>
+            <br>
+            <br>
 
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label class="form-label" style="font-weight: 600">Reviewer's Note</label>
-                        <br>
-                        <textarea class="form-control" id="req_reviewer_notes" style="height: 100px; background-color: white">{{ reviewer_notes }}</textarea>
-                    </div>
-                </div>
+            <div>
+                <button type="button" class="btn btn-outline-primary" onclick="wareHousing({{ delivery.delivery_id }}, '{{ delivery.item_type }}')">
+                    Warehousing
+                </button>
+
             </div>
 
         </div>
     </div>
 
-     <div class="card" style="padding-bottom: 27px;">
+    <div class="card" style="padding-bottom: 27px;">
         <div class="card-body">
-          <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Items</h2>
-
-            {#Table Request Supply #}
-            <table class="table table-striped table-hover " id="requisition_table">
+            <h2 class="card-title" style="float: left;"><i class="bi bi-truck"></i> &nbsp;Delivery Items</h2>
+         <table class="table table-striped table-hover" id="requisition_table">
             <thead class="text-center">
-            <tr>
-                <th scope="col" class="text-center">Item</th>
-                <th scope="col" class="text-center">Quantity</th>
-                <th scope="col" class="text-center">Supplier</th>
-                <th scope="col" class="text-center">Receiver</th>
-                <th scope="col" class="text-center">Action</th>
-                <th scope="col" class="text-center"></th>
-            </tr>
+                <tr>
+                    <th scope="col" class="text-center">Item name</th>
+                    <th scope="col" class="text-center">Order Quantity</th>
+                    <th scope="col" class="text-center">Order Unit</th>
+                    <th scope="col" class="text-center">Receiver</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center"></th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
             </thead>
             <tbody class="text-center">
-            {% if delivery %}
-                {% for item in delivery %}
+               {% if delivery_items %}
+                    {% for item in delivery_items %}
+                        <tr data-itemid="{{ item.del_item_id }}">
+                            <td class="text-center align-middle">
+                                {% if delivery.item_type == "Supply" %}
+                                    {{ item.req_supply.supply.supply_description }}
+                                {% elif delivery.item_type == "Asset" %}
+                                    {{ item.req_asset.asset.asset_description }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle">
+                                {% if delivery.item_type == "Supply" %}
+                                    {{ item.req_supply.req_supply_qty }}
+                                {% elif delivery.item_type == "Asset" %}
+                                    {{ item.req_asset.req_asset_qty }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle">
+                                {% if delivery.item_type == "Supply" %}
+                                    {{ item.req_supply.req_unit_measure }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle">{{ item.delivery.order_receive_by }}</td>
+                            <td class="text-center align-middle">
+                                <span class="badge bg-success">{{ item.del_status.name }}</span>
+                            </td>
+                            <td class="text-center align-middle"></td>
+                            <td class="text-center align-middle">
+                                <button type="button" class="btn btn-outline-success" onclick="fetchDataAndUpdateModalDelivery('{{ item.del_item_id|stringformat:"s" }}', '{{ delivery.item_type|stringformat:"s" }}')">
+                                    Action
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
-                        <td class="text-center align-middle"></td>
-                        <td class="text-center align-middle"></td>
-                        <td class="text-center align-middle"></td>
-                        <td class="text-center align-middle"></td>
-                        <td class="text-center align-middle">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#update_info_modal" onclick="update_info_modal('{{ item.id }}', '{{ item.item }}', '{{ item.quantity }}', '{{ item.supplier }}', '{{ item.receiver }}', '{{ item.status }}', '{{ item.remarks }}')">
-                                Update Info
-                            </button>
-                        </td>
-                        <td class="text-center align-middle">
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item_modal" onclick="delete_item_modal('{{ item.id }}', '{{ item.item }}')">
-                                Delete
-                            </button>
-                        </td>
+                        <td colspan="7" class="text-center align-middle">No items found.</td>
                     </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center align-middle">No items found.</td>
-                </tr>
-            {% endif %}
-
+                {% endif %}
             </tbody>
         </table>
+
         </div>
     </div>
 </main>
 
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
-    <script></script>
+    <script>
+    function fetchDataAndUpdateModalDelivery(pk, item_type) {
+            $.ajax({
+                url: `/transactions/get_delivery_data/${pk}/${item_type}`,
+                method: 'GET',
+                success: function (data) {
+                    $('#delivery_status_select').val(data.delivery_status);
+                    $('#request_description').text(data.item_name);
+                    $('#delivery_id').data('type', data.item_type);
+                    $('#delivery_id').val(data.item_delivery_id);
+                    if (data.delivery_status === 'Delivered' || data.delivery_status === 'Undelivered') {
+                        $('#delivery_status_select').prop('disabled', true);
+                        $('#delivery_savechanges_bttn').prop('disabled', true);
+                    } else {
+                        $('#delivery_status_select').prop('disabled', false);
+                    }
+
+
+                    $('#deliveryModal').modal('show');
+
+                },
+                error: function () {
+                    console.error('Error fetching data');
+                }
+            });
+        }
+
+    function updateData() {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var delivery_id = $('#delivery_id').val()
+            var delivery_status = $('#delivery_status_select').val();
+            var item_type  = $('#delivery_id').data('type');
+            $.ajax({
+                url: `/transactions/post_delivery_data/${delivery_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: {
+                    'item_type': item_type,
+                    'delivery_status': delivery_status,
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+
+
+                    }
+                },
+            });
+        }
+
+    function wareHousing(delivery_id, item_type) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+
+            console.log(item_type)
+
+            $.ajax({
+                url: `/transactions/warehousing/${delivery_id}/${item_type}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: {
+                    'item_type': item_type,
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+
+                    }
+                },
+            });
+        }
+    </script>
 
 {% endblock content %}

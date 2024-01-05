@@ -216,7 +216,7 @@ class DeliveryStatus(models.Model):
 
     @classmethod
     def get_default_status(cls):
-        return DeliveryStatus.objects.get(name='Pending')
+        return DeliveryStatus.objects.get(name='In Process')
 
     class Meta:
         db_table = "delivery_status"

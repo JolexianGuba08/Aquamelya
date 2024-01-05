@@ -20,8 +20,10 @@ urlpatterns = [
 
     # -------------ADMIN DELIVERY URLS-----------------
     path('delivery/update/<str:pk>', views.DeliveryUpdateView.as_view(), name='update_delivery_info'),
-    path('get_delivery_data/<int:pk>/', views.get_delivery_info, name='fetch_delivery_info'),
+    path('get_delivery_data/<int:pk>/<str:item_type>/', views.get_delivery_info, name='fetch_delivery_info'),
     path('post_delivery_data/<int:delivery_id>/', views.post_delivery_info, name='post_delivery_info'),
+
+
 
     # -------------ADMIN REPORTS URLS-----------------
     path('get_req_data/<str:req_id>/', views.get_purchase_req_id, name='get_req_data'),
@@ -51,6 +53,7 @@ urlpatterns = [
     # -------------END POINT-----------------
     path('staff_requisition_asset_view_endpoint/', views.staff_requisition_asset_view_endpoint,
          name='staff_requisition_asset_view_endpoint'),
-    path('delivery_items/', views.delivery_items,
-         name='delivery_items'),
+    path('delivery_items/<int:pk>/', views.delivery_items,name='delivery_items'),
+    path('warehousing/<int:delivery_id>/<str:item_type>/', views.warehousing_endpoint,name='warehousing'),
+
 ]

@@ -13,3 +13,7 @@ admin.site.register(Acknowledgement_Job)
 admin.site.register(Acknowledgement_Purch)
 admin.site.register(RequestType)
 admin.site.register(RequestStatus)
+admin.site.register(DeliveryAsset)
+admin.site.register(DeliverySupply)
+admin.site.register(DeliveryStatus)
+
