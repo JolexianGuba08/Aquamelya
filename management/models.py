@@ -54,9 +54,11 @@ class User_Account(models.Model):
     # saving hashed password
     def save(self, *args, **kwargs):
         if self.user_password:
-            hashed_password = bcrypt.hashpw(self.user_password.encode('utf8'), bcrypt.gensalt())
-            self.user_password = hashed_password.decode('utf8')
-
+            password = self.user_password.encode('utf-8')
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(password, salt)
+            self.user_password = hashed_password.decode('utf-8')
+            print(self.user_password)
         if self.user_first_name:
             self.user_first_name = self.user_first_name.upper()
         if self.user_middle_name:

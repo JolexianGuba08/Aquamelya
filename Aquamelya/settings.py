@@ -139,3 +139,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'duku3q6xf',
+    'API_KEY': '115844867368111',
+    'API_SECRET': 'h6ouKH9XFwrHR1alaf4qta1tpiU',
+    'FOLDER': 'Aquamelya',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

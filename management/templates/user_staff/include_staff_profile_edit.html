@@ -1,113 +1,185 @@
 {% load static %}
 
 <!-- Profile Edit Form -->
-    <form>
-      <div class="row mb-3">
-        {# EDIT PROFILE #}
-        <label
-          for="profileImage"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Profile Image</label
+<form>
+    {# EDIT PROFILE PICTURE #}
+    <div
+            class="w-[310px] z-50 h-full flex-shrink-0 flex justify-center items-end relative max-lg:w-[230px]"
+    >
+        <!-- Profile  -->
+        <div
+                class="profile group relative cursor-pointer border-2 border-background bg-secondary top-[60px] h-[190px] w-[190px] rounded-full flex justify-center items-center"
+                id="profile"
+                style="background: url({{ user_profile_pic }}) no-repeat center center"
         >
-        <div class="col-md-8 col-lg-9">
-          <img src="{% static 'images/profile-example.jpg' %}" alt="Profile" />
-          <div class="pt-2">
-            <a
-              href="#"
-              class="btn btn-primary btn-sm"
-              title="Upload new profile image"
-              ><i class="bi bi-upload"></i
-            ></a>
-            <a
-              href="#"
-              class="btn btn-danger btn-sm"
-              title="Remove my profile image"
-              ><i class="bi bi-trash"></i
-            ></a>
-          </div>
-        </div>
-      </div>
 
-      {# EDIT FIRSTNAME #}
-      <div class="row mb-3">
+            <!-- File Input -->
+            <input title="Upload File" type="file" id="file" class="hidden"/>
+            <!-- End File Input -->
+
+            <!-- Camera Icon -->
+            <label
+                    for="file"
+                    id="upload_btn"
+                    class="opacity-0 group-hover:opacity-90 transition-opacity absolute cursor-pointer z-50"
+                    onclick="edit()"
+            >
+                <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="w-14 h-14 text-background"
+                >
+                    <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z"/>
+                    <path
+                            fill-rule="evenodd"
+                            d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                            clip-rule="evenodd"
+                    />
+                </svg>
+            </label>
+            <!-- End Camera Icon -->
+        </div>
+        <!-- End Profile  -->
+    </div>
+    <!-- End Profile Container -->
+    {# EDIT FIRSTNAME #}
+    <div class="row mb-3">
         <label
-          for="fullName"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Firstname</label
+                for="fullName"
+                class="col-md-4 col-lg-3 col-form-label"
+        >Firstname</label
         >
         <div class="col-md-8 col-lg-9">
 
             <form action="">
-            {% csrf_token %}
-            {{ staff_profile_edit.staff_fname }}
+                {% csrf_token %}
+                {{ staff_profile_edit.staff_fname }}
             </form>
 
         </div>
-      </div>
+    </div>
 
-      {# EDIT MIDDLE NAME #}
-      <div class="row mb-3">
+    {# EDIT MIDDLE NAME #}
+    <div class="row mb-3">
         <label
-          for="fullName"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Middle Name</label
+                for="fullName"
+                class="col-md-4 col-lg-3 col-form-label"
+        >Middle Name</label
         >
         <div class="col-md-8 col-lg-9">
             <form action="">
-            {% csrf_token %}
-            {{ staff_profile_edit.staff_mname }}
+                {% csrf_token %}
+                {{ staff_profile_edit.staff_mname }}
             </form>
         </div>
-      </div>
+    </div>
 
-      {# EDIT LASTNAME #}
-      <div class="row mb-3">
+    {# EDIT LASTNAME #}
+    <div class="row mb-3">
         <label
-          for="fullName"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Lastname</label
+                for="fullName"
+                class="col-md-4 col-lg-3 col-form-label"
+        >Lastname</label
         >
         <div class="col-md-8 col-lg-9">
             <form action="">
-            {% csrf_token %}
-            {{ staff_profile_edit.staff_lname }}
+                {% csrf_token %}
+                {{ staff_profile_edit.staff_lname }}
             </form>
         </div>
-      </div>
+    </div>
 
-      <div class="row mb-3">
+    <div class="row mb-3">
         <label
-          for="birthdate"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Birthdate</label
+                for="birthdate"
+                class="col-md-4 col-lg-3 col-form-label"
+        >Birthdate</label
         >
         <div class="col-md-8 col-lg-9">
             <form action="">
-            {% csrf_token %}
-            {{ staff_profile_edit.staff_birthdate }}
+                {% csrf_token %}
+                {{ staff_profile_edit.staff_birthdate }}
             </form>
         </div>
-      </div>
+    </div>
 
-      <div class="row mb-3">
-        <label
-          for="Email"
-          class="col-md-4 col-lg-3 col-form-label"
-          >Email</label
-        >
-        <div class="col-md-8 col-lg-9">
-            <form action="">
-            {% csrf_token %}
-            {{ staff_profile_edit.staff_email }}
-            </form>
-        </div>
-      </div>
-
-      {# Save Changes Button #}
-      <div class="text-center" id="save_changes">
+    {# Save Changes Button #}
+    <div class="text-center" id="save_changes">
         <button type="submit" class="btn btn-primary">
-          SAVE CHANGES
+            SAVE CHANGES
         </button>
-      </div>
-    </form>
-    <!-- End Profile Edit Form -->
+    </div>
+</form>
+<!-- End Profile Edit Form -->
+
+<script>
+    // Display Profile Image
+    const image = document.querySelector("#profile");
+    const file = document.querySelector("#file");
+    const upload_btn = document.querySelector("#upload_btn");
+
+    file.addEventListener("change", function () {
+        const chosed_file = this.files[0];
+
+        if (chosed_file) {
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                //image.setAttribute("src", reader.result);
+                image.style.setProperty(
+                    "background-image",
+                    `url('${reader.result}')`,
+                    "important"
+                );
+            });
+            reader.readAsDataURL(chosed_file);
+            console.log(reader);
+        }
+    });
+
+
+    // Save changes button action with AJAX from endpoint
+    const saveChangesButton = document.getElementById('save_changes');
+
+    saveChangesButton.addEventListener('click', () => {
+        console.log('Save changes button clicked');
+
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append('staff_fname', document.getElementById('id_staff_fname').value);
+        formData.append('staff_mname', document.getElementById('id_staff_mname').value);
+        formData.append('staff_lname', document.getElementById('id_staff_lname').value);
+        formData.append('staff_birthdate', document.getElementById('id_staff_birthdate').value);
+
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0]; // Get the selected file
+        formData.append('profile_pic', file);
+
+        fetch('{% url "staff_profile_edit" %}', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(data => {
+                if (data.success) {
+                    if (data.changes_made) {
+                        console.log('Changes were made. Profile successfully updated');
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+                        console.log('No changes were made');
+                        // Handle or display a message indicating no changes were made
+                    }
+                } else {
+                    window.location.reload();
+                    console.log('Failed to save changes');
+                    // Handle error or show appropriate message to the user
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                // Handle network errors or other issues
+            });
+    });
+
+</script>

@@ -15,14 +15,23 @@ def login_view(request):
         password = form.cleaned_data['user_password']
 
         user = User_Account.objects.filter(user_email=email).first()
-        if user and user.user_status == 1 and bcrypt.checkpw(password.encode('utf8'),
-                                                             user.user_password.encode('utf8')):
-            print('Login successful')
-            create_session(request, user)
-            return redirect('homepage')
+
+        if user:
+            print('Found User')
+            print(user.user_password)
+            
+            if check_password(password, user.user_password):
+                print('Login successful')
+                create_session(request, user)
+                return redirect('homepage')
+            else:
+                print('Login failed')
+                error_message = 'Incorrect Email or Password' if user else 'Invalid Email Address'
+                form = LoginForm() if user else form
+                return render(request, 'login.html', {'error_message': error_message, 'form': form})
         else:
             print('Login failed')
-            error_message = 'Incorrect Email or Password' if user else 'Invalid Email Address'
+            error_message = 'User does not exist'
             form = LoginForm() if user else form
             return render(request, 'login.html', {'error_message': error_message, 'form': form})
 
@@ -37,3 +46,11 @@ def create_session(request, user):
     request.session['session_email'] = user.user_email
     request.session['session_user_id'] = user.user_id
     request.session['session_user_type'] = user.user_type
+
+
+def check_password(input_password, user_password):
+    # Assuming input_password is the password entered by a user
+    input_password_bytes = input_password.encode('utf-8')  # Convert the input password to bytes
+    stored_password_bytes = user_password.encode('utf-8')  # Convert the stored password to bytes
+
+    return bcrypt.checkpw(input_password_bytes, stored_password_bytes)
