@@ -123,6 +123,10 @@
 
             $('#createPurchase').on('click', function () {
                 const purchaseID = $('#delivery').data('pk');
+                // add alert to confirm
+                if (!confirm('Are you sure you want to approve this purchase order?')) {
+                    return false;
+                }
 
                 // Send a POST request to create a purchase requisition
                 $.ajax({

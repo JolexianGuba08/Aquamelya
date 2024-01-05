@@ -1337,15 +1337,16 @@ def purchase_order_approved(request, purch_id):
     try:
         purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
         purchase_order.purch_status = 3
-        purchase_order.save()
-
         req_id = purchase_order.req_id
         # get all the item to that request that is below the on hand
         requisition = Requisition.objects.get(req_id=req_id)
         requisition_type = requisition.req_type.name
         user_id = request.session.get('session_user_id')
         user = User_Account.objects.get(user_id=user_id)
-
+        low_stock_supply = []  # Collect low stock supplies
+        low_stock_assets = []  # Collect low stock assets
+        supply_status = False
+        asset_status = False
         if requisition_type == 'Supply':
             supply_data = Request_Supply.objects.filter(req_id=req_id)
 
@@ -1354,41 +1355,52 @@ def purchase_order_approved(request, purch_id):
                 request_quantity = supply.req_supply_qty
 
                 if request_quantity >= supply_on_hand:
-                    # add it to delivery
-                    delivery = Delivery.objects.create(
-                        purch=purchase_order,
-                        delivery_status=1,
-                        order_receive_by=user
-                    )
-                    delivery.save()
+                    supply_status = True
+                    low_stock_supply.append(supply)
 
-                    # add each item to delivery supply
+            if supply_status is True:
+                # add it to delivery
+                delivery = Delivery.objects.create(
+                    purch=purchase_order,
+                    order_receive_by=user
+                )
+                delivery.save()
+
+                # add each item to delivery supply
+                for supply in low_stock_supply:
                     delivery_supply = DeliverySupply.objects.create(
                         delivery=delivery,
-                        req_supply=supply,
+                        req_supply=supply
                     )
                     delivery_supply.save()
+
+
         elif requisition_type == 'Asset':
             asset_data = Request_Assets.objects.filter(req_id=req_id)
             for asset in asset_data:
                 on_hand = asset.asset.asset_on_hand
                 request_quantity = asset.req_asset_qty
-                if request_quantity >= on_hand:
-                    # add it to delivery
-                    delivery = Delivery.objects.create(
-                        purch=purchase_order,
-                        delivery_status=1,
-                        order_receive_by=1001
-                    )
-                    delivery.save()
 
-                    # add each item to delivery supply
+                if request_quantity >= on_hand:
+                    asset_status = True
+                    low_stock_assets.append(asset)
+
+            if asset_status is True:
+                # add it to delivery
+                delivery = Delivery.objects.create(
+                    purch=purchase_order,
+                    order_receive_by=user
+                )
+                delivery.save()
+
+                # add each item to delivery supply
+                for asset in low_stock_assets:
                     delivery_asset = DeliveryAsset.objects.create(
                         delivery=delivery,
-                        req_asset=asset.req_asset_id
+                        req_asset=asset
                     )
                     delivery_asset.save()
-
+        purchase_order.save()
         messages.success(request, 'Purchase order approved successfully!')
         return JsonResponse({'success': True})
     except Purchase_Order.DoesNotExist:
