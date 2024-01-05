@@ -84,7 +84,8 @@ def get_requisition_info(request, pk, supply_description):
             low_stock = True
 
             # Include only 'Pending' and 'In Process' statuses when stock is insufficient
-            request_statuses = RequisitionStatus.objects.filter(name__in=['In Process', 'Pending','Declined']).values('id', 'name')
+            request_statuses = RequisitionStatus.objects.filter(name__in=['In Process', 'Pending', 'Declined']).values(
+                'id', 'name')
         else:
             # Fetching all request statuses excluding 'Cancelled'
             request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
@@ -118,7 +119,6 @@ def post_requisition_info(request, req_id):
         item_description = request.POST.get('item_name')
         message_context = "Changes saved successfully!"
 
-
         # Fetching the appropriate OBJECT based on req_type
         if req_type == "Supply":
             req_form = get_object_or_404(Request_Supply, req_id_id=req_id, supply__supply_description=item_description)
@@ -132,7 +132,6 @@ def post_requisition_info(request, req_id):
                 'job_order_start') else None
             req_form.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
             req_form.worker_count = request.POST.get('worker_count')
-
 
         # Update requisition status
         if req_type == "Supply":
@@ -151,7 +150,6 @@ def post_requisition_info(request, req_id):
                         requisition.request_status = RequestStatus.objects.get(name='Incomplete')
                         requisition.save()
 
-
                     message_context = "Request approved successfully!"
         elif req_type == "Asset":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
@@ -168,8 +166,6 @@ def post_requisition_info(request, req_id):
                         requisition.save()
                     # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to
                     message_context = "Request approved successfully!"
-
-
 
         # For Message Context if NO CHANGES WERE MADE ON THE REQUEST
         if not req_type == "Job Order":
@@ -214,9 +210,10 @@ def release_items(request, req_id):
             req_id = requisition.req_id
             req_status = requisition.request_status.name
 
-            if(req_status == 'Completed'):
+            if (req_status == 'Completed'):
                 messages.warning(request, 'Cannot release items. Request is already completed.')
-                return JsonResponse({'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
 
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
@@ -234,7 +231,8 @@ def release_items(request, req_id):
                     return JsonResponse({'status': 'success'})
                 else:
                     messages.warning(request, 'Cannot release items. Not all items are approved.')
-                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
 
             elif requisition_type == 'Asset':
                 asset_data = Request_Assets.objects.filter(req_id=req_id)
@@ -251,7 +249,8 @@ def release_items(request, req_id):
                     return JsonResponse({'status': 'success'})
                 else:
                     messages.warning(request, 'Cannot release items. Not all items are approved.')
-                    return JsonResponse({'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot release items. Not all items are approved.'})
 
             elif requisition_type == 'Job Order':
                 messages.warning(request, 'Cannot release items. Job orders are not applicable for this action.')
@@ -290,7 +289,7 @@ def request_item_end_point(request, req_id):
                     'supply__supply_description',
                     'req_id__req_type__name',
                     'req_id',
-                    'req_status__name'# Assuming this is the field linking Request_Supply to Requisition
+                    'req_status__name'  # Assuming this is the field linking Request_Supply to Requisition
                 )
 
                 context['req_data'] = list(supply_data)
@@ -318,6 +317,7 @@ def request_item_end_point(request, req_id):
             raise Http404("Requisition does not exist.")
     else:
         raise Http404("Invalid request method.")
+
 
 # ---------- ADMIN PURCHASING SECTION ------------ #
 def admin_transaction_purchase_function(request):
@@ -613,7 +613,7 @@ def get_requisition_info_staff_view(request, pk):
 
         if requisition.req_type.name == 'Supply':
             supply_requests = Request_Supply.objects.filter(req_id=pk)
-            req_items = [{'description': supply.supply_description, 'quantity': supply.req_supply_qty,
+            req_items = [{'description': supply.supply.supply_description, 'quantity': supply.req_supply_qty,
                           'req_status': supply.req_status} for supply in supply_requests]
         elif requisition.req_type.name == 'Asset':
             asset_requests = Request_Assets.objects.filter(req_id=pk)
@@ -621,7 +621,8 @@ def get_requisition_info_staff_view(request, pk):
                           'req_status': asset.req_status} for asset in asset_requests]
         elif requisition.req_type.name == 'Job Order':
             job_order = get_object_or_404(Job_Order, req_id=pk)
-            req_items = [{'description': job_order.job_name, 'quantity': None}]
+            req_items = [
+                {'description': job_order.job_name, 'req_status': job_order.req_status, 'job_notes': job_order.notes}]
 
         requisition_data = {
             'req_id': requisition.req_id,

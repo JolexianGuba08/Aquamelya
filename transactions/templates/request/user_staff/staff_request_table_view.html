@@ -1,28 +1,58 @@
-<table class="table table-striped table-hover">
-    <thead class="text-center">
-    <tr>
-        <th scope="col" class="text-center">Request Item</th>
-        <th scope="col" class="text-center">Quantity</th>
-        <th scope="col" class="text-center">Status</th>
-        <th scope="col" class="text-center"></th>
-    </tr>
-    </thead>
-    <tbody class="text-center">
-    {% if req_items %}
-        {% for item in req_items %}
-            <tr>
-                <td class="text-center">{{ item.description }}</td>
-                <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-center">
-                    <span class="badge bg-success">{{ item.req_status }}</span>
-                </td>
-                <td class="text-center"></td>
-            </tr>
-        {% endfor %}
-    {% else %}
+{% if requisition_data.req_type == "Supply" or requisition_data.req_type == "Asset" %}
+    <table class="table table-striped table-hover">
+        <thead class="text-center">
         <tr>
-            <td colspan="4" class="text-center">No Request Item Found</td>
+            <th scope="col" class="text-center">Request Item</th>
+            <th scope="col" class="text-center">Quantity</th>
+            <th scope="col" class="text-center">Status</th>
+            <th scope="col" class="text-center"></th>
         </tr>
-    {% endif %}
-    </tbody>
-</table>
+        </thead>
+        <tbody class="text-center">
+        {% if req_items %}
+            {% for item in req_items %}
+                <tr>
+                    <td class="text-center">{{ item.description }}</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-success">{{ item.req_status }}</span>
+                    </td>
+                    <td class="text-center"></td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No Request Item Found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% elif requisition_data.req_type == "Job Order" %}
+    <table class="table table-striped table-hover">
+        <thead class="text-center">
+        <tr>
+            <th scope="col" class="text-center">Job Description</th>
+            <th scope="col" class="text-center">Status</th>
+            <th scope="col" class="text-center"></th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        {% if req_items %}
+            {% for item in req_items %}
+                <tr>
+                    <td class="text-center">{{ item.description }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-success">{{ item.req_status }}</span>
+                    </td>
+                    <td class="text-center"></td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No Request Item Found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+{% endif %}

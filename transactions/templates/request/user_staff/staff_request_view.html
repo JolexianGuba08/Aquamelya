@@ -44,7 +44,14 @@
                             </div>
                             <div class="col-md-6">
                                 {% if requisition_data.requestor_notes %}
-                                    <p class="card-text"><b>Request Notes:</b> {{ requisition_data.requestor_notes }}
+                                    <p class="card-text"><b>Request Notes:</b>
+                                        {% if  requisition_data.req_type == 'Job Order' %}
+                                            {% for items in req_items %}
+                                                {{ items.job_notes }}
+                                            {% endfor %}
+                                        {% else %}
+                                            {{ requisition_data.requestor_notes }}
+                                        {% endif %}
                                     </p>
                                 {% else %}
                                     <p class="card-text"><b>Request Notes:</b> No request notes available</p>
@@ -66,8 +73,8 @@
                     </div>
 
                     <div>
-                        {% if requisition_data.req_status|lower == 'cancelled' %}
-                            <button style="float: right; margin-right: 20px;" s
+                        {% if requisition_data.req_status|lower == 'cancelled'  or requisition_data.req_status|lower == 'incomplete' %}
+                            <button style="display:none;"
                                     class=" cancel-request btn btn-secondary"
                                     disabled>
                                 Cancelled

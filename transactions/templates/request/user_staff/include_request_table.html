@@ -4,7 +4,6 @@
         <th scope="col" class="text-center">Type</th>
         <th scope="col" class="text-center">Date</th>
         <th scope="col" class="text-center">Status</th>
-        <th scope="col" class="text-center"></th>
     </tr>
     </thead>
     <tbody class="text-center">
@@ -16,17 +15,7 @@
                 <td class="text-center align-middle">
                     <span class="badge bg-success">{{ requisition.req_status }}</span>
                 </td>
-                <td class="text-center align-middle">
-                    {% if requisition.req_status|lower == 'cancelled' %}
-                        <button class="cancel-request btn btn-warning" disabled>
-                            Cancelled
-                        </button>
-                    {% else %}
-                        <button class="cancel-request btn btn-warning" data-pk="{{ requisition.req_id }}">
-                            Cancel
-                        </button>
-                    {% endif %}
-                </td>
+
             </tr>
         {% endfor %}
     {% else %}
