@@ -3,33 +3,36 @@
 <form>
    {# EDIT PROFILE PICTURE #}
    <div class="">
-      <!-- Profile  -->
-      <div
-         class="profile"
-         id="profile"
-         style="background: url({{ user_profile_pic }}) no-repeat center center"
-         >
+           <!-- Profile  -->
+           <div class="d-flex justify-content-start align-items-center flex-column mb-0">
+                 <div class="" style="margin-bottom: 30px">
+                  <div
+                     class="profile"
+                     id="profile"
+                     style="background: url({{ user_profile_pic }}) no-repeat center center; background-size: cover; width: 120px; height: 120px; border-radius: 50% !important;background-color: red; margin-bottom: 10px"
+                     >
+                     <!-- File Input -->
+                     <input title="Upload File" type="file" id="file" class="d-none "/>
+                     <!-- End File Input -->
+                  </div>
 
-         <!-- File Input -->
-         <input title="Upload File" type="file" id="file" class="d-none"/>
-         <!-- End File Input -->
-
-         <!-- Camera Icon -->
-         <label
-            for="file"
-            id="upload_btn"
-            class="cursor-pointer"
-            onclick="edit()"
-            >
-            <svg width="46" height="46" fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 12.6a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z"></path>
-              <path d="M4.8 7.2a2.4 2.4 0 0 0-2.4 2.4v7.2a2.4 2.4 0 0 0 2.4 2.4h14.4a2.4 2.4 0 0 0 2.4-2.4V9.6a2.4 2.4 0 0 0-2.4-2.4h-1.406a2.4 2.4 0 0 1-1.697-.703l-.993-.994a2.4 2.4 0 0 0-1.697-.703h-2.813a2.4 2.4 0 0 0-1.697.703l-.993.994a2.4 2.4 0 0 1-1.697.703H4.8Zm.6 2.4a.6.6 0 1 1 0-1.2.6.6 0 0 1 0 1.2Zm10.8 3a4.2 4.2 0 1 1-8.4 0 4.2 4.2 0 0 1 8.4 0Z"></path>
-            </svg>
-         </label>
-         <!-- End Camera Icon -->
-      </div>
-      <!-- End Profile  -->
-
+                <!-- Camera Icon -->
+                 <label
+                    for="file"
+                    id="upload_btn"
+                    class="cursor-pointer d-flex justify-content-start align-items-center flex-column" style=""
+                    onclick="edit()"
+                    >
+                    <svg width="46" height="46" fill="#3850a6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 12.6a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z"></path>
+                      <path d="M4.8 7.2a2.4 2.4 0 0 0-2.4 2.4v7.2a2.4 2.4 0 0 0 2.4 2.4h14.4a2.4 2.4 0 0 0 2.4-2.4V9.6a2.4 2.4 0 0 0-2.4-2.4h-1.406a2.4 2.4 0 0 1-1.697-.703l-.993-.994a2.4 2.4 0 0 0-1.697-.703h-2.813a2.4 2.4 0 0 0-1.697.703l-.993.994a2.4 2.4 0 0 1-1.697.703H4.8Zm.6 2.4a.6.6 0 1 1 0-1.2.6.6 0 0 1 0 1.2Zm10.8 3a4.2 4.2 0 1 1-8.4 0 4.2 4.2 0 0 1 8.4 0Z"></path>
+                    </svg>
+                     <p class="" style="margin: auto 0">EDIT PROFILE</p>
+                 </label>
+             <!-- End Camera Icon -->
+               </div>
+           </div>
+          <!-- End Profile  -->
    </div>
    <!-- End Profile Container -->
    {# EDIT FIRSTNAME #}
