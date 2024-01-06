@@ -1378,9 +1378,6 @@ def warehousing_endpoint(request,delivery_id,item_type):
         messages.error(request, f'Error saving changes!')
         return JsonResponse({'status': f'error: {e}'})
 
-def delivery_items(request):
-    return render(request, 'delivery/user_admin/delivery_items.html')
-
 
 def purchase_requisition_function(request):
     return render(request, 'purchase/user_admin/generate_purchase.html')
