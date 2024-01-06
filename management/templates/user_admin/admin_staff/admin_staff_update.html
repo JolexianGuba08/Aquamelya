@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
             <div class="modal-header">
-                <h5 class="modal-title">STAFF DETAILS</h5>
-                <button type="button" class="btn btn-primary" style="background-color: #0d6dfc; border: none; color: #ffffff;" id="purchaseBtn" onclick="enableForm()"> EDIT</button>
+                <h5 class="modal-title" style="letter-spacing: 2px  !important">STAFF DETAILS</h5>
+                <button type="button" class="btn btn-primary" style="font-weight: bold; letter-spacing: 1px; border: none; color: #ffffff;" id="purchaseBtn" onclick="enableForm()"> EDIT</button>
 {#                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
             </div>
             <div class="modal-body">
@@ -12,7 +12,7 @@
                         {% render_field form.user_first_name class="form-control" placeholder="FIRST NAME" disabled="disabled" %}
                         <div class="{% if form.user_first_name.errors %} invalid{% endif %}">
                             {% for error in form.user_first_name.errors %}
-                              <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                               <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                             {% endfor %}
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         {% render_field form.user_last_name class="form-control" placeholder="LAST NAME" disabled="disabled" %}
                             <div class="{% if form.user_last_name.errors %} invalid{% endif %}">
                               {% for error in form.user_last_name.errors %}
-                                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                 <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -30,7 +30,7 @@
                         {% render_field form.user_middle_name class="form-control" placeholder=user_account.user_middle_name disabled="disabled" %}
                             <div class="{% if form.user_middle_name.errors %} invalid{% endif %}">
                               {% for error in form.user_middle_name.errors %}
-                                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                   <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -39,7 +39,7 @@
                             {% render_field form.user_birthdate class="form-control" placeholder="YYYY-MM-DD" disabled="disabled" %}
                             <div class="{% if form.user_birthdate.errors %} invalid{% endif %}">
                               {% for error in form.user_birthdate.errors %}
-                                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                 <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -48,7 +48,7 @@
                         {% render_field form.user_contact_number class="form-control" placeholder="+63XXXXXXXXXX" disabled="disabled" %}
                             <div class="{% if form.user_contact_number.errors %} invalid{% endif %}">
                               {% for error in form.user_contact_number.errors %}
-                                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -57,7 +57,7 @@
                         {% render_field form.user_address class="form-control" placeholder=user_account.user_address disabled="disabled" %}
                             <div class="{% if form.user_address.errors %} invalid{% endif %}">
                               {% for error in form.user_address.errors %}
-                                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -67,7 +67,7 @@
                         {% render_field form.user_email class="form-control" placeholder="user@gmail.com" disabled="disabled" %}
                             <div class="{% if form.user_email.errors %} invalid{% endif %}">
                               {% for error in form.user_email.errors %}
-                                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
                               {% endfor %}
                             </div>
                     </div>
@@ -87,13 +87,13 @@
                     </div>
 
                     <div class="modal-footer justify-content-end">
-                        <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal" style="background-color: red; border: none; width: 100px">CLOSE</button>
-                        <button type="submit" class="btn btn-primary invisible" id="saveBtn" style="background-color: #00d320; border: none; width: 160px">SAVE CHANGES</button>
+                        <button type="button" class="btn btn-danger me-auto" data-bs-dismiss="modal" style="font-weight: bold; letter-spacing: 1px; border: none; width: 100px">CLOSE</button>
+                        <button type="submit" class="btn btn-success invisible" id="saveBtn" style="font-weight: bold; letter-spacing: 1px; border: none; width: 160px">SAVE CHANGES</button>
                     </div>
                 </form><!-- End Multi Columns Form -->
 
             </div>
-<script>
+    <script>
         function enableForm() {
             // Get all elements with the class "form-control" inside the form with the id "myForm"
             const formControls = document.querySelectorAll('#myForm .form-control');

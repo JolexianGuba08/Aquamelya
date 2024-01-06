@@ -1,8 +1,8 @@
 {% load widget_tweaks %}
 
 <div class="modal-header">
-   <h5 class="modal-title mr-3">SUPPLY DETAILS</h5>
-    <button type="button" class="btn btn-primary ml-auto" style="color: white; background-color: #0d6efc; border: none;" id="purchaseBtn" onclick="enableForm()">EDIT</button>
+   <h5 class="modal-title mr-3" style="letter-spacing: 2px !important; ">SUPPLY DETAILS</h5>
+    <button type="button" class="btn btn-primary ml-auto" style="color: white; font-weight: bold; border: none;" id="purchaseBtn" onclick="enableForm()">EDIT</button>
 {#    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
 </div>
 <div class="modal-body">
@@ -14,7 +14,7 @@
             {% render_field form.supply_description class="form-control" placeholder=" " disabled="disabled"%}
             <div class="{% if form.supply_description.errors %}invalid{% endif %}">
                 {% for error in form.supply_description.errors %}
-                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                   <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
       </div>
@@ -24,7 +24,7 @@
             {% render_field form.supply_type class="form-control" placeholder=" " disabled="disabled"%}
             <div class="{% if form.supply_type.errors %}invalid{% endif %}">
                 {% for error in form.supply_type.errors %}
-                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                   <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
       </div>
@@ -34,7 +34,7 @@
             {% render_field form.supply_reorder_lvl class="form-control" placeholder=" " disabled="disabled"%}
             <div class="{% if form.supply_reorder_lvl.errors %}invalid{% endif %}">
                 {% for error in form.supply_reorder_lvl.errors %}
-                <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                 <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
       </div>
@@ -44,7 +44,7 @@
             {% render_field form.supplier_id class="form-control" placeholder="" disabled="disabled"%}
             <div class="{% if form.supplier_id.errors %}invalid{% endif %}">
                 {% for error in form.supplier_id.errors %}
-                <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                 <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
       </div>
@@ -76,8 +76,8 @@
         </div>
 
       <div class="modal-footer justify-content-end">
-            <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal" style="background-color: red; border: none">CLOSE</button>
-            <button type="submit" class="btn btn-primary invisible" id="saveBtn" style="background-color: #00d320; border: none">SAVE CHANGES</button>
+            <button type="button" class="btn btn-danger me-auto" data-bs-dismiss="modal" style="letter-spacing: 1px; font-weight: bold; border: none">CLOSE</button>
+            <button type="submit" class="btn btn-success invisible" id="saveBtn" style="border: none; letter-spacing: 1px; font-weight: bold">SAVE CHANGES</button>
         </div>
     </form>
 </div>

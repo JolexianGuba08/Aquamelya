@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-    <h5 class="modal-title">Add Supplier</h5>
+    <h5 class="modal-title" style="letter-spacing: 2px !important">ADD SUPPLIER</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="purchaseBtn" onclick="enableForm()"></button>
 </div>
 <div class="modal-body">
@@ -8,7 +8,7 @@
         {% csrf_token %}
 
         <div class="col-md-6">
-            <label for="inputName4" class="form-label">SUPPLIER</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">SUPPLIER</label>
             {% render_field form.supplier_name class="form-control" placeholder="   "%}
             <div class="{% if form.supplier_name.errors %} invalid{% endif %}">
                 {% for error in form.supplier_name.errors %}
@@ -18,7 +18,7 @@
         </div>
 
         <div class="col-md-6">
-            <label for="inputName4" class="form-label">Contact Number</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">Contact Number</label>
             {% render_field form.supplier_primary_contact class="form-control" placeholder=""%}
             <div class="{% if form.supplier_primary_contact.errors %} invalid{% endif %}">
                 {% for error in form.supplier_primary_contact.errors %}
@@ -28,7 +28,7 @@
         </div>
 
          <div class="col-md-6">
-            <label for="inputName4" class="form-label">Email</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">Email</label>
             {% render_field form.supplier_email class="form-control" placeholder=" "%}
             <div class="{% if form.supplier_email.errors %} invalid{% endif %}">
                 {% for error in form.supplier_email.errors %}
@@ -38,7 +38,7 @@
         </div>
 
          <div class="col-md-6">
-            <label for="inputName4" class="form-label">Address</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">Address</label>
             {% render_field form.supplier_address class="form-control" placeholder=" "%}
             <div class="{% if form.supplier_address.errors %} invalid{% endif %}">
                 {% for error in form.supplier_address.errors %}
@@ -48,7 +48,7 @@
         </div>
 
          <div class="col-md-6">
-            <label for="inputName4" class="form-label">Backup Phone</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">Backup Phone</label>
             {% render_field form.supplier_backup_contact class="form-control" placeholder="Backup Contact"%}
             <div class="{% if form.supplier_backup_contact.errors %} invalid{% endif %}">
                 {% for error in form.supplier_backup_contact.errors %}
@@ -58,7 +58,7 @@
         </div>
 
          <div class="col-md-6">
-            <label for="inputName4" class="form-label">Backup Email</label>
+            <label for="inputName4" class="form-label text-uppercase" style="font-size: 12px !important; letter-spacing: 2px">Backup Email</label>
             {% render_field form.supplier_backup_email class="form-control" placeholder="Backup Email"%}
             <div class="{% if form.supplier_backup_email.errors %} invalid{% endif %}">
                 {% for error in form.supplier_backup_email.errors %}
@@ -67,8 +67,6 @@
             </div>
         </div>
 
-
-
-        <button type="submit" class="btn btn-primary">Add Supplier</button>
+        <button type="submit" class="btn btn-primary" style="font-weight: bold; letter-spacing: 1px">ADD</button>
     </form>
 </div>

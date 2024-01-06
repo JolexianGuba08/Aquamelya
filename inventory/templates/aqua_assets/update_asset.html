@@ -3,7 +3,7 @@
 <div class="modal-header">
     <h5 class="modal-title mr-3">ASSET DETAILS</h5>
     <button type="button" class="btn btn-primary ml-auto"
-            style="color: white; border: none; background-color: #0d6efc;"
+            style="color: white; border: none; font-weight: bold;"
             id="purchaseBtn" onclick="enableForm()">EDIT
     </button>
 {#    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
@@ -17,7 +17,7 @@
             {% render_field form.asset_description class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_description.errors %} invalid{% endif %}">
                 {% for error in form.asset_description.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -27,7 +27,7 @@
             {% render_field form.asset_condition class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_condition.errors %} invalid{% endif %}">
                 {% for error in form.asset_condition.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -37,7 +37,7 @@
             {% render_field form.asset_on_hand class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_on_hand.errors %} invalid{% endif %}">
                 {% for error in form.asset_on_hand.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -47,7 +47,7 @@
             {% render_field form.asset_manufacturer class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_manufacturer.errors %} invalid{% endif %}">
                 {% for error in form.asset_manufacturer.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -57,7 +57,7 @@
             {% render_field form.asset_model class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_model.errors %} invalid{% endif %}">
                 {% for error in form.asset_model.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -67,7 +67,7 @@
             {% render_field form.asset_type class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_type.errors %} invalid{% endif %}">
                 {% for error in form.asset_type.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -76,7 +76,7 @@
             {% render_field form.asset_supplier class="form-control" placeholder="" disabled="disabled" %}
             <div class="{% if form.asset_supplier.errors %}invalid{% endif %}">
                 {% for error in form.asset_supplier.errors %}
-                    <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -86,7 +86,7 @@
             {% render_field form.notes class="form-control" placeholder="" disabled="disabled" %}
             <div class="{% if form.notes.errors %}invalid{% endif %}">
                 {% for error in form.notes.errors %}
-                    <p class="help-block text-danger" style="font-size: 12px;">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -112,8 +112,8 @@
         </div>
 
         <div class="modal-footer justify-content-end">
-            <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal" style="background-color: red; border: none">CLOSE</button>
-            <button type="submit" class="btn btn-primary invisible" id="saveBtn" style="background-color: #00d320; border: none">SAVE CHANGES</button>
+            <button type="button" class="btn btn-danger me-auto" data-bs-dismiss="modal" style="font-weight: bold; letter-spacing: 1px; border: none">CLOSE</button>
+            <button type="submit" class="btn btn-success invisible" id="saveBtn" style=" border: none; font-weight: bold; letter-spacing: 1px">SAVE CHANGES</button>
         </div>
     </form>
 </div>
