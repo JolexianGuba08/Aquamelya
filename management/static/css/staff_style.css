@@ -1436,3 +1436,7 @@ table tbody th {
     align-items: center;
   }
 }
+
+#req_over:hover {
+  background-color: white !important;
+}

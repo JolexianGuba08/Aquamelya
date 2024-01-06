@@ -50,10 +50,6 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td class="text-center align-middle" colspan="10">No Supplies Found</td>
-                                </tr>
                             {% endif %}
                             </tbody>
                         </table>
@@ -74,80 +70,80 @@
         });
     </script>
 
-    <script>
-        // Fetching data for modal
-        function fetchDataAndUpdateModalDelivery(pk) {
-            $.ajax({
-                url: `/transactions/get_delivery_data/${pk}/`,
-                method: 'GET',
-                success: function (data) {
-                    var delivery = data.delivery_json;
-                    var purchase_order = data.purchase_order_data;
-                    $('#delivery_id').val(data.delivery_id);
-                    $('#delivery_purchase_date').text(purchase_order.purch_date);
-                    $('#delivery_purchase_date_lastmod').text(data.formatted_date);
-                    $('#delivery_status_select').val(delivery.delivery_status);
-                    if (delivery.order_receive_date) {
-                        // If the date is defined, display it
-                        $('#delivery_received_date').text(data.date_received);
-                    } else {
-                        // If the date is undefined (none), display a "none" message
-                        $('#delivery_received_date').text('Not yet received');
-                    }
-
-                    if (delivery.delivery_status === 2) {
-                        $('#delivery_status_select').prop('disabled', true);
-                        $('.btn').prop('disabled', true);
-                    } else {
-                        $('#delivery_status_select').prop('disabled', false);
-                        $('.btn').prop('disabled', false);
-                    }
-
-                    $('#deliveryModal').modal('show');
-                },
-                error: function () {
-                    console.error('Error fetching data');
-                }
-            });
-        }
-
-        // Updating the data from the modal
-        function updateData(delivery_id) {
-            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-            var postData = {
-                delivery_status: $('#delivery_status_select').val(),
-            };
-
-            $.ajax({
-                url: `/transactions/post_delivery_data/${delivery_id}/`,
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrf_token
-                },
-                data: postData,
-                success: function (response) {
-                    if (response.status === 'success') {
-                        window.location.reload();
-                    } else {
-                        window.location.reload();
-                    }
-                },
-            });
-        }
-
-        // for modal event
-        $(document).ready(function () {
-            $('#deliveryModal').on('submit', function (e) {
-                e.preventDefault();
-                const delivery_id = $('#delivery_id').val();
-                updateData(delivery_id);
-            });
-            $('#delivery-table tbody').on('click', 'tr', function () {
-                const pk = $(this).data('pk');
-                console.log(pk)
-                fetchDataAndUpdateModalDelivery(pk);
-            });
-
-        });
-    </script>
+{#    <script>#}
+{#        // Fetching data for modal#}
+{#        function fetchDataAndUpdateModalDelivery(pk) {#}
+{#            $.ajax({#}
+{#                url: `/transactions/get_delivery_data/${pk}/`,#}
+{#                method: 'GET',#}
+{#                success: function (data) {#}
+{#                    var delivery = data.delivery_json;#}
+{#                    var purchase_order = data.purchase_order_data;#}
+{#                    $('#delivery_id').val(data.delivery_id);#}
+{#                    $('#delivery_purchase_date').text(purchase_order.purch_date);#}
+{#                    $('#delivery_purchase_date_lastmod').text(data.formatted_date);#}
+{#                    $('#delivery_status_select').val(delivery.delivery_status);#}
+{#                    if (delivery.order_receive_date) {#}
+{#                        // If the date is defined, display it#}
+{#                        $('#delivery_received_date').text(data.date_received);#}
+{#                    } else {#}
+{#                        // If the date is undefined (none), display a "none" message#}
+{#                        $('#delivery_received_date').text('Not yet received');#}
+{#                    }#}
+{##}
+{#                    if (delivery.delivery_status === 2) {#}
+{#                        $('#delivery_status_select').prop('disabled', true);#}
+{#                        $('.btn').prop('disabled', true);#}
+{#                    } else {#}
+{#                        $('#delivery_status_select').prop('disabled', false);#}
+{#                        $('.btn').prop('disabled', false);#}
+{#                    }#}
+{##}
+{#                    $('#deliveryModal').modal('show');#}
+{#                },#}
+{#                error: function () {#}
+{#                    console.error('Error fetching data');#}
+{#                }#}
+{#            });#}
+{#        }#}
+{##}
+{#        // Updating the data from the modal#}
+{#        function updateData(delivery_id) {#}
+{#            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();#}
+{#            var postData = {#}
+{#                delivery_status: $('#delivery_status_select').val(),#}
+{#            };#}
+{##}
+{#            $.ajax({#}
+{#                url: `/transactions/post_delivery_data/${delivery_id}/`,#}
+{#                method: 'POST',#}
+{#                headers: {#}
+{#                    'X-CSRFToken': csrf_token#}
+{#                },#}
+{#                data: postData,#}
+{#                success: function (response) {#}
+{#                    if (response.status === 'success') {#}
+{#                        window.location.reload();#}
+{#                    } else {#}
+{#                        window.location.reload();#}
+{#                    }#}
+{#                },#}
+{#            });#}
+{#        }#}
+{##}
+{#        // for modal event#}
+{#        $(document).ready(function () {#}
+{#            $('#deliveryModal').on('submit', function (e) {#}
+{#                e.preventDefault();#}
+{#                const delivery_id = $('#delivery_id').val();#}
+{#                updateData(delivery_id);#}
+{#            });#}
+{#            $('#delivery-table tbody').on('click', 'tr', function () {#}
+{#                const pk = $(this).data('pk');#}
+{#                console.log(pk)#}
+{#                fetchDataAndUpdateModalDelivery(pk);#}
+{#            });#}
+{##}
+{#        });#}
+{#    </script>#}
 {% endblock content %}
