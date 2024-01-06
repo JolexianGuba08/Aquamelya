@@ -1,24 +1,71 @@
-<table class="table table-striped table-hover datatable" id="supplier_table">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        width: 100% !important;
+        display: flex !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .dataTables_filter label {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .dataTables_filter label input{
+        width: 100% !important;
+        margin-left: 5px !important;
+    }
+
+    #supplier_table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+    }
+
+    @media (width < 940px) {
+      #supplier_table .purchase_tbl {
+        display: none !important;
+      }
+    }
+
+    #supplier_table tbody tr{
+        cursor: text !important;
+    }
+</style>
+
+<table class="table" id="supplier_table">
     <thead class="text-center">
         <tr>
-            <th scope="col" class="text-center">Item Type</th>
-            <th scope="col" class="text-center">Item Name</th>
-            <th scope="col" class="text-center">Qty</th>
-            <th scope="col" class="text-center">Supplier</th>
-            <th scope="col" class="text-center">Requestor</th>
-            <th scope="col" class="text-center">Purchase Date</th>
+            <th scope="col" class="text-center text-uppercase">Item Type</th>
+            <th scope="col" class="text-center text-uppercase">Item Name</th>
+            <th scope="col" class="purchase_tbl text-center text-uppercase">Qty</th>
+            <th scope="col" class="purchase_tbl text-center text-uppercase">Supplier</th>
+            <th scope="col" class="purchase_tbl text-center text-uppercase">Requestor</th>
+            <th scope="col" class="purchase_tbl text-center text-uppercase">Purchase Date</th>
         </tr>
     </thead>
     <tbody class="text-center">
         {% if purchase_order %}
             {% for purchase in purchase_order %}
                 <tr>
-                    <td>{{ purchase.purch_item_type }}</td>
-                    <td>{{ purchase.purch_item_name }}</td>
-                    <td>{{ purchase.purch_qty }}</td>
-                    <td>{{ purchase.supplier__supplier_name }}</td>
-                    <td>{{ purchase.purch_requestor }}</td>
-                    <td>{{ purchase.purch_date }}</td>
+                    <th>{{ purchase.purch_item_type }}</th>
+                    <th>{{ purchase.purch_item_name }}</th>
+                    <td class="purchase_tbl">{{ purchase.purch_qty }}</td>
+                    <td class="purchase_tbl">{{ purchase.supplier__supplier_name }}</td>
+                    <td class="purchase_tbl">{{ purchase.purch_requestor }}</td>
+                    <td class="purchase_tbl">{{ purchase.purch_date }}</td>
                 </tr>
             {% endfor %}
         {% else %}
@@ -26,3 +73,13 @@
         {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#supplier_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>

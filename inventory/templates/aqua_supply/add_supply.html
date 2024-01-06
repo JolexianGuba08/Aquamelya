@@ -1,11 +1,11 @@
 {% load widget_tweaks %}
 
    <div class="modal-header">
-      <h5 class="modal-title">Add Supply</h5>
+      <h5 class="modal-title">ADD SUPPLY</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
    </div>
    <div class="modal-body">
-      <form class="row g-3" method="POST" novalidate>
+      <form class="add_supply_modal row g-3" method="POST" novalidate>
         {% csrf_token %}
 
       <div class="col-md-12">
@@ -78,8 +78,8 @@
             </div>
       </div>
 
-   <div class="modal-footer pb-0">
-      <button type="submit" class="btn btn-primary">Add Supply</button>
+   <div class="modal-footer pb-0" style="border: none !important">
+      <button type="submit" class="btn btn-primary" style="width: 100px !important">ADD</button>
    </div>
 </form>
    </div>

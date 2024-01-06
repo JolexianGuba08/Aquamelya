@@ -1,39 +1,47 @@
 {% extends 'user_admin/admin_base.html' %}
-{% block title %}Aquamelya | Staff Management{% endblock %}
+{% block title %}Staff | Management{% endblock %}
 {% block management %}
     class="nav-link"
 {% endblock %}
+
 {% block management_staff %}
     class="active"
 {% endblock %}
+
 {% block content %} {% include "user_admin/admin_staff/_modal_.html" %}
     <main id="main" class="main">
 
         <div class="page-title">
-            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
-                <h3 style="font-weight: bold;">Staff</h3>
+            <div class="filter-and-search d-flex align-items-center justify-content-between mb-3">
+                <h3 style="font-weight: bold; margin-bottom: 0 !important; ">MANAGEMENT</h3>
 
-                <div class="col-md-2 ml-auto align-content-right">
-                    <button id="create-staff" class="btn btn-primary" type="button" name="button"><span
-                            class="fa fa-plus mr-2"></span>Add Staff
+                <div class="col-md-2 d-flex justify-content-end" style="width: 400px !important">
+                    <button id="create-staff" class="btn btn-primary" style="font-weight: bold; letter-spacing: 1px; font-size: 14px" type="button" name="button">
+                        <span class="fa fa-plus" style="margin-right: 5px !important; letter-spacing: 2px;"></span>ADD STAFF
                     </button>
                 </div>
             </div>
 
-            <section class=" ">
+            <section class="" style="">
                 <div style="display: block;">
                     <div class="card" style="padding-bottom: 27px;">
                         <div class="card-body">
-                            <h2 class="card-title" style="float: left;"><i class="bi bi-people"></i>Staff List</h2>
+                            <div class="d-flex justify-content-between p-3 pb-0 mb-4 mt-2">
+                                <h2 class="card-title" style="letter-spacing: 2px"><i class="bi bi-people" style="margin-right: 10px;"></i>STAFF</h2>
 
-                            <!-- Filter and Search at the top right -->
-                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
-                                <div class="col-md-3" style="margin-left: auto; padding-right: 5px;">
-                                    <input id="staff_search" type="text" name="query" class="form-control"
-                                           placeholder="Search"
-                                           title="Enter search keyword"/>
+                                <!-- Filter and Search at the top right -->
+                                <div class="filter-and-search d-flex align-items-center justify-content-end" style="width: 50% !important;">
+                                    <div class="col-md-3" style="width: 100% !important;">
+                                        <input id="staff_search" type="text" name="query" class="form-control ml-3" style="margin-left: 5px !important; width: 100% !important"
+                                               placeholder="Search"
+                                               title="Enter search keyword"/>
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- DIVIDER -->
+{#                            <div style="width: 100%; height: 1.2px; background-color: black"></div>#}
+
                             {#Table Staff#} {% include 'user_admin/admin_staff/table_staff.html' %}
 
                             <div class="modal fade" id="basicModal" tabindex="-1">

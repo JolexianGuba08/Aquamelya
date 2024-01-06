@@ -1,100 +1,92 @@
 {% extends "user_admin/admin_base.html" %}
-{% block title %}Reports | Delivery{% endblock %}
+{% block title %}Delivery | Reports{% endblock %}
 {% block reports %}
-   class="nav-link"
+class="nav-link"
 {% endblock %}
-
 {% block reports_delivery %}
- class="active"
-         {% endblock %}
-
+class="active"
+{% endblock %}
 {% block content %}
 <main id="main" class="main">
-
-<div class="page-title">
-      <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
-          <div>
-          <h3 style="font-weight: bold"> Reports</h3>
+   <div class="page-title">
+      <h3 style="font-weight: bold; margin-bottom: 0px !important; ">DELIVERY</h3>
+      <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">REPORT</p>
+      <!-- <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+         <div>
+         <h3 style="font-weight: bold"> Reports</h3>
          <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item" ><a href="{% url 'admin_reports_delivery_url' %}" >Reports</a></li>
-          <li class="breadcrumb-item active">Deliveries</li>
-        </ol>
-      </nav>
-          </div>
+         <ol class="breadcrumb">
+         <li class="breadcrumb-item" ><a href="{% url 'admin_reports_delivery_url' %}" >Reports</a></li>
+         <li class="breadcrumb-item active">Deliveries</li>
+         </ol>
+         </nav>
+         </div>
 
-</div>
-    <div class="col-lg-12">
-          <div class="card">
+         </div> -->
+      <div class="col-lg-12">
+         <div class="card" style="padding: 5px">
             <div class="card-body">
-              <h5 class="card-title">Line Chart</h5>
-
-              <!-- Line Chart -->
-              <div id="lineChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#lineChart"), {
-                    series: [{
-                      name: "Desktops",
-                      data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-                    }],
-                    chart: {
-                      height: 350,
-                      type: 'line',
-                      zoom: {
-                        enabled: false
-                      }
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'straight'
-                    },
-                    grid: {
-                      row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
+               <h5 class="card-title">CHART</h5>
+               <!-- Line Chart -->
+               <div id="lineChart"></div>
+               <script>
+                  document.addEventListener("DOMContentLoaded", () => {
+                    new ApexCharts(document.querySelector("#lineChart"), {
+                      series: [{
+                        name: "Desktops",
+                        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+                      }],
+                      chart: {
+                        height: 350,
+                        type: 'line',
+                        zoom: {
+                          enabled: false
+                        }
                       },
-                    },
-                    xaxis: {
-                      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-                    }
-                  }).render();
-                });
-              </script>
-              <!-- End Line Chart -->
-
+                      dataLabels: {
+                        enabled: false
+                      },
+                      stroke: {
+                        curve: 'straight'
+                      },
+                      grid: {
+                        row: {
+                          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                          opacity: 0.5
+                        },
+                      },
+                      xaxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                      }
+                    }).render();
+                  });
+               </script>
+               <!-- End Line Chart -->
             </div>
-          </div>
-        </div>
-    <section class=" ">
-    <div style="display: block;">
-    <div class="card" style="padding-bottom: 27px;">
-        <div class="card-body">
-
-         <h2 class="card-title" style="float: left;"> <i class="bi bi-card-text"></i> &nbsp; Deliveries</h2>
-
-    <!-- Filter and Search at the top right -->
-    <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
-        <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
-        </div>
-        <div class="col-md-2 mb-2 invisible" style="margin-right: 5px; ">
-            <select class="form-select" id="inputState">
-
-            </select>
-    </div>
-
-</div>
-            {% include 'delivery_table.html' %}
-</div>
-</div>
-</div>
-</section>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-  </main><!-- End #main -->
+         </div>
+      </div>
+      <section class=" ">
+         <div style="display: block;">
+            <div class="card" style="padding: 10px">
+               <div class="card-body">
+                  <h2 class="card-title" style="letter-spacing: 2px">DELIVERIES</h2>
+                  <!-- Filter and Search at the top right -->
+                  <!--<div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
+                     <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
+                     </div>
+                     <div class="col-md-2 mb-2 invisible" style="margin-right: 5px; ">
+                        <select class="form-select" id="inputState">
+                        </select>
+                     </div>
+                  </div> -->
+                  {% include 'delivery_table.html' %}
+               </div>
+            </div>
+         </div>
+      </section>
+   </div>
+   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+</main>
+<!-- End #main -->
 {% endblock %}

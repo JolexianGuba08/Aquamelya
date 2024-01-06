@@ -1,7 +1,9 @@
 :root {
   scroll-behavior: smooth;
   height: 100%;
-
+  --c1: #3850a6;
+  --c2: #f15bb7;
+  --c3: #f1eaf5;
 }
 
 body {
@@ -66,7 +68,6 @@ h6 {
   font-weight: bolder;
   color: #F15BB7;
   letter-spacing: 5px;
-  /*background-color: #3850A6;*/
   border-radius: 5px;
 }
 
@@ -926,7 +927,6 @@ h6 {
   display: flex !important;
   align-items: center !important;
   justify-content: center;
-  /*background-color: #F1EAF5;*/
   border-radius: 5px;
 }
 
@@ -1208,26 +1208,6 @@ h6 {
 
 }
 
-#add_field_btn:hover  {
-    background-color: transparent !important;
-    border: 1px solid #0D6EFD !important;
-    color: #0D6EFD !important;
-    transition: ease-in-out .5s !important;
-}
-
-#remove_field_btn:hover  {
-    background-color: transparent !important;
-    border: 1px solid #DC3545 !important;
-    color: #DC3545 !important;
-    transition: ease-in-out .5s !important;
-}
-
-#submit_btn:hover {
-  background-color: white !important;
-  border: 1px solid #16b45e !important;
-  color: #16b45e !important;
-}
-
 .form_divider {
   width: 100%;
   height: 1px;
@@ -1316,3 +1296,158 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+
+/* TABLES */
+table thead tr th {
+    color: var(--c1) !important;
+    letter-spacing: 1px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    background-color: var(--c3) !important ;
+    border-top: 1px solid var(--c3) !important;
+    border-bottom: 2px solid white !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table tbody  {
+    border-top: 1px solid var(--c3) !important;
+
+}
+
+table tbody tr {
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: lighter !important;
+    /*transition:  ease-in-out;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 2px solid white !important;
+}
+
+table tbody tr:hover {
+    background-color: var(--c3);
+    /*transition: .3s ease-in-out;*/
+}
+
+table thead tr .name_col{
+    border-left: 1px solid var(--c3) !important;
+}
+
+table thead tr .btn_col{
+    border-right: 1px solid var(--c3) !important;
+}
+
+table tbody th {
+    letter-spacing: 1px !important;
+    font-weight: lighter !important;
+    background-color: var(--c3) !important ;
+    border-bottom: 2px solid white !important;
+}
+
+
+@media (width < 700px) {
+
+  #staff_table .email_col,
+  #staff_table .contact_col,
+  #staff_table .email_row,
+  #staff_table .contact_row{
+    display: none !important;
+  }
+}
+
+.dataTables_length {
+    display: none !important;
+}
+
+.dataTables_filter {
+    width: 100% !important;
+    display: flex !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.dataTables_filter label {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.dataTables_filter label input{
+    width: 100% !important;
+    margin-left: 5px !important;
+}
+
+#delivery-table_paginate, #staff_requisition_table_paginate {
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid var(--c1) !important;
+}
+
+.table  {
+    border-bottom: none !important;
+}
+
+@media (width < 940px) {
+  table .remove_tbl {
+    display: none !important;
+  }
+}
+
+#my_req:hover {
+  background-color: white !important;
+}
+
+.staff_req_modal label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+}
+
+.staff_req_modal .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
+
+.modal-title span {
+    color: var(--c1) !important;
+    font-weight: bolder !important;
+    letter-spacing: 1px !important;
+    width: 100% !important;
+  font-size: 18px !important;
+}
+
+@media (max-width: 700px) {
+    .modal-dialog {
+        max-width: 500px;
+        margin-left: 80px !important;
+    }
+}
+
+@media (width < 700px) {
+
+  #req_menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+#req_over:hover {
+  background-color: white !important;
+}
+
+@media (max-width: 1200px) {
+  #overview {
+    display: flex;
+    flex-direction: column;
+  }
+  #overview #over_cont {
+    width: 100% !important;
+  }
+}
+
