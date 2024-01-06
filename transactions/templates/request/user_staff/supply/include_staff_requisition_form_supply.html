@@ -1,9 +1,13 @@
 {% load widget_tweaks %}
 <div class="card" id="left_section">
-    <div class="card-body" id="left_body">
+    <div class="card-body" style="padding: 30px !important" id="left_body">
         <div id="template">
-            <div style="display: flex; justify-content: space-between; align-items: center;"></div>
-            <h5 class="card-title">Request Supply</h5>
+
+            <div class="pagetitle" id="req_menu" style="">
+                <h1 class="" style="margin-bottom: 5px; font-size: 35px">SUPPLY</h1>
+                <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">REQUISITION</p>
+            </div>
+
             <button type="button" class="btn btn remove_field_btn" id="remove_field_btn">X</button>
             <!-- Request Forms -->
             <form method="post" id="input_form" action="{% url 'staff_requisition_supply_url' %}" novalidate>
@@ -13,7 +17,7 @@
                 <div id="supply-form">
                     <!-- Supply List Dropdown -->
                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Supply List</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Supply List</label>
                         <div class="col-sm-12">
                             {{supply_form.supply|add_class:"form-control"|attr:"id:supply_name"}}
                         </div>
@@ -25,7 +29,7 @@
                     </div>
                     <!-- Supply Quantity input -->
                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Quantity</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Quantity</label>
                         <div class="col-sm-12">
                             {% render_field supply_form.req_supply_qty class="form-control" id="supply_quantity"%}
                         </div>
@@ -35,18 +39,13 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <label class="col-sm-6 col-form-label"></label>
-                        <div class="col-sm-6 justify-content-end" id="req_btn">
-                        <button type="button" class="btn btn" id="submit_btn" onclick="mySave()"><i class="bi bi-cursor"></i>ADD
-                            </button>
-                        </div>
-                    </div>
+
                     <br>
+
                     <!-- Supply Notes input -->
-                    <hr>
                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Additional Notes</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Additional Notes</label>
+                        <hr>
                         <div class="col-sm-12">
                             {% render_field req_form.requestor_notes class="form-control" rows="5" id="requestor_notes"%}
                         </div>
@@ -56,6 +55,14 @@
                             {% endfor %}
                         </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-12 justify-content-end" id="req_btn">
+                        <button type="button" class="btn btn bg-primary" style="background-color: #0d6efc !important; border: none !important; min-width: 100% !important;" id="submit_btn" onclick="mySave()">ADD REQUEST
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
 
             </form>

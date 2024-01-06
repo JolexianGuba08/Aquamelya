@@ -283,7 +283,7 @@
                      {% if low_stock_list %}
                      {% for supply_name, supply_info in low_stock_list.items %}
                      <a href="transactions/purchase/?supply_id={{ supply_info.id }}">
-                        <div class="post-item clearfix lowstock p-3 m-2 "
+                        <div class="post-item clearfix lowstock p-3 m-2 mb-3"
                            data-bs-toggle="tooltip" data-bs-placement="bottom"
                            title="{{ supply_name }} is low in stock, purchase {{ supply_info.result }} more {{ supply_info.unit }} to satisfy re-order level"
                            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; background-color: #ffffff; border-radius: 20px;">
