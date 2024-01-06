@@ -1440,3 +1440,14 @@ table tbody th {
 #req_over:hover {
   background-color: white !important;
 }
+
+@media (max-width: 1200px) {
+  #overview {
+    display: flex;
+    flex-direction: column;
+  }
+  #overview #over_cont {
+    width: 100% !important;
+  }
+}
+
