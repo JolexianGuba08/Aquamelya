@@ -68,11 +68,6 @@
                 const pk = $(this).data('pk');
                 window.location.href = '/transactions/request_item_end_point/' + pk + '/';
             });
-            $('#req_id').on('submit', function (e) {
-                e.preventDefault();
-                const req_id = $('#req_id').val();
-                updateData(req_id);
-            });
 
             // Handle dropdown change events for both type and status filters
             // and input event for search

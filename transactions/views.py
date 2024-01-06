@@ -16,8 +16,7 @@ from management.models import Supplier, User_Account
 from management.views import user_already_logged_in
 from transactions.forms import RequestSupplyForm, RequestAssetsForm, RequestJobForm, PurchaseOrderForm, \
     DeliveryOrderForm, SupplyForm, AssetForm, RequisitionNoteForm, MyRequestForm
-from transactions.models import Requisition, Request_Assets, Request_Supply, RequisitionStatus, RequestType, Job_Order, \
-    Purchase_Order, Delivery, RequestStatus, DeliverySupply, DeliveryAsset
+from transactions.models import *
 
 
 def staff_required(function):
@@ -40,6 +39,7 @@ def admin_required(function):
         return function(request, *args, **kwargs)
 
     return _wrapped_view
+
 
 
 # ---------- ADMIN REQUISITION SECTION ------------ #
@@ -1175,8 +1175,208 @@ class DeliveryUpdateView(BSModalUpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-def delivery_items(request):
-    return render(request, 'delivery/user_admin/delivery_items.html')
+def delivery_items(request, pk):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
+
+    try:
+        delivery = get_object_or_404(Delivery, pk=pk)
+        request_type = delivery.purch.req.req_type.name
+
+        delivery_data = {
+            'delivery_id': delivery.delivery_id,
+            'purchase_date': delivery.purch.purch_date_modified.strftime('%Y-%m-%d')if delivery.purch.purch_date_modified else '',
+            'order_receive_date': delivery.order_receive_date.strftime('%Y-%m-%d') if delivery.order_receive_date else None,
+            'delivery_status': delivery.delivery_status,
+            'purch_order': delivery.purch.purch_id,
+            'item_type': request_type,
+            'supplier': delivery.purch.supplier.supplier_name,
+        }
+
+        delivery_items = None
+        if request_type == "Supply":
+            delivery_items = DeliverySupply.objects.filter(delivery=pk)
+            print("Hey")
+            for item in delivery_items:
+                print(item.del_status.name)
+        elif request_type == "Asset":
+            delivery_items = DeliveryAsset.objects.filter(delivery=pk)
+            print("Hey")
+            for item in delivery_items:
+                print(item.del_status.name)
+
+    except Delivery.DoesNotExist:
+        delivery_data = None
+    except Exception as e:
+        delivery_data = None
+        delivery_items = None
+    return render(request, 'delivery/user_admin/delivery_items.html', {'delivery': delivery_data,
+                                                                       'delivery_items': delivery_items})
+
+
+# Delivery Info modal
+def get_delivery_info(request, pk, item_type):
+    global delivery_item
+    user_type = request.session.get('session_user_type')
+    if user_type != 0 and user_type != 1:
+        raise Http404("You are not allowed to access this page.")
+    try:
+        if item_type == 'Supply':
+            delivery_item = get_object_or_404(DeliverySupply, pk=pk)
+        elif item_type == 'Asset':
+            delivery_item = get_object_or_404(DeliveryAsset, pk=pk)
+
+
+        delivery_data = {
+            'item_delivery_id': delivery_item.pk,
+            'item_type': item_type,
+            'delivery_id': delivery_item.delivery_id,
+            'delivery_status': delivery_item.del_status.name,
+            'item_name':delivery_item.req_supply.supply.supply_description if item_type == 'Supply' else delivery_item.req_asset.asset.asset_description,
+        }
+        return JsonResponse(delivery_data)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+# If Admin/Staff Received the delivery then, update the stock
+def post_delivery_info(request, delivery_id):
+    global delivery_item
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
+
+    try:
+        delivery_status = request.POST.get('delivery_status')
+        item_type = request.POST.get('item_type')
+
+        if item_type == 'Supply':
+            delivery_item = get_object_or_404(DeliverySupply, del_item_id=delivery_id)
+        elif item_type == 'Asset':
+            delivery_item = get_object_or_404(DeliveryAsset, del_item_id=delivery_id)
+
+
+        if delivery_status == delivery_item.del_status.name:
+            messages.warning(request, 'No changes were made.')
+            return JsonResponse({'status': 'error', 'message': 'No changes were made.'})
+
+        # If delivery is arrived then, update the stock
+        if delivery_status == 'Delivered':
+            # getting the item type and name
+            delivery_item.del_status = DeliveryStatus.objects.get(name='Delivered')
+            delivery_item.save()
+            messages.success(request, 'Changes saved successfully!')
+            return JsonResponse({'status': 'success'})
+        elif delivery_status == 'Undelivered':
+            delivery_item.del_status = DeliveryStatus.objects.get(name='Undelivered')
+            delivery_item.save()
+            messages.success(request, 'Changes saved successfully!')
+            return JsonResponse({'status': 'success'})
+        elif delivery_status == 'In Process':
+            delivery_item.del_status = DeliveryStatus.objects.get(name='In Process')
+            delivery_item.save()
+            messages.success(request, 'Changes saved successfully!')
+        else:
+            messages.warning(request, 'Invalid delivery status.')
+            return JsonResponse({'status': 'error'})
+
+    except Exception as e:
+        messages.error(request, f'Error saving changes!')
+        return JsonResponse({'status': f'error: {e}'})
+
+def warehousing_endpoint(request,delivery_id,item_type):
+    if request.session.get('session_user_type') == 0:
+        raise Http404("You are not allowed to access this page.")
+
+    try:
+        delivery_id = get_object_or_404(Delivery, delivery_id =delivery_id)
+
+        if delivery_id.delivery_status == 2:
+            messages.warning(request, 'Delivery already added to warehouse.')
+            return JsonResponse({'status': 'error', 'message': 'Error'})
+
+        if item_type == 'Supply':
+            delivery_item = DeliverySupply.objects.filter(delivery=delivery_id)
+            # Separate items into approved and declined lists
+            delivered_items = []
+            undelivered_items = []
+            pending_items = []
+
+            for item in delivery_item:
+                if item.del_status.name == 'Delivered':
+                    delivered_items.append(item)
+                elif item.del_status.name == 'Undelivered':
+                    undelivered_items.append(item)
+                elif item.del_status.name == 'In Process':
+                    pending_items.append(item)
+
+            if pending_items:
+                messages.warning(request, 'Cannot proceed to warehousing. Some items are still pending')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+            if not delivered_items:
+                messages.warning(request, 'Cannot proceed to warehousing. No delivered items.')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+
+            # Update the inventory stocks
+            for item in delivered_items:
+                current_stock = get_object_or_404(Supply, supply_id=item.req_supply.supply.supply_id)
+                current_stock.supply_on_hand += item.req_supply.req_supply_qty
+                current_stock.save()
+
+            # Update the requisition status
+            delivery_id.delivery_status = 2
+            delivery_id.save()
+
+
+            if undelivered_items:
+                messages.success(request, 'Successfully added to warehouse. Some items are undelivered.')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+            else:
+                messages.success(request, 'Successfully added to warehouse.')
+                return JsonResponse({'status': 'success'})
+
+
+        elif item_type == 'Asset':
+            delivery_item = DeliveryAsset.objects.filter(delivery=delivery_id)
+            # Separate items into approved and declined lists
+            delivered_items = []
+            undelivered_items = []
+            pending_items = []
+
+            for item in delivery_item:
+                if item.del_status.name == 'Delivered':
+                    delivered_items.append(item)
+                elif item.del_status.name == 'Undelivered':
+                    undelivered_items.append(item)
+                elif item.del_status.name == 'In Process':
+                    pending_items.append(item)
+
+            if pending_items:
+                messages.warning(request, 'Cannot proceed to warehousing. Some items are still pending')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+            if not delivered_items:
+                messages.warning(request, 'Cannot proceed to warehousing. No delivered items.')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+
+            # Update the inventory stocks
+            for item in delivered_items:
+                current_stock = get_object_or_404(Assets, asset_id=item.req_asset.asset.asset_id)
+                current_stock.asset_on_hand += item.req_asset.req_asset_qty
+                current_stock.save()
+
+            # Update the requisition status
+            delivery_id.delivery_status = 2
+            delivery_id.save()
+
+            if undelivered_items:
+                messages.success(request, 'Successfully added to warehouse. Some items are undelivered.')
+                return JsonResponse({'status': 'error', 'message': 'Error'})
+            else:
+                messages.success(request, 'Successfully added to warehouse.')
+                return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        print(e)
+        messages.error(request, f'Error saving changes!')
+        return JsonResponse({'status': f'error: {e}'})
 
 
 def purchase_requisition_function(request):
@@ -1337,15 +1537,16 @@ def purchase_order_approved(request, purch_id):
     try:
         purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
         purchase_order.purch_status = 3
-        purchase_order.save()
-
         req_id = purchase_order.req_id
         # get all the item to that request that is below the on hand
         requisition = Requisition.objects.get(req_id=req_id)
         requisition_type = requisition.req_type.name
         user_id = request.session.get('session_user_id')
         user = User_Account.objects.get(user_id=user_id)
-
+        low_stock_supply = []  # Collect low stock supplies
+        low_stock_assets = []  # Collect low stock assets
+        supply_status = False
+        asset_status = False
         if requisition_type == 'Supply':
             supply_data = Request_Supply.objects.filter(req_id=req_id)
 
@@ -1354,41 +1555,52 @@ def purchase_order_approved(request, purch_id):
                 request_quantity = supply.req_supply_qty
 
                 if request_quantity >= supply_on_hand:
-                    # add it to delivery
-                    delivery = Delivery.objects.create(
-                        purch=purchase_order,
-                        delivery_status=1,
-                        order_receive_by=user
-                    )
-                    delivery.save()
+                    supply_status = True
+                    low_stock_supply.append(supply)
 
-                    # add each item to delivery supply
+            if supply_status is True:
+                # add it to delivery
+                delivery = Delivery.objects.create(
+                    purch=purchase_order,
+                    order_receive_by=user
+                )
+                delivery.save()
+
+                # add each item to delivery supply
+                for supply in low_stock_supply:
                     delivery_supply = DeliverySupply.objects.create(
                         delivery=delivery,
-                        req_supply=supply,
+                        req_supply=supply
                     )
                     delivery_supply.save()
+
+
         elif requisition_type == 'Asset':
             asset_data = Request_Assets.objects.filter(req_id=req_id)
             for asset in asset_data:
                 on_hand = asset.asset.asset_on_hand
                 request_quantity = asset.req_asset_qty
-                if request_quantity >= on_hand:
-                    # add it to delivery
-                    delivery = Delivery.objects.create(
-                        purch=purchase_order,
-                        delivery_status=1,
-                        order_receive_by=1001
-                    )
-                    delivery.save()
 
-                    # add each item to delivery supply
+                if request_quantity >= on_hand:
+                    asset_status = True
+                    low_stock_assets.append(asset)
+
+            if asset_status is True:
+                # add it to delivery
+                delivery = Delivery.objects.create(
+                    purch=purchase_order,
+                    order_receive_by=user
+                )
+                delivery.save()
+
+                # add each item to delivery supply
+                for asset in low_stock_assets:
                     delivery_asset = DeliveryAsset.objects.create(
                         delivery=delivery,
-                        req_asset=asset.req_asset_id
+                        req_asset=asset
                     )
                     delivery_asset.save()
-
+        purchase_order.save()
         messages.success(request, 'Purchase order approved successfully!')
         return JsonResponse({'success': True})
     except Purchase_Order.DoesNotExist:
