@@ -1,52 +1,62 @@
 {% extends 'user_admin/admin_base.html' %}
-{% block title %}Aquamelya | Requisition{% endblock %}
+{% block title %}Requisition | Transaction{% endblock %}
 {% block transactions %} class="nav-link" {% endblock %}
 {% block transaction_requests %}  class="active" {% endblock %}
 {% block content %}
-
+    <style>
+        @media (width < 940px) {
+             #req_view {
+                display: flex !important;
+                 flex-direction: column !important;
+            }
+            #req_view #cont {
+                display: flex !important;
+                flex-direction: column !important;
+                 width: 100% !important;
+            }
+        }
+    </style>
     {% include 'request/user_admin/request_info.html' %}
     <main id="main" class="main">
 
         <div class="page-title">
-            <h3 style="font-weight: bold"> Transactions</h3>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Transactions</a></li>
-                    <li class="breadcrumb-item active">Requests</li>
-                </ol>
-            </nav>
+            <h3 style="font-weight: bold; margin-bottom: 0px !important; ">TRANSACTION</h3>
+            <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">REQUEST</p>
+
             <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
             </div>
-            <section class=" ">
-                <div style="display: block;">
-                    <div class="card" style="padding-bottom: 27px;">
-                        <div class="card-body">
-                            <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;
-                                Request Forms</h2>
+            <section class="">
+                <div style="=">
+                    <div class="card p-3" style="">
+                        <div class="card-body pb-2">
                             <!-- Filter and Search at the top right -->
-                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
-                                <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
+                            <div class="filter-and-search d-flex mb-3 pt-3 gap-3 justify-content-between" id="req_view" style="width: 100%">
+                                <div class="" style="width: 100%">
                                     <input type="text" id="search_input" name="query" class="form-control"
                                            placeholder="Enter ID or Name to search"
                                          >
                                 </div>
-                                <div class="col-md-2 mb-2" style="margin-right: 5px; ">
-                                    <select class="form-select" id="request_type_filter">
-                                        <option selected value="all">Request Type:</option>
-                                        <option value="Asset">Asset</option>
-                                        <option value="Supply">Supply</option>
-                                        <option value="Job Order">Job Order</option>
-                                    </select>
-                                </div>
 
-                                <div class="col-md-2 mb-2" style="margin-right: 5px; ">
-                                    <select class="form-select" id="request_status_filter">
-                                        <option selected value="all">By Status: All</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="Incomplete">Incomplete</option>
-                                    </select>
+                                <div class="d-flex gap-2" style="width: 90%" id="cont">
+                                    <div class=" mb-2" style="width: 100% ">
+                                        <select class="form-select" id="request_type_filter">
+                                            <option selected value="all">Request Type:</option>
+                                            <option value="Asset">Asset</option>
+                                            <option value="Supply">Supply</option>
+                                            <option value="Job Order">Job Order</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2" style="width: 100% ">
+                                        <select class="form-select" id="request_status_filter">
+                                            <option selected value="all">By Status: All</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Incomplete">Incomplete</option>
+                                        </select>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -67,11 +77,6 @@
             $('#requisition_table tbody').on('click', 'tr', function () {
                 const pk = $(this).data('pk');
                 window.location.href = '/transactions/request_item_end_point/' + pk + '/';
-            });
-            $('#req_id').on('submit', function (e) {
-                e.preventDefault();
-                const req_id = $('#req_id').val();
-                updateData(req_id);
             });
 
             // Handle dropdown change events for both type and status filters

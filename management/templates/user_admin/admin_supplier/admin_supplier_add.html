@@ -8,7 +8,7 @@
         {% csrf_token %}
 
         <div class="col-md-6">
-            <label for="inputName4" class="form-label">Supplier</label>
+            <label for="inputName4" class="form-label">SUPPLIER</label>
             {% render_field form.supplier_name class="form-control" placeholder="   "%}
             <div class="{% if form.supplier_name.errors %} invalid{% endif %}">
                 {% for error in form.supplier_name.errors %}
