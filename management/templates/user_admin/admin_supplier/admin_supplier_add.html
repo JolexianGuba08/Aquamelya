@@ -12,7 +12,7 @@
             {% render_field form.supplier_name class="form-control" placeholder="   "%}
             <div class="{% if form.supplier_name.errors %} invalid{% endif %}">
                 {% for error in form.supplier_name.errors %}
-                  <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                  <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -22,7 +22,7 @@
             {% render_field form.supplier_primary_contact class="form-control" placeholder=""%}
             <div class="{% if form.supplier_primary_contact.errors %} invalid{% endif %}">
                 {% for error in form.supplier_primary_contact.errors %}
-               <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+               <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -32,7 +32,7 @@
             {% render_field form.supplier_email class="form-control" placeholder=" "%}
             <div class="{% if form.supplier_email.errors %} invalid{% endif %}">
                 {% for error in form.supplier_email.errors %}
-               <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+               <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -42,7 +42,7 @@
             {% render_field form.supplier_address class="form-control" placeholder=" "%}
             <div class="{% if form.supplier_address.errors %} invalid{% endif %}">
                 {% for error in form.supplier_address.errors %}
-               <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+               <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -52,7 +52,7 @@
             {% render_field form.supplier_backup_contact class="form-control" placeholder="Backup Contact"%}
             <div class="{% if form.supplier_backup_contact.errors %} invalid{% endif %}">
                 {% for error in form.supplier_backup_contact.errors %}
-                 <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                 <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
