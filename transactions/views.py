@@ -112,7 +112,8 @@ def get_requisition_info(request, pk, supply_description):
             req_qty = None
 
         req_status = req_item.req_status.__str__()
-        request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
+        exclude = ['Cancelled', 'Done']
+        request_statuses = RequisitionStatus.objects.exclude(name__in=exclude).values('id', 'name')
         if data.req_type.name == 'Supply' or data.req_type.name == 'Asset':
             if current_onhand_stock < req_qty:
                 low_stock = True
@@ -146,12 +147,15 @@ def update_note(request, req_id):
         note_text = request.POST.get('note_text')
         requisition = get_object_or_404(Requisition, req_id=req_id)
 
+
+        if requisition.request_status.name != 'Pending' and requisition.request_status.name != 'In Process' and requisition.request_status.name != 'Incomplete':
+            messages.warning(request, 'Cannot update note. Request is already completed/cancelled.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already completed.'})
+
         if requisition.request_status.name == 'Done':
             messages.warning(request, 'Cannot update note. Request is already done.')
             return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already done.'})
-        elif requisition.request_status.name != 'Pending' or requisition.request_status.name != 'In Process':
-            messages.warning(request, 'Cannot update note. Request is already completed/cancelled.')
-            return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already completed.'})
+
 
         if note_text == requisition.reviewer_notes:
             messages.warning(request, 'No changes were made.')
@@ -171,22 +175,18 @@ def updateJoborder(request, req_id):
         job_order = get_object_or_404(Job_Order, req_id=req_id)
         job_order_status = job_order.req_status.name
 
-        if job_order_status == 'Approved':
-            messages.warning(request, 'Cannot update job order. Job order is already approved.')
-            return JsonResponse(
-                {'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
-        elif job_order_status == 'Done':
+        if req_form.request_status.name == RequestStatus.objects.get(name='Completed').name:
             messages.warning(request, 'Cannot update job order. Job order is already completed.')
             return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
+        elif req_form.request_status.name == RequestStatus.objects.get(name='Done').name:
+            messages.warning(request, 'Cannot update job order. Job order is already done.')
+            return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
-        elif job_order_status == 'Declined':
+        elif req_form.request_status.name == RequestStatus.objects.get(name='Cancelled').name:
             messages.warning(request, 'Cannot update job order. Job order is already declined.')
             return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
-        elif job_order_status == 'Cancelled':
-            messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
-            return JsonResponse(
-                {'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
 
         req = get_object_or_404(Job_Order, req_id=req_id)
         req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
@@ -232,6 +232,11 @@ def post_requisition_info(request, req_id):
             messages.warning(request, 'No changed were made')
             return JsonResponse({'status': 'error', 'message': 'No changed were made'})
 
+        elif selected_status == 'Done':
+            messages.warning(request, 'Cannot update request to done')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update request. Request is already done.'})
+
+
         # Update requisition status
         if req_type == "Supply":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
@@ -253,11 +258,33 @@ def post_requisition_info(request, req_id):
                     req_form.save()
 
         elif req_type == "Job Order":
-            req_form.req_status.pk = int(request.POST.get('req_status'))
-            req_form.save()
-            if selected_status == 'Approved':
+            print()
+            selected = RequisitionStatus.objects.get(pk=int(request.POST.get('req_status'))).name
+            if selected == 'Approved':
+
                 requisition.request_status = RequestStatus.objects.get(name='Completed')
+                req_form.req_status_id = int(request.POST.get('req_status'))
                 requisition.save()
+                req_form.save()
+                messages.success(request, 'Request updated successfully!!!!')
+                return JsonResponse({'status': 'success'})
+            elif selected == 'Declined':
+
+                requisition.request_status = RequestStatus.objects.get(name='Cancelled')
+                req_form.req_status_id = int(request.POST.get('req_status'))
+                requisition.save()
+                req_form.save()
+                messages.success(request, 'Request updated successfully!')
+                return JsonResponse({'status': 'success'})
+            else:
+                print("Job Order Else block")
+                req_form.req_status_id = int(request.POST.get('req_status'))
+                req_form.save()
+                print(int(request.POST.get('req_status')))
+                print(req_form.req_status.pk)
+                messages.success(request, 'Request updated successfully!')
+                return JsonResponse({'status': 'success'})
+
 
         if selected_status == 'Approved' or selected_status == 'Done':
             message_context = "Request approved successfully!"
@@ -274,19 +301,11 @@ def post_requisition_info(request, req_id):
         else:
             message_context = "Request updated successfully!"
 
-        # Check if there are any changes made
-        if req_form.req_status_id == int(
-                request.POST.get('req_status')) and req_form.job_start_date == request.POST.get(
-            'job_order_start') and req_form.job_end_date == request.POST.get(
-            'job_order_end') and req_form.worker_count == request.POST.get('worker_count'):
-            message_context = "No Changes were made"
 
         if req_type == "Supply":
             req_form.req_status_id = int(request.POST.get('req_status'))
             req_form.save()
-
             supply_data = Request_Supply.objects.filter(req_id=req_id)
-
             # Get the RequestStatus instance for 'Declined'
             declined_status = RequisitionStatus.objects.get(name='Declined')
 
@@ -294,7 +313,6 @@ def post_requisition_info(request, req_id):
             if all(item.req_status == declined_status for item in supply_data):
                 requisition.request_status = RequestStatus.objects.get(name='Cancelled')
                 requisition.save()
-                print("All declined")
 
             # Check if not all items are approved and not all items are declined
             if not all(
@@ -302,11 +320,9 @@ def post_requisition_info(request, req_id):
                     item.req_status == declined_status for item in supply_data):
                 requisition.request_status = RequestStatus.objects.get(name='Incomplete')
                 requisition.save()
-                print("Incomplete!!")
 
             messages.success(request, message_context)
             return JsonResponse({'status': 'success'})
-
 
         elif req_type == "Asset":
             req_form.req_status_id = int(request.POST.get('req_status'))
@@ -328,7 +344,6 @@ def post_requisition_info(request, req_id):
                 item.req_status == declined_status for item in asset_data):
                 requisition.request_status = RequestStatus.objects.get(name='Incomplete')
                 requisition.save()
-                print("Incomplete!!")
 
             messages.success(request, message_context)
             return JsonResponse({'status': 'success'})
@@ -513,7 +528,6 @@ def request_item_end_point(request, req_id):
 
                     }
                     formatted_job_data.append(formatted_item)
-                    print(formatted_job_data)
 
                 context['req_data'] = formatted_job_data
 
@@ -598,7 +612,7 @@ def staff_requisition_supply_view_endpoint(request):
         # Iterate through request supply items and associate with requisition
         for supply_item in supply_data:
             # Get or create a Supply instance based on the name
-            print(supply_item['supply_id'])
+
             supply_instance = Supply.objects.get(supply_id=supply_item['supply_id'])
             unit_measure = supply_instance.supply_unit
 
@@ -640,7 +654,6 @@ def staff_requisition_asset_view_endpoint(request):
         # Iterate through request supply items and associate with requisition
         for asset_item in asset_data:
             # Get or create a Supply instance based on the name
-            print(asset_item['asset_id'])
             asset_instance = Assets.objects.get(asset_id=asset_item['asset_id'])
 
             # Create Request_Supply instance
@@ -902,11 +915,14 @@ def post_requisition_info_staff(request, req_id):
             req_form.save()
             messages.success(request, 'Changes saved successfully!')
             return JsonResponse({'status': 'success'})
+
         elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
             messages.warning(request, 'Request already cancelled')
             return JsonResponse({'status': f'error: Request already cancelled'})
+
         elif req_type == RequisitionStatus.objects.get(name='Declined'):
             req_id.request_status = RequestStatus.objects.get(name='Cancelled')
+
         else:
             messages.warning(request, f'Request is already in process')
             return JsonResponse({'status': f'error: Request already cancelled'})
@@ -1236,7 +1252,6 @@ def delivery_items(request, pk):
             'supplier': delivery.purch.supplier.supplier_name,
             'user_type': request.session.get('session_user_type'),
         }
-        print(delivery_data['user_type'])
 
         delivery_items = None
         if request_type == "Supply":
