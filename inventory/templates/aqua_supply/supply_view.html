@@ -13,15 +13,15 @@
             <h3 style="font-weight: bold; margin-bottom: 0px !important; ">INVENTORY</h3>
             <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">SUPPLY</p>
 
-            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3" id="filter_supply">
+            <div class="filter-and-search d-flex  mb-3 gap-3" id="filter_supply">
                 <!-- Search -->
-                <div class="search col-md-3" style="margin-right: 5px">
+                <div class="search" style="margin-right: 5px; width: 100%">
                     <input type="text" id="supply_search" name="query" class="form-control" placeholder="Search"
                            title="Enter search keyword">
                 </div>
 
                 <!-- Supply Type Filtering -->
-                <div class="sup_type col-md-3 mb-2" style=" margin-right: 5px">
+                <div class="sup_type" style="width: 50%; margin-right: 5px">
                     <select class="form-select" id="supply_type_filter">
                         <option selected value="all">Supply Type: All</option>
                         {% for supply_type in supply_type %}
@@ -31,7 +31,7 @@
                 </div>
 
                 <!-- Supplier Filtering -->
-                <div class="supplier col-md-3 mb-2" style="margin-right: 35px">
+                <div class="supplier" style="margin-right: 35px; width: 50%">
                     <select class="form-select" id="supplier_filter">
                         <option selected value="all">Supplier: All</option>
                         {% for supplier in suppliers %}

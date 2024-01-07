@@ -35,7 +35,7 @@
 <table class="table table-hover" id="purchase-table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center text-uppercase"">Description</th>
+        <th scope="col" class="text-center text-uppercase">Description</th>
         <th scope="col" class="remove_tbl text-center text-uppercase">Requestor</th>
         <th scope="col" class="remove_tbl text-center text-uppercase">Date</th>
         <th scope="col" class="text-center text-uppercase">Status</th>
@@ -49,15 +49,17 @@
                 <td class="remove_tbl text-center">{{ purch.requestor }}</td>
                 <td class="remove_tbl text-center">{{ purch.purchase_date }}</td>
                 <td class="text-center">
+
                     {% if purch.purchase_status|lower == 'pending' %}
                         <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
                     {% elif purch.purchase_status|lower == 'cancelled' %}
-                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
-                    {% elif purch.purchase_status|lower == 'completed' %}
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
-                    {% elif purch.purchase_status|lower == 'incomplete' %}
-                        <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% elif purch.purchase_status|lower == 'in process' %}
+                        <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                      {% elif purch.purchase_status|lower == 'done' %}
+                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
                     {% endif %}
+
                 </td>
             </tr>
         {% endfor %}
