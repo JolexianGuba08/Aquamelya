@@ -209,17 +209,17 @@ class DeleteStaff(View):
 
 
 def admin_profile_function(request):
+    context_data = get_user_info(request)
+    staff_profile_edit = StaffProfileEdit(user_info=context_data)
+    staff_change_password = StaffChangePasswordForm()
     if not user_already_logged_in(request):
         return redirect('login')
     user_type = request.session['session_user_type']
     if user_type == 0:
-        context_data = get_user_info(request)
-        staff_profile_edit = StaffProfileEdit(user_info=context_data)
-        staff_change_password = StaffChangePasswordForm()
         return render(request, 'user_staff/staff_profile.html',
                       {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
     elif user_type == 1:
-        return render(request, 'user_admin/profile_admin.html')
+        return render(request, 'user_admin/profile_admin.html',{'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
     else:
         return redirect('login')
 
