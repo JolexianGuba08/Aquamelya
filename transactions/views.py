@@ -1645,18 +1645,20 @@ def items_received(request):
     acknowledged_by = request.POST.get('acknowledged_by')
     print(req_id, received_date, additional_notes, acknowledged_by)
     try:
+        req_id = get_object_or_404(Requisition, req_id=req_id)
         if req_id is None or received_date is None or acknowledged_by is None:
             messages.error(request, 'Invalid request data')
             return JsonResponse({'message': 'Invalid Request Data'})
 
         acknowledgement = Acknowledgement_Request.objects.create(
-            req_id=req_id,
-            received_date=received_date,
-            additional_notes=additional_notes,
-            acknowledged_by=acknowledged_by
+            req_id=req_id.req_id,
+            acknowledge_date=received_date,
+            notes=additional_notes,
+            acknowledge_by=acknowledged_by,
         )
         acknowledgement.save()
-
+        req_id.request_status = RequestStatus.objects.get(name='Done')
+        req_id.save()
         messages.success(request, 'Items acknowledged successfully!')
         return JsonResponse({'status':'success','message': 'success'})
 
