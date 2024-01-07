@@ -72,13 +72,13 @@
             <br>
             <br>
 
+           {% if delivery.user_type == 1 %}
             <div>
                 <button type="button" class="btn btn-primary border-0 p-3" style="width: 100%; font-size: 16px; font-weight: bolder; letter-spacing: 1px" onclick="wareHousing({{ delivery.delivery_id }}, '{{ delivery.item_type }}')">
                     WAREHOUSING
                 </button>
-
             </div>
-
+            {% endif %}
         </div>
     </div>
 
@@ -193,7 +193,7 @@
                 success: function (response) {
                     if (response.status === 'success') {
                         window.location.reload();
-                    } else if (response.status === 'failed') {
+                    } else  {
                         window.location.reload();
 
                     }

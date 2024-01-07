@@ -12,6 +12,7 @@
 
     {% include 'request/user_staff/staff_request_modal.html' %}
     {% include 'request/user_staff/confirm_cancel.html' %}
+    {% include 'request/user_staff/item_received_modal.html' %}
     <main id="main" class="main">
         <div>
             <h1 class="" style="margin-bottom: 30px; font-size: 35px; color: var(--c2); text-transform: uppercase; letter-spacing: 2px ">{{ requisition_data.req_description }}</h1>
@@ -24,7 +25,16 @@
                         <h2 class="card-title" style="letter-spacing: 2px; margin-bottom: 10px; padding-bottom: 0; padding-top: 0 !important"><i class="bi bi-envelope-paper" style="margin-right: 10px !important;"></i>
                             OVERVIEW
                         </h2>
-
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section dashboard">
+            <div style="display: block;">
+                <div class="card" style="padding-bottom: 27px;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;{{ requisition_data.req_description }} ({{ requisition_data.req_id }})
+                        </h2>
                         <div style="width: 100%; margin: auto; height: 1px; background-color: var(--c1); margin-bottom: 20px"></div>
                     </div>
 
@@ -63,6 +73,7 @@
                                         <p class="card-text"><b>Request Notes:</b>
                                             No request notes available</p>
                                     {% endif %}
+
                                 {% endif %}
 
                                 {% if requisition_data.req_reviewer_notes %}
@@ -74,25 +85,32 @@
                                     <p class="card-text"><b>Reviewer Notes:</b>
                                         No reviewer notes available</p>
                                 {% endif %}
+
                             </div>
                         </div>
                     </div>
 
                     <div class="px-3">
+                   <div class="d-flex justify-content-end mt-3 mr-5">
                         {% if requisition_data.req_status|lower == 'pending' %}
-                            <button class="cancel-request btn btn-danger" style="width: 100% !important"
-                                    data-pk="{{ requisition_data.req_id }}" onclick="cancelRequestModal()">
-                                CANCEL
+                            <button class="cancel-request btn btn-warning mr-2" onclick="cancelRequestModal()">
+                                Cancel Request
+                            </button>
+                        {% elif requisition_data.req_status|lower == 'completed' %}
+                            <button class="btn btn-success" onclick="itemsReceived()">
+                                Acknowledge Items
                             </button>
                         {% endif %}
                     </div>
-                </div>
 
+                </div>
             </div>
 
             <div class="card p-4" id="req_over" style="width: 100%">
                 {% include 'request/user_staff/staff_request_table_view.html' %}
             </div>
+        </div>
+
         </section>
     </main>
 
@@ -218,6 +236,38 @@
 
         }
 
+        function itemsReceived() {
+            $('#receivedModal').modal('show');
+        }
+
+        function itemsReceivedPost(req_id) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var postData = {
+                'req_id': req_id,
+                'received_date': $('#receivedDate').val(),
+                'addition_notes': $('#additionalNotes').val(),
+                'acknowledged_by': $('#acknowledgedBy').val()
+            };
+            $.ajax({
+                url: `/transactions/items_received/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (data) {
+                    if (data.status === 'success') {
+                        console.log(data.status);
+                    } else {
+                        console.log('Error updating data');
+                    }
+                },
+                error: function (data) {
+                    console.log('Error canceling request:', data);
+                }
+            });
+
+        }
 
         // Datatables initialization
         $(document).ready(function () {

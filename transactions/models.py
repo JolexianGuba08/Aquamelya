@@ -36,8 +36,8 @@ def default_job_id():
     return default_starting_id(Job_Order, 'job_id')
 
 
-def default_ack_job_id():
-    return default_starting_id(Acknowledgement_Job, 'ack_job_id')
+def default_ack_req_id():
+    return default_starting_id(Acknowledgement_Request, 'ack_req_id')
 
 
 def default_ack_purch_id():
@@ -183,16 +183,16 @@ class Delivery(models.Model):
         verbose_name = 'Delivery'
 
 
-class Acknowledgement_Job(models.Model):
-    ack_job_id = models.IntegerField(primary_key=True, default=default_ack_job_id)
+class Acknowledgement_Request(models.Model):
+    ack_req_id = models.IntegerField(primary_key=True, default=default_ack_req_id)
     acknowledge_by = models.CharField(max_length=100)
-    acknowledge_date = models.DateTimeField(auto_now_add=True)
+    acknowledge_date = models.DateTimeField()
     notes = models.TextField(blank=True, null=True)
-    job = models.ForeignKey(Job_Order, on_delete=models.CASCADE)
+    req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'acknowledgement_job'
-        verbose_name = 'Acknowledgement_Job'
+        db_table = 'acknowledgement_request'
+        verbose_name = 'Acknowledgement_request'
 
 
 class Acknowledgement_Purch(models.Model):

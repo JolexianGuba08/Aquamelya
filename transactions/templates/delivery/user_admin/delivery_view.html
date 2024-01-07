@@ -2,7 +2,7 @@
 {% load static %}
 
 {# Requisition Title #}
-{% block title %} Delivery | Transaction {% endblock title %}
+{% block title %} Purchase | AquaMelya {% endblock title %}
 
 {% block transactions %}
     class="nav-link"
@@ -10,7 +10,6 @@
 {% block transaction_delivery %} class="active" {% endblock %}
 {# Content #}
 {% block content %}
-
     <style>
         @media (width < 940px) {
              #req_view {
@@ -24,7 +23,6 @@
             }
         }
     </style>
-
     <main id="main" class="main">
         <div class="pagetitle">
             <h3 style="font-weight: bold; margin-bottom: 0px !important; color: var(--c2)">TRANSACTION</h3>
@@ -84,15 +82,17 @@
                 var pk = $(this).data('pk');
                 window.location.href = `/transactions/delivery_items/${pk}/`;
             });
+
             // Handle dropdown change event
             $('#status_filter, #delivery_search').on('change input', function () {
                 var selectedStatus = $('#status_filter').val();
-                var delivery_search = $('#delivery_search').val().toLowerCase();
-
+                var delivery_search = $('#delivery_search').val();
+                console.log(selectedStatus);
+                console.log(delivery_search)
                 // Show or hide rows based on selected status
                 $('#delivery-table tbody tr').each(function () {
                     var rowStatus = $(this).data('status');
-                    var rowName = $(this).data('name').toLowerCase();
+                    var rowName = $(this).data('pk').toString().toLowerCase();
                     if ((selectedStatus === 'all' || rowStatus.toString() === selectedStatus) &&
                         (rowName.includes(delivery_search) || delivery_search === '')) {
                         $(this).show();
@@ -101,8 +101,7 @@
                     }
                 });
             });
-        })
-        ;
+        });
 
     </script>
 

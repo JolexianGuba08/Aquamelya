@@ -78,15 +78,15 @@
                 {% endif %}
 
                 {% if req_type != "Job Order" %}
-                    <button type="button" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" class="btn btn-primary mt-4" onclick="updateNote({{ req_id }})">
-                        ADD NOTE
+                    <button type="button" class="btn btn-primary mt-4" onclick="updateNote({{ req_id }})">
+                        Add Note
                     </button>
-                    <button type="button" id="releaseButton" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" data-reqid="{{ req_id }}" onclick="releaseItems()"
-                            class="btn btn-success mt-2">
-                        RELEASE ITEMS
+                    <button type="button" id="releaseButton" data-reqid="{{ req_id }}" onclick="releaseItems()"
+                            class="btn btn-success mt-4">
+                        Release Items
                     </button>
-                    <button type="button" class="btn btn-dark mt-2" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" onclick="createPurchase({{ req_id }})">
-                        CREATE PURCHASE ORDER
+                    <button type="button" class="btn btn-dark mt-4" onclick="createPurchase({{ req_id }})">
+                        Create Purchase Order
                     </button>
                 {% else %}
                     <button type="button" class="btn btn-success mt-4" onclick="updateJoborder({{ req_id }})">Submit

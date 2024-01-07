@@ -27,6 +27,39 @@
                 <div class="card" id="my_req">
                     <div class="card-body" style="padding: 30px !important" >
                         <!-- <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp; My Request Forms</h2> -->
+            <div style="display: block;">
+                <div class="card" style="padding-bottom: 27px;">
+                    <div class="card-body">
+                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp; My
+                            Request Forms</h2>
+                         <!-- Filter and Search at the top right -->
+                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
+                                <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
+                                    <input type="text" id="search_input" name="query" class="form-control"
+                                           placeholder="Enter ID to search"
+                                         >
+                                </div>
+                                <div class="col-md-2 mb-2" style="margin-right: 5px; ">
+                                    <select class="form-select" id="request_type_filter">
+                                        <option selected value="all">Request Type:</option>
+                                        <option value="Asset">Asset</option>
+                                        <option value="Supply">Supply</option>
+                                        <option value="Job Order">Job Order</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2 mb-2" style="margin-right: 5px; ">
+                                    <select class="form-select" id="request_status_filter">
+                                        <option selected value="all">By Status: All</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Incomplete">Incomplete</option>
+                                        <option value="Done">Done</option>
+                                    </select>
+                                </div>
+                            </div>
+
                         {% include 'request/user_staff/include_request_table.html' %}
                     </div>
                 </div>
@@ -213,6 +246,31 @@
 
         $('.cancel_btn').click(function (e) {
             e.stopPropagation();
+        });
+
+         $('#request_type_filter, #request_status_filter, #search_input').on('change input', function () {
+            // Get the selected values for both filters
+            var selectedType = $('#request_type_filter').val();
+            var selectedStatus = $('#request_status_filter').val();
+
+
+            // Get the search query
+            var query = $('#search_input').val();
+            // Show/hide rows based on the selected type, status, and search query
+            $('#staff_requisition_table tbody tr').each(function () {
+                var rowType = $(this).data('type');
+                var rowStatus = $(this).data('status');
+                var rowPk = $(this).data('pk').toString().toLowerCase();
+                console.log(rowPk);
+                if ((selectedType === 'all' || rowType === selectedType) &&
+                    (selectedStatus === 'all' || rowStatus === selectedStatus) &&
+                    (rowPk.includes(query) || query === '')) {
+                    $(this).show();
+
+                } else {
+                    $(this).hide();
+                }
+            });
         });
 
     </script>

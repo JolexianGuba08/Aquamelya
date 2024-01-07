@@ -9,7 +9,7 @@
     <tbody class="text-center">
     {% if requisitions %}
         {% for requisition in requisitions %}
-            <tr data-pk="{{ requisition.req_id }}">
+            <tr data-pk="{{ requisition.req_id }}" data-type="{{ requisition.req_type }}" data-status="{{ requisition.req_status }}">
                 <th class="text-center align-middle">{{ requisition.req_type }}</th>
                 <td class="remove_tbl text-center align-middle">{{ requisition.date_added }}</td>
                 <td class="text-center align-middle">

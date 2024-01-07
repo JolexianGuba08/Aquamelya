@@ -6,8 +6,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="max-height: none;overflow-y: auto;">
-                <form class="row g-3" id="delivery_id" method="post">
+                <form class="row g-3" id="delivery_id" data-type="" method="post">
                     {% csrf_token %}
+
                     <div class="col-md-4 mt-4">
                         <label class="form-label text-left" style="color:var(--c1); font-weight: bolder">Date Purchase</label>
                         <br>
@@ -29,8 +30,9 @@
                         <br>
                         <select class="form-select" id="delivery_status_select">
                             <option selected>Status</option>
-                            <option value="1">In Process</option>
-                            <option value="2">Order Received</option>
+                            <option value="In Process">In Process</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Undelivered">Undelivered</option>
                         </select>
                     </div>
 
