@@ -1313,7 +1313,6 @@ table thead tr th {
 
 table tbody  {
     border-top: 1px solid var(--c3) !important;
-
 }
 
 table tbody tr {
@@ -1328,8 +1327,7 @@ table tbody tr {
 }
 
 table tbody tr:hover {
-    background-color: var(--c3);
-    /*transition: .3s ease-in-out;*/
+    background-color: var(--c3) !important;
 }
 
 table thead tr .name_col{
