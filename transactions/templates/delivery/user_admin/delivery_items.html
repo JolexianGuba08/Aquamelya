@@ -64,13 +64,14 @@
             <br>
             <br>
 
+           {% if delivery.user_type == 1 %}
             <div>
                 <button type="button" class="btn btn-outline-primary" onclick="wareHousing({{ delivery.delivery_id }}, '{{ delivery.item_type }}')">
                     Warehousing
                 </button>
 
             </div>
-
+            {% endif %}
         </div>
     </div>
 
@@ -185,7 +186,7 @@
                 success: function (response) {
                     if (response.status === 'success') {
                         window.location.reload();
-                    } else if (response.status === 'failed') {
+                    } else  {
                         window.location.reload();
 
                     }
