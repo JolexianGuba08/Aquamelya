@@ -53,12 +53,17 @@ class User_Account(models.Model):
 
     # saving hashed password
     def save(self, *args, **kwargs):
-        if self.user_password:
-            password = self.user_password.encode('utf-8')
-            salt = bcrypt.gensalt()
-            hashed_password = bcrypt.hashpw(password, salt)
-            self.user_password = hashed_password.decode('utf-8')
-            print(self.user_password)
+        if self.pk:  # Check if it's an update operation
+            try:
+                existing_user = User_Account.objects.get(pk=self.pk)
+                if self.user_password != existing_user.user_password:  # Check if the password has changed
+                    password = self.user_password.encode('utf-8')
+                    salt = bcrypt.gensalt()
+                    hashed_password = bcrypt.hashpw(password, salt)
+                    self.user_password = hashed_password.decode('utf-8')
+            except User_Account.DoesNotExist:
+                pass
+
         if self.user_first_name:
             self.user_first_name = self.user_first_name.upper()
         if self.user_middle_name:

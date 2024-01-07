@@ -7,13 +7,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     # ------------------ ADMIN PROFILE SECTION ------------------
     path('profile/', views.admin_profile_function, name='profile'),
-    path('edit-profile/', views.admin_edit_profile_function, name='admin_edit_profile_url'),
-    path('edit-profile/<str:success>/', views.admin_edit_profile_function, name='admin_edit_profile_url_with_success'),
-    path('edit-password/', views.admin_edit_password_function, name='admin_edit_password_url'),
-    path('edit-password/<str:success>', views.admin_edit_password_function,
-         name='admin_edit_password_url_with_success'),
-    path('edit-password/<str:success>', views.admin_edit_password_function,
-         name='admin_edit_password_url_with_success'),
     # ------------------ SUPPLIER SECTION ------------------
     path('supplier/', views.IndexSupplier.as_view(), name='supplier_index'),
     path('supplier/create', views.CreateSupplier.as_view(), name='supplier_create'),
@@ -25,6 +18,8 @@ urlpatterns = [
     path('staff/add/', views.CreateStaffView.as_view(), name='add_staff'),
     path('staff/update/<int:pk>/', views.AdminStaffView.as_view(), name='admin_staff_info'),
     path('staff/delete/<int:pk>/', views.DeleteStaff.as_view(), name='delete_staff'),
+    path('staff/suspend/<int:pk>/', views.SuspendStaff.as_view(), name='suspend_staff'),
+    path('staff/activate/<int:pk>/', views.ActivateStaff.as_view(), name='activate_staff'),
 
     # -------------------- STAFF SECTION ------------------
     # path('staff-requisition/', views.staff_requisition_view, name='staff_requisition_url'),

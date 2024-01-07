@@ -31,6 +31,7 @@
         <th scope="col" class="name_col text-center">NAME</th>
         <th scope="col" class="email_col text-center">EMAIL ADDRESS</th>
         <th scope="col" class="contact_col text-center">CONTACT NO.</th>
+        <th scope="col" class="contact_col text-center">STATUS</th>
         <th scope="col" class="btn_col text-center"></th>
     </tr>
     </thead>
@@ -44,6 +45,14 @@
                     class="text-center align-middle" style="font-weight: normal !important; color: var(--c1)">{{ user_account.user_first_name }} {{ user_account.user_last_name }}</th>
                 <td class="email_row text-center align-middle">{{ user_account.user_email }}</td>
                 <td class="contact_row text-center align-middle">{{ user_account.user_contact_number }}</td>
+                <td class="contact_row text-center align-middle">
+                    {% if user_account.user_status == 1 %}
+                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">ACTIVE</span>
+                    {% elif user_account.user_status == 2 %}
+                    <span class="badge bg-warning text-uppercase" style="padding: 10px; width: 90px">SUSPENDED</span>
+                    {% else %}
+                    {% endif %}
+                </td>
                 <td class="text-center align-middle">
                     <button style="background-color: transparent; border-color: transparent;" type="button"
                             class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -51,7 +60,12 @@
                         <i class="bi bi-three-dots" style="color: black;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="delete-staff dropdown-item text-danger" style="letter-spacing: 1px" data-form-url="{% url 'delete_staff' user_account.pk %}">DELETE</a>
+                        {% if user_account.user_status == 2 %}
+                                <a class="text-center delete-staff dropdown-item" data-form-url="{% url 'activate_staff' user_account.pk %}">Activate</a>
+                        {% else %}
+                                <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'suspend_staff' user_account.pk %}">Suspend</a>
+                        {% endif %}
+                        <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'delete_staff' user_account.pk %}">Delete Staff</a>
                     </div>
                 </td>
             </tr>

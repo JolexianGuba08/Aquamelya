@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'Aquamelya.urls'
@@ -71,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'management.custom_context.processor.get_user_info',
                 'management.custom_context.processor.dashboard_context',
+                'management.custom_context.processor.check_user_status',
             ],
         },
     },
