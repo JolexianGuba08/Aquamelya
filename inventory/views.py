@@ -86,16 +86,23 @@ class InventorySupplyCreateView(BSModalCreateView):
 
 # Suppy Inventory UPDATE MODAL
 class InventorySupplyUpdateView(BSModalUpdateView):
-    model = Supply
     template_name = 'aqua_supply/update_supply.html'
+    model = Supply
     form_class = UpdateSupplyModelForm
-    success_message = 'Success: Supply was updated successfully.'
+    success_message = 'Success: Supply was updated.'
     success_url = reverse_lazy('inventory_supply_view')
 
     def dispatch(self, request, *args, **kwargs):
         if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
             raise Http404("You are not allowed to access this page.")
         return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Fetch supply_on_hand value explicitly from the database
+        instance = self.get_object()
+        kwargs['instance'] = instance  # Update the form instance to include supply_on_hand
+        return kwargs
 
 
 # --------- ASSET SECTION ------------ #

@@ -16,17 +16,17 @@
         border-top: 1px solid var(--c1) !important;
     }
 
-    .table  {
+    .table {
         border-bottom: none !important;
     }
 
     @media (width < 960px) {
-      table .remove_tbl {
-        display: none !important;
-      }
-}
+        table .remove_tbl {
+            display: none !important;
+        }
+    }
 
-        #supplier_table tbody tr:hover {
+    #supplier_table tbody tr:hover {
         background-color: var(--c3) !important;
     }
 </style>
@@ -53,9 +53,11 @@
                 <td class="remove_tbl text-center align-middle">{{ supplier.supplier_address }}</td>
                 <td class="text-center align-middle">
                     {% if supplier.supplier_status|lower == 'blacklisted' %}
-                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-danger text-uppercase"
+                              style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
                     {% else %}
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-success text-uppercase"
+                              style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
                     {% endif %}
 
                 </td>
@@ -67,7 +69,7 @@
                     </button>
                     <div class="dropdown-menu">
                         <a class="delete-supplier dropdown-item"
-                           data-form-url="{% url 'supplier_delete' supplier.pk %}">Delete Staff</a>
+                           data-form-url="{% url 'supplier_delete' supplier.pk %}">Delete Supplier</a>
                     </div>
                 </td>
             </tr>
@@ -79,13 +81,3 @@
     {% endif %}
     </tbody>
 </table>
-
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
-<script>
-    new DataTable('#supplier_table', {
-        info: false,
-        ordering: false,
-        lengthMenu: [[1], [1]],
-    });
-</script>

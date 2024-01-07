@@ -120,7 +120,34 @@ class StaffRequisitionForm(forms.Form):
     )
 
 
+class SupplierNameValidator:
+    def __init__(self, field_name):
+        self.field_name = field_name
+
+    def __call__(self, value):
+        if value.isdigit():
+            raise forms.ValidationError(f"{self.field_name} should not contain only numbers.")
+
+
+def validate_contact_number(value):
+    if not value.startswith('09'):
+        raise ValidationError('Contact number should start with 09')
+    if not value.isdigit():
+        raise ValidationError('Contact number should only contain numbers')
+    if len(value) != 11:
+        raise ValidationError('Contact number should be 11 characters long')
+
+
 class SupplierForm(BSModalModelForm):
+    supplier_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[SupplierNameValidator("Supplier name")]
+    )
+    supplier_primary_contact = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[validate_contact_number]
+    )
+
     class Meta:
         model = Supplier
         exclude = ['supplier_id', 'supplier_date_modified', 'supplier_date_added', 'supplier_status']

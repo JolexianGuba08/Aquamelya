@@ -18,7 +18,7 @@
         align-items: center !important;
     }
 
-    .dataTables_filter label input{
+    .dataTables_filter label input {
         width: 100% !important;
         margin-left: 5px !important;
     }
@@ -30,17 +30,17 @@
         border-top: 1px solid var(--c1) !important;
     }
 
-    .table  {
+    .table {
         border-bottom: none !important;
     }
 
     @media (width < 940px) {
-      #supplier_table .purchase_tbl {
-        display: none !important;
-      }
+        #supplier_table .purchase_tbl {
+            display: none !important;
+        }
     }
 
-    #supplier_table tbody tr{
+    #supplier_table tbody tr {
         cursor: text !important;
     }
 </style>
@@ -71,14 +71,3 @@
     {% endif %}
     </tbody>
 </table>
-
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
-<script>
-    new DataTable('#supplier_table', {
-        info: false,
-        ordering: false,
-        lengthMenu: [[5], [5]],
-        searching: true,
-    });
-</script>
