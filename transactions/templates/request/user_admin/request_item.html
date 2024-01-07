@@ -13,7 +13,7 @@
     </style>
 
     {% include 'request/user_admin/request_info.html' %}
-
+    {% include 'request/user_admin/ack_info.html' %}
     <main id="main" class="main">
         <div class="pagetitle">
             <div class="d-flex align-items-start">
@@ -108,6 +108,12 @@
                     </button>
                 {% endif %}
 
+                {% if req_status == "Done" %}
+                    <button type="button" class="btn btn-outline-dark mt-4" onclick="showAckInfo({{ req_id }})">
+                    View Acknowledgement Info
+                    </button>
+                {% endif %}
+
             </div>
         </div>
 
@@ -189,6 +195,8 @@
                                             ACTION
                                         </button>
                                     {% endif %}
+
+
                                 </td>
                             </tr>
                         {% endfor %}
@@ -204,13 +212,38 @@
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>function createPurchase(param) {
+    <script>
+        function createPurchase(param) {
         window.location.href = `/transactions/generate_purchase_requisition/${param}`;
     }
             function goBackrequest() {
             window.location.href = `/transactions/requests`;
         }
+    function showAckInfo(req_id) {
+        console.log(req_id)
+        $.ajax({
+            type: 'GET',
+            url: '/transactions/get_acknowledgement_data/',
+            data: {'req_id':req_id },
+            success: function (data) {
+                console.log(data);
+                var dateString = data.acknowledge_date;
+                var formattedDate = dateString.slice(0, -5); //
 
+                $('#request_description').html(data.req_description);
+                $('#acknowledge_by').val(data.acknowledge_by);
+                $('#acknowledge_date').val(formattedDate);
+                $('#notes').val(data.acknowledge_notes);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            },
+            complete: function () {
+                $('#ackInfo').modal('show');
+            }
+        });
+
+    }
     function fetchDataAndUpdateModal(pk, supply_description) {
         $.ajax({
             url: `/transactions/get_data/${pk}/${supply_description}`,

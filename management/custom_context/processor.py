@@ -1,7 +1,7 @@
 from inventory.models import Supply
 from management.models import User_Account, Supplier
 from login.views import user_already_logged_in
-from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order
+from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order, Requisition
 
 
 def get_user_info(request):
@@ -42,7 +42,8 @@ def dashboard_context(request):
         supply_req_pending = Request_Supply.objects.filter(req_status__name='Pending').count()
         asset_req_pending = Request_Assets.objects.filter(req_status__name='Pending').count()
         job_order_pending = Job_Order.objects.filter(req_status__name='Pending').count()
-        request_pending_count = supply_req_pending + asset_req_pending + job_order_pending
+        pending_count = Requisition.objects.filter(request_status__name='Pending').count()
+        request_pending_count = pending_count
 
         order_count = Purchase_Order.objects.exclude(purch_status=3).count()
         supplies = Supply.objects.filter(supply_status=1)
