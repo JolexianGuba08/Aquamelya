@@ -146,7 +146,10 @@ def update_note(request, req_id):
         note_text = request.POST.get('note_text')
         requisition = get_object_or_404(Requisition, req_id=req_id)
 
-        if requisition.request_status.name != 'Pending' or requisition.request_status.name != 'In Process':
+        if requisition.request_status.name == 'Done':
+            messages.warning(request, 'Cannot update note. Request is already done.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already done.'})
+        elif requisition.request_status.name != 'Pending' or requisition.request_status.name != 'In Process':
             messages.warning(request, 'Cannot update note. Request is already completed/cancelled.')
             return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already completed.'})
 
@@ -352,6 +355,10 @@ def release_items(request, req_id):
                 messages.warning(request, 'Cannot release items. Request is already cancelled.')
                 return JsonResponse(
                     {'status': 'error', 'message': 'Cannot release items. Request is already cancelled.'})
+            elif (req_status == 'Done'):
+                messages.warning(request, 'Request is already done.')
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot release items. Request is already done.'})
 
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
@@ -1640,25 +1647,25 @@ def purchase_order_approved(request, purch_id):
 # ---------- ACKNOWLEDGEMENT REQUEST SECTION ------------ #
 def items_received(request):
     req_id = request.POST.get('req_id')
-    received_date = request.POST.get('received_date')
     additional_notes = request.POST.get('addition_notes')
     acknowledged_by = request.POST.get('acknowledged_by')
-    print(req_id, received_date, additional_notes, acknowledged_by)
+    print("here")
+    print(req_id, additional_notes, acknowledged_by)
     try:
-        req_id = get_object_or_404(Requisition, req_id=req_id)
-        if req_id is None or received_date is None or acknowledged_by is None:
-            messages.error(request, 'Invalid request data')
+        req_instance = get_object_or_404(Requisition, req_id=req_id)
+        if req_id is None  or acknowledged_by is None:
+            messages.warning(request, 'Please fill up received date')
             return JsonResponse({'message': 'Invalid Request Data'})
 
         acknowledgement = Acknowledgement_Request.objects.create(
-            req_id=req_id.req_id,
-            acknowledge_date=received_date,
+            req_id=req_instance,
+            acknowledge_date= timezone.now(),
             notes=additional_notes,
             acknowledge_by=acknowledged_by,
         )
         acknowledgement.save()
-        req_id.request_status = RequestStatus.objects.get(name='Done')
-        req_id.save()
+        req_instance.request_status = RequestStatus.objects.get(name='Done')
+        req_instance.save()
         messages.success(request, 'Items acknowledged successfully!')
         return JsonResponse({'status':'success','message': 'success'})
 

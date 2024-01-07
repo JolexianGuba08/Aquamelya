@@ -54,6 +54,8 @@
                                         <span class="badge bg-danger text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
                                     {% elif requisition_data.req_status|lower == 'completed' %}
                                         <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'done' %}
+                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
                                     {% endif %}</p>
                                 <p class="card-text " style=""><b>Request Date:</b>
                                     {{ requisition_data.req_date_requested }}</p>
@@ -244,7 +246,6 @@
             var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
             var postData = {
                 'req_id': req_id,
-                'received_date': $('#receivedDate').val(),
                 'addition_notes': $('#additionalNotes').val(),
                 'acknowledged_by': $('#acknowledgedBy').val()
             };
@@ -258,8 +259,10 @@
                 success: function (data) {
                     if (data.status === 'success') {
                         console.log(data.status);
+                        window.location.reload();
                     } else {
                         console.log('Error updating data');
+                        window.location.reload();
                     }
                 },
                 error: function (data) {

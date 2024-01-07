@@ -182,7 +182,6 @@ class Delivery(models.Model):
         db_table = 'delivery'
         verbose_name = 'Delivery'
 
-
 class Acknowledgement_Request(models.Model):
     ack_req_id = models.IntegerField(primary_key=True, default=default_ack_req_id)
     acknowledge_by = models.CharField(max_length=100)
@@ -191,8 +190,9 @@ class Acknowledgement_Request(models.Model):
     req_id = models.ForeignKey(Requisition, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'acknowledgement_request'
-        verbose_name = 'Acknowledgement_request'
+        db_table = 'ack_request'
+        verbose_name = 'ack_request'
+
 
 
 class Acknowledgement_Purch(models.Model):
