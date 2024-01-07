@@ -1,11 +1,46 @@
-<table class="table table-striped table-hover " id="delivery-table">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    #delivery-table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+    }
+
+    @media (width < 940px) {
+      table .remove_tbl {
+        display: none !important;
+  }
+
+}
+
+    table tbody tr:hover {
+        background-color: var(--c3);
+        /*transition: .3s ease-in-out;*/
+    }
+</style>
+
+<table class="table table-hover " id="delivery-table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Description</th>
-        <th scope="col" class="text-center">Requestor</th>
-        <th scope="col" class="text-center">Date Ordered</th>
-        <th scope="col" class="text-center"></th>
-        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center text-uppercase">Description</th>
+        <th scope="col" class="remove_tbl text-center text-uppercase">Requestor</th>
+        <th scope="col" class="remove_tbl text-center text-uppercase">Date Ordered</th>
+        <th scope="col" class="text-center text-uppercase"></th>
+        <th scope="col" class="text-center text-uppercase">Status</th>
 
     </tr>
     </thead>
@@ -15,22 +50,27 @@
             <tr data-pk="{{ delivery.delivery_id }}"
                 data-status="{{ delivery.delivery_status }}">
                 <th class="text-center align-middle">{{ delivery.purch.req.req_description}}</th>
-                <td class="text-center align-middle">{{ delivery.purch.req.user }}</td>
-                <td class="text-center align-middle">{{ delivery.purch.purch_date_modified}}</td>
+                <td class="remove_tbl text-center align-middle">{{ delivery.purch.req.user }}</td>
+                <td class="remove_tbl text-center align-middle">{{ delivery.purch.purch_date_modified}}</td>
                 <td class="text-center align-middle"></td>
                 <td class="text-center align-middle">
                     {% if delivery.delivery_status == 1 %}
-                        <span class="badge bg-secondary">In Process</span>
+                        <span class="badge bg-secondary" style="padding: 10px; width: 90px">PROCESSING</span>
                     {% else %}
-                        <span class="badge bg-success">Order Received</span>
+                        <span class="badge bg-success" style="padding: 10px; width: 90px">RECEIVED</span>
                     {% endif %}
                 </td>
             </tr>
         {% endfor %}
-    {% else %}
-        <tr>
-            <td class="text-center align-middle" colspan="10">No Delivery Found</td>
-        </tr>
     {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+    new DataTable('#delivery-table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>

@@ -9,6 +9,23 @@
                 <form class="row g-3" id="delivery_id" data-type="" method="post">
                     {% csrf_token %}
 
+                    <div class="col-md-4 mt-4">
+                        <label class="form-label text-left" style="color:var(--c1); font-weight: bolder">Date Purchase</label>
+                        <br>
+                        <label class="form-label text-center" id="delivery_purchase_date"></label>
+                    </div>
+                    <div class="col-md-4 mt-4">
+                        <label class="form-label text-left" style="color:var(--c1); font-weight: bolder">Last Modified</label>
+                        <br>
+                        <label class="form-label text-center" id="delivery_purchase_date_lastmod"></label>
+                    </div>
+                    <div class="col-md-4 mt-4">
+                        <label class="form-label text-left" style="color:var(--c1); font-weight: bolder">Received Date</label>
+                        <br>
+                        <label class="form-label text-center" id="delivery_received_date"></label>
+
+                    </div>
+
                     <div class="col-md-12 mb-2 ml-auto mt-2">
                         <br>
                         <select class="form-select" id="delivery_status_select">
@@ -21,7 +38,7 @@
 
                     <div class="modal-footer justify-content-end"
                          style="position: sticky;bottom: 0;background-color: #fff;z-index: 1;">
-                        <button id="delivery_savechanges_bttn" type="button" class="btn btn-primary" onclick="updateData()">Save Changes</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: #42cf79; border: none;">SAVE CHANGES</button>
                     </div>
                 </form>
                 <!-- End Multi Columns Form -->

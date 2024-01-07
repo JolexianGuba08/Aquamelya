@@ -1,5 +1,5 @@
 {% extends 'user_admin/admin_base.html' %}
-{% block title %}Aquamelya | Supplier{% endblock %}
+{% block title %}Supplier | Management{% endblock %}
 {% block management %}
     class="nav-link"
 {% endblock %}
@@ -14,28 +14,29 @@
 
         <div class="page-title">
             <!-- ADD SUPPLIER BUTTON -->
-            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
-                <h3 style="font-weight: bold"> Supplier</h3>
+            <div class="filter-and-search d-flex align-items-center justify-content-between mb-3">
+                <h3 style="font-weight: bold; margin-bottom: 0 !important;" class="d-flex align-items-center">MANAGEMENT</h3>
 
-                <div class="col-md-2 ml-auto">
-                    <button id="addSupplierButton" style="background-color:#3850A6;" type="button"
-                            class="btn btn-primary">
-                        <i class="bi bi-person-add"></i> Add Supplier
+                <div class="ml-auto">
+                    <button id="addSupplierButton" style="font-weight: bold; letter-spacing: 1px; font-size: 14px" type="button" class="btn btn-primary">
+                        <i class="bi bi-person-add" style="margin-right: 5px !important; letter-spacing: 2px;"></i> ADD SUPPLIER
                     </button>
                 </div>
             </div>
 
             <section class=" ">
-                <div style="display: block;">
+                <div style="">
                     <div class="card" style="padding-bottom: 27px;">
-                        <div class="card-body">
-                            <h2 class="card-title" style="float: left;"><i class="bi bi-people"></i>Supplier List</h2>
-                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
-                                <!-- SEARCH FIELD -->
-                                <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
-                                    <input type="text" id="supplier_search" name="query" class="form-control"
-                                           placeholder="Search Name"
-                                           title="Enter search keyword">
+                        <div class="card-body ">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pt-0 mt-4 p-3 pb-0">
+                                <h2 class="card-title" style="letter-spacing: 2px"><i class="bi bi-people" style="margin-right: 10px;"></i>SUPPLIER</h2>
+                                <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3" style="width: 50%">
+                                    <!-- SEARCH FIELD -->
+                                    <div class="col-md-3" style="width: 100% !important">
+                                        <input type="text" id="supplier_search" name="query" class="form-control" style="width: 100% !important"
+                                               placeholder="Search Name"
+                                               title="Enter search keyword">
+                                    </div>
                                 </div>
                             </div>
                             <!--  SUPPLIER TABLE -->

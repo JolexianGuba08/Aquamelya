@@ -1,11 +1,37 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    #staff_table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+    }
+
+    table tbody tr:hover {
+    background-color: var(--c3) !important;
+}
+</style>
+
 <table class="table table-hover" id="staff_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Name</th>
-        <th scope="col" class="text-center">Email</th>
-        <th scope="col" class="text-center">Contact</th>
-
-        <th scope="col" class="text-center"></th>
+        <th scope="col" class="name_col text-center">NAME</th>
+        <th scope="col" class="email_col text-center">EMAIL ADDRESS</th>
+        <th scope="col" class="contact_col text-center">CONTACT NO.</th>
+        <th scope="col" class="btn_col text-center"></th>
     </tr>
     </thead>
     <tbody class="text-center">
@@ -16,8 +42,8 @@
                 data-name="{{ user_account.user_first_name }} {{ user_account.user_last_name }}">
                 <th scope="row"
                     class="text-center align-middle">{{ user_account.user_first_name }} {{ user_account.user_last_name }}</th>
-                <td class="text-center align-middle">{{ user_account.user_email }}</td>
-                <td class="text-center align-middle">{{ user_account.user_contact_number }}</td>
+                <td class="email_row text-center align-middle">{{ user_account.user_email }}</td>
+                <td class="contact_row text-center align-middle">{{ user_account.user_contact_number }}</td>
                 <td class="text-center align-middle">
                     <button style="background-color: transparent; border-color: transparent;" type="button"
                             class="btn btn-primary md-2" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -38,3 +64,13 @@
     {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#staff_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>

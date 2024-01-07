@@ -1,5 +1,5 @@
 {% extends "user_admin/admin_base.html" %}
-{% block title %}Inventory | Assets{% endblock %}
+{% block title %}Asset | Inventory{% endblock %}
 {% block inventory %}
     class="nav-link"
 {% endblock %}
@@ -11,33 +11,35 @@
     <main id="main" class="main">
         <!-- Success Alert -->
         <div class="page-title">
-            <h3 style="font-weight: bold"> Assets</h3>
-            <div class="filter-and-search d-flex align-items-right ">
-                <div class="col-md-4" style="margin-right: 5px">
+            <h3 style="font-weight: bold; margin-bottom: 0px !important; ">INVENTORY</h3>
+            <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">ASSET</p>
+
+            <div class="filter-and-search d-flex align-items-right" id="asset_view">
+                <div class="search col-md-4" style="margin-right: 5px">
                     <input type="text" id="search_asset" name="query" class="form-control" placeholder="Search"
                            title="Enter search keyword">
                 </div>
-                <div class="col-md-4" style="margin-right: 5px">
 
+                <div class="asset_type col-md-4" style="margin-right: 5px">
                     <select class="form-select" id="asset_type_filter">
                         <option selected value="all">Asset Type: All</option>
                         {% for asset in asset_type %}
                             <option value="{{ asset }}">{{ asset }}</option>
                         {% endfor %}
                     </select>
-
                 </div>
-                <div class="col-md-4 d-flex align-items-right">
-                    <button id="create-asset" class="btn btn-primary" style="background-color:#3850A6;" type="button"
+
+                <div class="add_asset col-md-3 d-flex align-items-right justify-content-end" style="width: 32.5%">
+                    <button id="create-asset" class="btn btn-primary" style="font-weight: bold; " type="button"
                             name="button">
-                        <i class="bi bi-house-add"></i>&nbsp; Add Asset
+                        <i class="bi bi-house-add"></i>&nbsp; ADD ASSET
                     </button>
                 </div>
             </div>
             <section class=" ">
                 <br>
                 <div style="display: block;">
-                    <div class="card">
+                    <div class="card p-4 pb-2">
                         {% include 'aqua_assets/_asset_table.html' %}
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 {% load widget_tweaks %}
 
    <div class="modal-header">
-      <h5 class="modal-title">Add Supply</h5>
+      <h5 class="modal-title" style="letter-spacing: 2px !important">ADD SUPPLY</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
    </div>
    <div class="modal-body">
-      <form class="row g-3" method="POST" novalidate>
+      <form class="add_supply_modal row g-3" method="POST" novalidate>
         {% csrf_token %}
 
       <div class="col-md-12">
@@ -38,7 +38,7 @@
             </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-12">
             <label for="inputName4" class="form-label">Quantity On Hand</label>
             {% render_field form.supply_on_hand class="form-control" placeholder=""%}
             <div class="{% if form.supply_on_hand.errors %}invalid{% endif %}">
@@ -47,7 +47,7 @@
                 {% endfor %}
             </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-12">
             <label for="inputName4" class="form-label">On Hand Unit</label>
             {% render_field form.supply_unit class="form-control" empty_label="Unit"%}
             <div class="{% if form.supply_unit.errors %}invalid{% endif %}">
@@ -57,7 +57,7 @@
             </div>
       </div>
 
-      <div class="col-md-5">
+      <div class="col-md-12">
             <label for="inputName4" class="form-label">Re-order Level</label>
             {% render_field form.supply_reorder_lvl class="form-control" placeholder=" "%}
             <div class="{% if form.supply_reorder_lvl.errors %}invalid{% endif %}">
@@ -66,7 +66,6 @@
                 {% endfor %}
             </div>
       </div>
-
 
       <div class="col-md-12">
             <label for="inputName4" class="form-label">Notes</label>
@@ -78,8 +77,8 @@
             </div>
       </div>
 
-   <div class="modal-footer pb-0">
-      <button type="submit" class="btn btn-primary">Add Supply</button>
+   <div class="modal-footer pb-0" style="border: none !important">
+      <button type="submit" class="btn btn-primary" style="width: 100px !important; letter-spacing: 1px; font-weight: bold ">ADD</button>
    </div>
 </form>
    </div>

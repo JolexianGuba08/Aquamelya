@@ -1,5 +1,5 @@
 {% extends "user_admin/admin_base.html" %}
-{% block title %}Reports | Requests{% endblock %}
+{% block title %}Request | Reports{% endblock %}
 {% block reports %}
     class="nav-link"
 {% endblock %}
@@ -12,7 +12,9 @@
     <main id="main" class="main">
 
         <div class="page-title">
-            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
+            <h3 style="font-weight: bold; margin-bottom: 0px !important; ">REQUEST</h3>
+            <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">REPORT</p>
+            <!-- <div class="filter-and-search d-flex align-items-right justify-content-between mb-3">
                 <div>
                     <h3 style="font-weight: bold"> Reports</h3>
                     <nav>
@@ -23,17 +25,15 @@
                         </ol>
                     </nav>
                 </div>
+            </div> -->
 
-
-            </div>
             <div class="col-lg-12">
-                <div class="card">
+                <div class="card" style="padding: 5px">
                     <div class="card-body">
-                        <h5 class="card-title">Line Chart</h5>
+                        <h5 class="card-title">CHART</h5>
 
                         <!-- Line Chart -->
                         <div id="lineChart"></div>
-
                         <script>
                             document.addEventListener("DOMContentLoaded", () => {
                                 fetch('/reports/get_monthly_requests_data/')
@@ -98,30 +98,27 @@
 
                         </script>
                         <!-- End Line Chart -->
-
                     </div>
                 </div>
             </div>
 
             <section class=" ">
                 <div style="display: block;">
-                    <div class="card" style="padding-bottom: 27px;">
+                    <div class="card" style="padding: 10px">
                         <div class="card-body">
 
-                            <h2 class="card-title" style="float: left;"><i class="bi bi-card-text"></i> &nbsp; Requests
-                            </h2>
+                            <h2 class="card-title" style="letter-spacing: 2px">REQUESTS</h2>
 
                             <!-- Filter and Search at the top right -->
-                            <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
+                           <!-- <div class="filter-and-search d-flex align-items-right justify-content-between mb-3 pt-3">
                                 <div class="col-md-3" style="margin-left: auto;padding-right: 5px;">
                                 </div>
                                 <div class="col-md-2 mb-2 invisible" style="margin-right: 5px; ">
                                     <select class="form-select" id="inputState">
-
                                     </select>
                                 </div>
 
-                            </div>
+                            </div> -->
                             {% include 'requests_table.html' %}
 
                         </div>

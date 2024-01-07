@@ -1,9 +1,37 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    #supply-table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+}
+
+    table tbody tr:hover {
+    background-color: var(--c3);
+    /*transition: .3s ease-in-out;*/
+}
+</style>
+
 <table class="table table-hover" id="supply-table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Supply</th>
-        <th scope="col" class="text-center">Quantity On Hand</th>
-        <th scope="col" class="text-center">Supplier</th>
+        <th scope="col" class="supply_col text-center">SUPPLY</th>
+        <th scope="col" class="qoh_col text-center">QTY-OH</th>
+        <th scope="col" class="supplier_col text-center">SUPPLIER</th>
         <th class="text-center" scope="col"></th>
     </tr>
     </thead>
@@ -14,8 +42,8 @@
                 data-type="{{ supplys.supply_type.name }}" data-supplier="{{ supplys.supplier_id.supplier_name }}"
                 data-name="{{ supplys.supply_description }}">
                 <th class="text-center align-middle">{{ supplys.supply_description }}</th>
-                <td class="text-center align-middle">{{ supplys.supply_on_hand }} ({{ supplys.supply_unit }})</td>
-                <td class="text-center align-middle">{{ supplys.supplier_id.supplier_name }}</td>
+                <td class="qoh_row text-center align-middle">{{ supplys.supply_on_hand }} ({{ supplys.supply_unit }})</td>
+                <td class="supplier_row text-center align-middle">{{ supplys.supplier_id.supplier_name }}</td>
                 <td class="text-center">
 
                     <!-- Delete Supply buttons -->
@@ -38,3 +66,14 @@
     {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#supply-table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>
+

@@ -12,15 +12,21 @@
 {% block asset %} class="active" {% endblock %}
 {# Content #}
 {% block content %}
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
 
     {% include 'request/user_staff/staff_request_modal.html' %}
     {% include 'request/user_staff/confirm_cancel.html' %}
     <main id="main" class="main">
-        <div>
-            <h1>REQUESTIONS</h1>
+        <div class="pagetitle">
+            <h1 style="margin-bottom: 5px">REQUISITION</h1>
+            <p style="margin-bottom: 30px; font-size: 14px; letter-spacing: 2px; color: var(--c1)">MY REQUEST</p>
         </div>
         <section class="section dashboard">
+            <div >
+                <div class="card" id="my_req">
+                    <div class="card-body" style="padding: 30px !important" >
+                        <!-- <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp; My Request Forms</h2> -->
             <div style="display: block;">
                 <div class="card" style="padding-bottom: 27px;">
                     <div class="card-body">
@@ -60,12 +66,19 @@
             </div>
         </section>
     </main>
-
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
+        new DataTable('#staff_requisition_table', {
+            info: false,
+            ordering: false,
+            lengthMenu: [[5], [5]],
+        });
+    </script>
+
+   <script>
         // fetch data and populate modal of STAFF REQUISITION
         function fetchDataAndModal(pk) {
             $.ajax({
@@ -221,6 +234,7 @@
                 var reqId = $(req_id).val();
                 cancelRequestPost(reqId);
             });
+
 
         });
 

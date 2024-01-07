@@ -1,78 +1,71 @@
 {% extends 'user_admin/admin_base.html' %}
-{% block title %}Aquamelya | Profile{% endblock %}
+{% block title %}Profile | AquaMelya{% endblock %}
 {% block profile %} class="nav-link" {% endblock %}
 {%block content%}
+
 <main id="main" class="main">
-
-    <div class="page-title">
-      <h1>Profile</h1>
-    </div>
-    <!-- End Page Title -->
-
-    <section class="section profile">
-        <div class="row">
-          <div class="col-xl-4">
-            <div class="card">
-              <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                <img src="{{ profile_picture }}" alt="Profile" class="rounded-circle">
-                <h2>{{ fullname }}</h2>
-                <h3>{{ user_type }}</h3>
-              </div>
+   <div class="pagetitle">
+      <h1>PROFILE</h1>
+   </div>
+   <!-- End Page Title -->
+   <section class="section profile">
+      <div class="row">
+         <div class="profile_cont col-xl-4">
+            <div class="card h-100">
+               <div class="card-body profile-card  pt-4 d-flex flex-column align-items-center justify-content-center">
+{#                 <img src="{{ profile_picture }}" alt="Profile" class="rounded-circle">#}
+                   <div class="rounded-circle" style="width: 130px; height: 130px; background: url({{ profile_picture }}) no-repeat center center; background-size: cover"></div>
+                  <h2 class="mt-3" style="color: var(--c1); letter-spacing: 2px">{{ fullname }}</h2>
+                  <h3 style="color: var(--c2); letter-spacing: 2px">{{ user_type }}</h3>
+               </div>
             </div>
-          </div>
-
-        <!-- Profile Details -->
-          <div class="col-xl-8">
-            <div class="card">
-              <div class="card-body pt-3">
-                <!-- Bordered Tabs -->
-                <ul class="nav nav-tabs nav-tabs-bordered">
-
-                  <li class="nav-item">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Profile Details</button>
-                  </li>
-
-                </ul>
-                <div class="tab-content pt-2">
-
-                  <div class="tab-pane fade show active profile-overview" id="profile-overview">
-
-                    <div class="d-flex justify-content-between align-items-center">
-        <h5 class="card-title">Profile Details</h5>
-        <div class="pt-2">
-            <a href="{% url 'admin_edit_profile_url' %}" class="btn btn-primary btn-sm" style="background-color:#3850A6;">
-                <i class="bi bi-pencil-square"></i>
-            </a>
-        </div>
-    </div>
-
-                    <div class="row">
-                      <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                      <div class="col-lg-9 col-md-8">{{ fullname }}</div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-lg-3 col-md-4 label">Email</div>
-                      <div class="col-lg-9 col-md-8">{{ user_email }}</div>
-                    </div>
-                      <div class="row">
-                      <div class="col-lg-3 col-md-4 label">Birth Date</div>
-                      <div class="col-lg-9 col-md-8">{{ user_birthdate }}</div>
-
-
-                  </div>
+         </div>
+         <!-- Profile Details -->
+         <div class="col-xl-8">
+            <div class="card h-100">
+               <div class="card-body pt-3">
+                  <!-- Bordered Tabs -->
+                  <ul class="nav nav-tabs nav-tabs-bordered  d-flex justify-content-between">
+                     <li class="nav-item">
+                        <button class="nav-link active px-0" style="cursor: default; letter-spacing: 1px; font-weight: bolder; color: var(--c1); border-color: var(--c1)" data-bs-toggle="tab" data-bs-target="#profile-overview">PROFILE INFORMATION</button>
+                     </li>
+                      <li>
+                      <div class="p-1">
+                          <a href="{% url 'admin_edit_profile_url' %}" class="btn btn-primary btn-sm" style="background-color:#3850A6;">
+                          <i class="bi bi-pencil-square"></i>
+                          </a>
                        </div>
-
-
-
+                      </li>
+                  </ul>
+                  <div class="tab-content pt-2 mt-3">
+                     <div class="tab-pane fade show active profile-overview" id="profile-overview">
+{#                        <div class="d-flex justify-content-between align-items-center">#}
+{#                           <h5 class="card-title" style="letter-spacing: 3px"></h5>#}
+{#                           <div class="pt-2">#}
+{#                              <a href="{% url 'admin_edit_profile_url' %}" class="btn btn-primary btn-sm" style="background-color:#3850A6;">#}
+{#                              <i class="bi bi-pencil-square"></i>#}
+{#                              </a>#}
+{#                           </div>#}
+{#                        </div>#}
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label" style="">FULL NAME</div>
+                           <div class="col-lg-9 col-md-8 text-capitalize">{{ fullname }}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label " style="">EMAIL</div>
+                           <div class="col-lg-9 col-md-8">{{ user_email }}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label " style="">BIRTHDATE</div>
+                           <div class="col-lg-9 col-md-8">{{ user_birthdate }}</div>
+                        </div>
+                     </div>
                   </div>
-
-              </div>
+               </div>
             </div>
-
-          </div>
-        </div>
-      </section>
-
-  </main><!-- End #main -->
+         </div>
+      </div>
+   </section>
+</main>
+<!-- End #main -->
 {% endblock %}

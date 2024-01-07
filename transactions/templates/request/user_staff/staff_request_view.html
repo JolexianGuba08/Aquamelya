@@ -14,6 +14,16 @@
     {% include 'request/user_staff/confirm_cancel.html' %}
     {% include 'request/user_staff/item_received_modal.html' %}
     <main id="main" class="main">
+        <div>
+            <h1 class="" style="margin-bottom: 30px; font-size: 35px; color: var(--c2); text-transform: uppercase; letter-spacing: 2px ">{{ requisition_data.req_description }}</h1>
+            <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)"></p>
+        </div>
+        <section class="section dashboard d-flex justify-content-between gap-3" id="overview">
+            <div style="width: 60%" id="over_cont">
+                <div class="card" id="req_over" style="padding-bottom: 27px; width: 100% !important">
+                    <div class="card-body p-4 pb-0">
+                        <h2 class="card-title" style="letter-spacing: 2px; margin-bottom: 10px; padding-bottom: 0; padding-top: 0 !important"><i class="bi bi-envelope-paper" style="margin-right: 10px !important;"></i>
+                            OVERVIEW
 
         <section class="section dashboard">
             <div style="display: block;">
@@ -23,58 +33,67 @@
                         </h2>
 
 
+                        <div style="width: 100%; margin: auto; height: 1px; background-color: var(--c1); margin-bottom: 20px"></div>
                     </div>
 
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="card-text"><b>Request Type:</b> {{ requisition_data.req_type }}</p>
-                                <p class="card-text"><b>Request Status:</b>
-                                    {% if requisition_data.req_status|lower == 'pending' %}
-                                        <span class="badge bg-warning">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'incomplete' %}
-                                        <span class="badge bg-primary">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'cancelled' %}
-                                        <span class="badge bg-danger">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'completed' %}
-                                        <span class="badge bg-success">{{ requisition_data.req_status }}</span>
-                                    {% endif %}</p>
-                                <p class="card-text"><b>Request Date:</b> {{ requisition_data.req_date_requested }}</p>
-                            </div>
-                            <div class="col-md-6">
 
+
+                    <div class=" card-body" style="padding-top: 0 !important; width: 100% !important">
+                        <div class="row">
+                            <div class="col-md-12" style="width: 100%; margin-left: 5px">
+                                <p class="card-texte" style=""><b>Request Type:
+                                </b> {{ requisition_data.req_type }}</p>
+                                <p class="card-text " style=""><b>Request Status:</b>
+                                    {% if requisition_data.req_status|lower == 'pending' %}
+                                        <span class="badge bg-warning text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'incomplete' %}
+                                        <span class="badge bg-primary text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'cancelled' %}
+                                        <span class="badge bg-danger text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
+                                    {% elif requisition_data.req_status|lower == 'completed' %}
+                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
+                                    {% endif %}</p>
+                                <p class="card-text " style=""><b>Request Date:</b>
+                                    {{ requisition_data.req_date_requested }}</p>
 
                                 {% if requisition_data.requestor_notes and  requisition_data.req_type != 'Job Order' %}
-                                    <p class="card-text"><b>Request Notes:</b>
+                                    <p class="card-text " style=""><b>Request Notes:</b>
                                         {{ requisition_data.requestor_notes }}
                                     </p>
                                 {% else %}
                                     {% if  requisition_data.req_type == 'Job Order' %}
                                         {% for items in req_items %}
-                                            <p class="card-text"><b>Request Notes:</b>
+                                            <p class="card-text text-uppercase" style=""><b>Request Notes:</b>
                                                 {{ items.job_notes }}
                                             </p>
                                         {% endfor %}
                                     {% else %}
-                                        <p class="card-text"><b>Request Notes:</b> No request notes available</p>
+                                        <p class="card-text"><b>Request Notes:</b>
+                                            No request notes available</p>
                                     {% endif %}
 
                                 {% endif %}
 
                                 {% if requisition_data.req_reviewer_notes %}
                                     <p class="card-text"><b>Reviewer
-                                        Notes:</b> {{ requisition_data.req_reviewer_notes }}
+                                        Notes:</b>
+                                        {{ requisition_data.req_reviewer_notes }}
                                     </p>
                                 {% else %}
-                                    <p class="card-text"><b>Reviewer Notes:</b> No reviewer notes available</p>
+                                    <p class="card-text"><b>Reviewer Notes:</b>
+                                        No reviewer notes available</p>
                                 {% endif %}
 
                             </div>
                         </div>
                     </div>
 
+                    <div class="px-3">
                    <div class="d-flex justify-content-end mt-3 mr-5">
                         {% if requisition_data.req_status|lower == 'pending' %}
+                            <button class="cancel-request btn btn-danger" style="width: 100% !important"
+                                    data-pk="{{ requisition_data.req_id }}" onclick="cancelRequestModal()">
+                                CANCEL
                             <button class="cancel-request btn btn-warning mr-2" onclick="cancelRequestModal()">
                                 Cancel Request
                             </button>
@@ -89,7 +108,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card p-4" id="req_over" style="width: 100%">
                 {% include 'request/user_staff/staff_request_table_view.html' %}
             </div>
         </section>

@@ -1,296 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load bootstrap5 %}
-{% load static %}
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Base | HTML{% endblock title %}</title>
-    <link rel="icon" href="{% static 'images/main_logo.png' %}" type="image/x-icon">
-    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-          rel="stylesheet">
-    {# BOOTSTRAP #}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    {# ANIMATION CSS #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    {#  LOGIN CSS  #}
-    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/simple-datatables/style.css' %}">
-</head>
-<body>
-<div class="position-fixed top-0 start-0 w-100 text-center" style="z-index: 10001;">
-    <div class="row justify-content-center">
-        <div class="col-md-200">
-            <div id="messages" class="text-center">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+   {% load bootstrap5 %}
+   {% load static %}
+   <head>
+      <meta charset="UTF-8">
+      <title>{% block title %}Base | HTML{% endblock title %}</title>
+      <link rel="icon" href="{% static 'images/main_logo.png' %}" type="image/x-icon">
+      <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+      <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <link href="https://fonts.gstatic.com" rel="preconnect">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+         rel="stylesheet">
+      {# BOOTSTRAP #}
+      {% bootstrap_css %}
+      {% bootstrap_javascript %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+      {# ANIMATION CSS #}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+      {#  LOGIN CSS  #}
+      <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
+      <link rel="stylesheet" href="{% static 'vendor/simple-datatables/style.css' %}">
+   </head>
+   <body>
+      <div class="position-fixed top-0 start-0 w-100 text-center" style="z-index: 10001;">
+         <div class="row justify-content-center">
+            <div class="col-md-200">
+               <div id="messages" class="text-center">
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-uppercase" style="letter-spacing: 2px" role="alert">
+                     {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endfor %}
+               </div>
             </div>
-        </div>
-    </div>
-</div>
-<script>
-    // Automatically close the alert after 5 seconds (5000 milliseconds)
-    setTimeout(function () {
-        $('.alert').alert('close');
-    }, 2000);
-</script>
-<!-- ======= Header ======= -->
-<header id="header" class="header fixed-top d-flex align-items-center">
-    <nav class="header-nav ms-auto">
-        <ul class="d-flex align-items-center">
-            <li class="nav-item d-block d-lg-none">
-            </li>
-            <!-- Separate Logo & Notifications-->
-            {# Show Notifications#}
-            <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell" style="color: #3850A6 !important"></i>
-                    <span class="badge bg-primary badge-number">1</span> </a
-                ><!-- End Notification Icon -->
-                <ul
-                        class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications"
-                >
-                    <li class="dropdown-header">
+         </div>
+      </div>
+
+      <!-- ======= Header ======= -->
+      <header id="header" class="header fixed-top d-flex align-items-center">
+         <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+               <li class="nav-item d-block d-lg-none">
+               </li>
+               <!-- Separate Logo & Notifications-->
+               {# Show Notifications#}
+               <li class="nav-item dropdown">
+                  <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                  <i class="bi bi-bell" style="color: #3850A6 !important"></i>
+                  <span class="badge bg-primary badge-number">1</span> </a
+                     ><!-- End Notification Icon -->
+                  <ul
+                     class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications"
+                     >
+                     <li class="dropdown-header">
                         You have 4 new notifications
                         <span class="badge rounded bg-primary p-2 ms-2" style="background-color: #3850A6 !important">
                         To Check
                         </span>
-                    </li>
-                    <li>
+                     </li>
+                     <li>
                         <hr class="dropdown-divider"/>
-                    </li>
-                    <li class="notification-item">
+                     </li>
+                     <li class="notification-item">
                         <i class="bi bi-bell" style="color: #3850A6"></i>
                         <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
+                           <h4>Lorem Ipsum</h4>
+                           <p>Quae dolorem earum veritatis oditseno</p>
+                           <p>30 min. ago</p>
                         </div>
-                    </li>
-                    <li>
+                     </li>
+                     <li>
                         <hr class="dropdown-divider"/>
-                    </li>
-                    <li class="dropdown-footer">
+                     </li>
+                     <li class="dropdown-footer">
                         <a href="#">Show all notifications</a>
-                    </li>
-                </ul>
-                <!-- End Notification Dropdown Items -->
-            </li>
-            <!-- End Notification Nav -->
-            <li class="nav-item dropdown pe-3">
-                <a
-                        class="nav-link nav-profile d-flex align-items-center pe-0"
-                        href="#"
-                        data-bs-toggle="dropdown"
-                >
-                    <img
-                            src="{{ profile_picture }}"
-                            alt="Profile"
-                            class="rounded-circle"
-                    />
-                    {# Display Name #}
-                    <span class="d-none d-md-block dropdown-toggle ps-2"
-                    >{{ first_name }}</span
-                    > </a
-                ><!-- End Profile Image Icon -->
-                <ul
-                        class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile"
-                >
-                    <li class="dropdown-header">
+                     </li>
+                  </ul>
+                  <!-- End Notification Dropdown Items -->
+               </li>
+               <!-- End Notification Nav -->
+               <li class="nav-item dropdown pe-3">
+                  <a
+                     class="nav-link nav-profile d-flex align-items-center pe-0"
+                     href="#"
+                     data-bs-toggle="dropdown"
+                     >
+                    <div class="rounded-circle" style="background: url({{ profile_picture }}) no-repeat center center; background-size: cover; width: 30px; height: 30px; border-radius: 50% !important;"></div>
+
+                  {# Display Name #}
+                  <span class="d-none d-md-block dropdown-toggle ps-2"
+                     >{{ first_name }}</span
+                     > </a
+                     ><!-- End Profile Image Icon -->
+                  <ul
+                     class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile"
+                     >
+                     <li class="dropdown-header">
                         {# Display Name #}
                         <h6><span style="color: #F15BB7">AQUAMELYA </span>| {{ user_type }}</h6>
-                        {#                <span>AquaMelya</span>#}
-                    </li>
-                    <li>
+                     </li>
+                     <li>
                         <hr class="dropdown-divider"/>
-                    </li>
-                    <li>
+                     </li>
+                     <li>
                         <a
-                                class="dropdown-item d-flex align-items-center"
-                                href="{% url 'profile' %}"
-                        >
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
+                           class="dropdown-item d-flex align-items-center"
+                           href="{% url 'profile' %}"
+                           >
+                        <i class="bi bi-person"></i>
+                        <span>My Profile</span>
                         </a>
-                    </li>
-                    <li>
-                        <a
-                                class="dropdown-item d-flex align-items-center"
-                                href="#admin_edit_profile_url"
-                        >
-                            <i class="bi bi-gear"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li>
+                     </li>
+
+                     <li>
                         <hr class="dropdown-divider"/>
-                    </li>
-                    <li>
+                     </li>
+                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a>
-                    </li>
-                </ul>
-                <!-- End Profile Dropdown Items -->
+                     </li>
+                  </ul>
+                  <!-- End Profile Dropdown Items -->
+               </li>
+               <!-- End Profile Nav -->
+            </ul>
+         </nav>
+         <!-- End Icons Navigation -->
+      </header>
+      <!-- End Header -->
+
+      <!-- ======= Sidebar ======= -->
+      <aside id="sidebar" class="sidebar">
+         <div class="d-flex align-items-center justify-content-between">
+            <div class="logo d-flex align-items-center">
+               <img src="{% static 'images/LOGO_2.png' %}" alt="AquaMelya Logo"/>
+               <p>AQUAMELYA</p>
+            </div>
+         </div>
+         <!-- End Logo -->
+         <hr class="dropdown-divider" style="margin-bottom: 20px;" id="divide_logo"/>
+         <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+               <a {% block dashboard %} class="nav-link collapsed" {% endblock %}
+               href="{% url 'homepage' %}">
+               <i class="bi bi-grid"></i>
+               <span>DASHBOARD</span>
+               </a>
             </li>
-            <!-- End Profile Nav -->
-        </ul>
-    </nav>
-    <!-- End Icons Navigation -->
-</header>
-<!-- End Header -->
-<!-- ======= Sidebar ======= -->
-<aside id="sidebar" class="sidebar">
-    <div class="d-flex align-items-center justify-content-between">
-        <div class="logo d-flex align-items-center">
-            <img src="{% static 'images/LOGO_2.png' %}" alt="AquaMelya Logo"/>
-            <p>AQUAMELYA</p>
-        </div>
-    </div>
-    <!-- End Logo -->
-    <hr class="dropdown-divider" style="margin-bottom: 20px;" id="divide_logo"/>
-    <ul class="sidebar-nav" id="sidebar-nav">
-        <li class="nav-item">
-            <a {% block dashboard %} class="nav-link collapsed" {% endblock %}
-                                     href="{% url 'homepage' %}">
-                <i class="bi bi-grid"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-        <!-- Management Nav -->
-        <li class="nav-item">
-            <a {% block management %} class="nav-link collapsed"  {% endblock %}
-                                      data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-people"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
-                <li>
-                    <a href="{% url 'admin_staff_view_url' %}" {% block management_staff %} {% endblock %}>
-                        <i class="bi bi-circle"></i>
-                        <span>Staff</span>
-                    </a></li>
-                <li>
-                    <a href="{% url 'supplier_index' %}" {% block management_supplier %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Supplier</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <!-- Inventory (Components) Nav -->
-        <li class="nav-item">
-            <a {% block inventory %}class="nav-link collapsed" {% endblock %}
+            <li class="nav-heading">ACTIVITY</li>
+
+            <!-- Management Nav -->
+            <li class="nav-item">
+               <a {% block management %} class="nav-link collapsed"  {% endblock %}
+               data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+               <i class="bi bi-people"></i><span>MANAGEMENT</span><i class="bi bi-chevron-down ms-auto"></i>
+               </a>
+               <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                  <li>
+                     <a href="{% url 'admin_staff_view_url' %}" {% block management_staff %} {% endblock %}>
+                     <i class="bi bi-circle"></i>
+                     <span>Staff</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'supplier_index' %}" {% block management_supplier %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Supplier</span>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <!-- Inventory (Components) Nav -->
+            <li class="nav-item">
+               <a {% block inventory %}class="nav-link collapsed" {% endblock %}
                data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-menu-button-wide"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'inventory_supply_view' %}" {% block supply %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Supply</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'inventory_assets_view' %}" {% block assets %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Assets</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+               <i class="bi bi-menu-button-wide"></i><span>INVENTORY</span><i class="bi bi-chevron-down ms-auto"></i>
+               </a>
+               <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                  <li>
+                     <a href="{% url 'inventory_supply_view' %}" {% block supply %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Supply</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'inventory_assets_view' %}" {% block assets %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Assets</span>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <!-- End Inventory (Components) Nav -->
+            <li class="nav-item">
+               <a {% block transactions %} class="nav-link collapsed" {% endblock %}
+               data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+               <i class="bi bi-terminal-dash"></i><span>TRANSACTION</span><i class="bi bi-chevron-down ms-auto"></i>
+               </a>
+               <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                  <li>
+                     <a href="{% url 'admin_transaction_requests_url' %}"
+                     {% block transaction_requests %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Requests</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'admin_transaction_purchase_url' %}"
+                     {% block transaction_purchase %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'admin_transaction_delivery_url' %}"
+                     {% block transaction_delivery %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Delivery</span>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <!-- End Transactions  Nav -->
 
+             <li class="nav-heading">OVERVIEW</li>
 
-        <!-- End Inventory (Components) Nav -->
-        <li class="nav-item">
-            <a {% block transactions %} class="nav-link collapsed" {% endblock %}
-                                        data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-terminal-dash"></i><span>Transactions</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'admin_transaction_requests_url' %}"
-                            {% block transaction_requests %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Requests</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'admin_transaction_purchase_url' %}"
-                            {% block transaction_purchase %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'admin_transaction_delivery_url' %}"
-                            {% block transaction_delivery %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Delivery</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <!-- End Transactions  Nav -->
-        <li class="nav-item">
-            <a {% block reports %} class="nav-link collapsed" {% endblock %}
-                                   data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-layout-text-window-reverse"></i><span>Reports</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'admin_reports_requests_url' %}"
-                            {% block reports_requests %} {% endblock %}>
-                        <i class="bi bi-circle"></i><span>Requests</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'admin_reports_purchase_url' %}" {% block reports_purchase %} {% endblock %} >
-                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
-                    </a>
-                </li>
+            <li class="nav-item">
+               <a {% block reports %} class="nav-link collapsed" {% endblock %}
+               data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+               <i class="bi bi-layout-text-window-reverse"></i><span>REPORTS</span><i
+                  class="bi bi-chevron-down ms-auto"></i>
+               </a>
+               <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                  <li>
+                     <a href="{% url 'admin_reports_requests_url' %}"
+                     {% block reports_requests %} {% endblock %}>
+                     <i class="bi bi-circle"></i><span>Requests</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'admin_reports_purchase_url' %}" {% block reports_purchase %} {% endblock %} >
+                     <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'admin_reports_delivery_url' %}" {% block reports_delivery %} {% endblock %} >
+                     <i class="bi bi-circle"></i><span>Delivery</span>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <!-- End Reports Nav -->
 
-            </ul>
-        </li>
-        <!-- End Reports Nav -->
-        <li class="nav-heading">Options</li>
-        <li class="nav-item">
-            <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="{% url 'profile' %}">
-                <i class="bi bi-person"></i>
-                <span>Profile</span>
-            </a>
-        </li>
-        <!-- End Supplier Nav -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'logout' %}">
-                <i class="bi bi-box-arrow-in-left"></i>
-                <span>Logout</span>
-            </a>
-        </li>
-        <!-- End Supplier Nav -->
-    </ul>
-</aside>
-<!-- End Sidebar-->
-{% block content %}
-{% endblock %}
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-        class="bi bi-arrow-up-short"></i></a>
-<footer id="footer" class="footer">
-    <div class="copyright">
-        <strong><span>AquaMelya</span></strong>. By Power Rangers
-    </div>
-</footer>
-<!-- End Footer -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-<script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/staff_main.js' %}"></script>
-<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
-</body>
+            <!-- <li class="nav-item">
+               <a {% block profile %}  class="nav-link collapsed" {% endblock %} href="{% url 'profile' %}">
+               <i class="bi bi-person"></i>
+               <span>PROFILE</span>
+               </a>
+            </li> -->
+
+             <!-- End Supplier Nav -->
+            <!-- <li class="nav-item">
+               <a class="nav-link collapsed" href="{% url 'logout' %}">
+               <i class="bi bi-box-arrow-in-left"></i>
+               <span>LOGOUT</span>
+               </a>
+            </li> -->
+            <!-- End Supplier Nav -->
+         </ul>
+      </aside>
+      <!-- End Sidebar-->
+      {% block content %}
+      {% endblock %}
+      <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+         class="bi bi-arrow-up-short"></i></a>
+      <!-- End Footer -->
+
+      <script>
+         // Automatically close the alert after 5 seconds (5000 milliseconds)
+         setTimeout(function () {
+             $('.alert').alert('close');
+         }, 2000);
+      </script>
+
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+      <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+      <script src="{% static 'js/main.js' %}"></script>
+      <script src="{% static 'js/staff_main.js' %}"></script>
+      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+   </body>
 </html>
