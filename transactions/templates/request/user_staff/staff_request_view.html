@@ -294,10 +294,9 @@
             });
 
             $('#confirm-cancel-btn').on('click', function () {
-                var reqId = $(req_id).val();
+                var reqId = $(this).data('pk');
                 console.log(reqId);
-                const pk_id = parseInt(reqId);
-                cancelRequestPost(pk_id);
+                cancelRequestPost(reqId);
             });
 
 

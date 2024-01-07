@@ -80,6 +80,29 @@ def admin_transaction_requests_function(request):
         except Exception as e:
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
 
+def get_acknowledgement_data(request):
+    req_id = request.GET.get('req_id')
+    try:
+        ack_data = Acknowledgement_Request.objects.get(req_id=req_id)
+        if ack_data:
+            data = {
+                'acknowledge_by':ack_data.acknowledge_by,
+                'acknowledge_date':ack_data.acknowledge_date if ack_data.acknowledge_date else "",
+                'acknowledge_notes':ack_data.notes if ack_data.notes else "No available notes",
+                'req_description':ack_data.req_id.req_description,
+            }
+            return JsonResponse(data)
+    except Acknowledgement_Request.DoesNotExist:
+        data = {
+            'acknowledge_by': "",
+            'acknowledge_date': "",
+            'acknowledge_notes': "",
+            'req_description': "Not yet acknowledged",
+        }
+        return JsonResponse(data)
+
+
+
 
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
