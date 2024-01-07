@@ -1,5 +1,8 @@
 from datetime import date, timedelta, datetime
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
 from management.models import Supplier, SupplierStatus
 from bootstrap_modal_forms.forms import BSModalModelForm
 
@@ -153,39 +156,92 @@ class UpdateSupplierForm(BSModalModelForm):
         return supplier_name.capitalize()
 
 
+class DateAboveSeventeenValidator:
+    def __call__(self, value):
+        age_limit = date.today() - timedelta(days=17 * 365)
+        if value > age_limit:
+            raise ValidationError("You must be at least 17 years old.")
+
+
 class CustomDateField(forms.DateField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        sixteen_years_ago = date.today() - timedelta(days=16 * 365)
+        seventeen_years_ago = date.today() - timedelta(days=17 * 365)
         self.widget = forms.widgets.DateInput(
             attrs={'type': 'date', 'class': 'form-control', 'style': 'color:#d1d1d1;'},
             format='%Y-%m-%d',
         )
         self.widget.attrs.update({
-            'max': f'{sixteen_years_ago}',
+            'max': f'{seventeen_years_ago}',
         })
+        self.validators.append(DateAboveSeventeenValidator())
+
+
+class NameValidator:
+    def __init__(self, field_name):
+        self.field_name = field_name
+
+    def __call__(self, value):
+        if any(char.isdigit() for char in value):
+            raise forms.ValidationError(f"{self.field_name} should not contain numbers.")
+        if value.isdigit():
+            raise forms.ValidationError(f"{self.field_name} should not be only numbers.")
+
+
+class DateHiredValidator:
+    def __call__(self, value):
+        if value and value > timezone.now().date():
+            raise ValidationError("Date hired cannot be in the future.")
+
+class PasswordValidator:
+    def __call__(self, value):
+        if len(value) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        if not any(char.isdigit() for char in value) or not any(char.isalpha() for char in value):
+            raise ValidationError("Password must contain both letters and numbers.")
 
 
 class User_Account_ModelForm(BSModalModelForm):
-    user_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    user_first_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[NameValidator("First name")]
+    )
+    user_middle_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[NameValidator("Middle name")],
+        required=False
+    )
+    user_last_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[NameValidator("Last name")]
+    )
+
+    user_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        validators=[PasswordValidator()]
+    )
+
     user_birthdate = CustomDateField()
+
     user_date_hired = forms.DateField(
         widget=forms.widgets.DateInput(
             attrs={'type': 'date', 'class': 'form-control', 'style': 'color:#d1d1d1;'},
             format='%Y-%m-%d',
         ),
+        validators=[DateHiredValidator()]
     )
 
     class Meta:
         model = User_Account
-        exclude = ['user_id', 'user_type', 'user_status', 'user_date_added', 'user_date_modified', 'user_profile_pic']
+        exclude = ['user_id', 'user_type', 'user_status', 'user_date_added', 'user_date_modified',
+                   'user_profile_pic']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        for field in ['user_first_name', 'user_middle_name', 'user_last_name']:
-            if field in cleaned_data:
-                cleaned_data[field] = cleaned_data[field].title()
-        return cleaned_data
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     for field in ['user_first_name', 'user_middle_name', 'user_last_name']:
+    #         if field in cleaned_data:
+    #             cleaned_data[field] = cleaned_data[field].title()
+    #     return cleaned_data
 
 
 class User_Account_Update_ModelForm(BSModalModelForm):
