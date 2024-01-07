@@ -193,6 +193,7 @@ class DateHiredValidator:
         if value and value > timezone.now().date():
             raise ValidationError("Date hired cannot be in the future.")
 
+
 class PasswordValidator:
     def __call__(self, value):
         if len(value) < 8:
@@ -236,18 +237,41 @@ class User_Account_ModelForm(BSModalModelForm):
         exclude = ['user_id', 'user_type', 'user_status', 'user_date_added', 'user_date_modified',
                    'user_profile_pic']
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     for field in ['user_first_name', 'user_middle_name', 'user_last_name']:
-    #         if field in cleaned_data:
-    #             cleaned_data[field] = cleaned_data[field].title()
-    #     return cleaned_data
-
 
 class User_Account_Update_ModelForm(BSModalModelForm):
+    user_middle_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+    user_address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+    )
     user_birthdate = CustomDateField()
+
+    user_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        validators=[PasswordValidator()],
+        required=False
+    )
 
     class Meta:
         model = User_Account
         exclude = ['user_id', 'user_type', 'user_status', 'user_date_added', 'user_date_modified', 'user_profile_pic',
-                   'user_date_hired', 'user_password']
+                   'user_date_hired']
+
+    def clean_user_middle_name(self):
+        user_middle_name = self.cleaned_data.get('user_middle_name')
+        if user_middle_name.strip() == '' and self.instance.user_middle_name and self.instance.user_middle_name.strip() != '':
+            raise ValidationError("Middle name cannot be blank.")
+        return user_middle_name
+
+    def clean_user_password(self):
+        user_password = self.cleaned_data.get('user_password')
+        existing_password = self.instance.user_password if self.instance else None
+
+        # Check if the user entered a new password and left it blank
+        if user_password.strip() == '' and existing_password is not None:
+            return existing_password  # Return the existing password if no new password is provided
+
+        return user_password  # Otherwise, return the new password (even if it's blank)

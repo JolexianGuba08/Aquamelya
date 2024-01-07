@@ -1,7 +1,25 @@
+from django.contrib.auth import logout
+from django.http import Http404
+from django.shortcuts import redirect
+
 from inventory.models import Supply
 from management.models import User_Account, Supplier
 from login.views import user_already_logged_in
 from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order
+
+
+def check_user_status(request):
+    context = {}
+    if user_already_logged_in(request):
+        user_id = request.session.get('session_user_id')
+        if user_id:
+            user = User_Account.objects.get(user_id=user_id)
+            if user.user_status == 2 or user.user_status == 3:
+                logout(request)
+                # delete cookies name sessionid
+                request.session.flush()
+                context['logged_out_due_to_status'] = True
+    return context
 
 
 def get_user_info(request):
