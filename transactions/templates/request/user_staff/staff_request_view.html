@@ -24,15 +24,17 @@
                     <div class="card-body p-4 pb-0">
                         <h2 class="card-title" style="letter-spacing: 2px; margin-bottom: 10px; padding-bottom: 0; padding-top: 0 !important"><i class="bi bi-envelope-paper" style="margin-right: 10px !important;"></i>
                             OVERVIEW
-
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="section dashboard">
             <div style="display: block;">
                 <div class="card" style="padding-bottom: 27px;">
                     <div class="card-body">
                         <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;{{ requisition_data.req_description }} ({{ requisition_data.req_id }})
                         </h2>
-
-
                         <div style="width: 100%; margin: auto; height: 1px; background-color: var(--c1); margin-bottom: 20px"></div>
                     </div>
 
@@ -91,14 +93,10 @@
                     <div class="px-3">
                    <div class="d-flex justify-content-end mt-3 mr-5">
                         {% if requisition_data.req_status|lower == 'pending' %}
-                            <button class="cancel-request btn btn-danger" style="width: 100% !important"
-                                    data-pk="{{ requisition_data.req_id }}" onclick="cancelRequestModal()">
-                                CANCEL
                             <button class="cancel-request btn btn-warning mr-2" onclick="cancelRequestModal()">
                                 Cancel Request
                             </button>
                         {% elif requisition_data.req_status|lower == 'completed' %}
-                            &nbsp;
                             <button class="btn btn-success" onclick="itemsReceived()">
                                 Acknowledge Items
                             </button>
@@ -111,6 +109,8 @@
             <div class="card p-4" id="req_over" style="width: 100%">
                 {% include 'request/user_staff/staff_request_table_view.html' %}
             </div>
+        </div>
+
         </section>
     </main>
 
@@ -236,8 +236,6 @@
 
         }
 
-
-
         function itemsReceived() {
             $('#receivedModal').modal('show');
         }
@@ -248,9 +246,8 @@
                 'req_id': req_id,
                 'received_date': $('#receivedDate').val(),
                 'addition_notes': $('#additionalNotes').val(),
-                'acknowledged_by': $('#acknowledgedBy').val(),
+                'acknowledged_by': $('#acknowledgedBy').val()
             };
-            console.log(postData);
             $.ajax({
                 url: `/transactions/items_received/`,
                 method: 'POST',
@@ -263,7 +260,6 @@
                         console.log(data.status);
                     } else {
                         console.log('Error updating data');
-
                     }
                 },
                 error: function (data) {
