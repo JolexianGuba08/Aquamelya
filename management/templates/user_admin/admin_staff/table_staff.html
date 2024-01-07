@@ -47,9 +47,9 @@
                 <td class="contact_row text-center align-middle">{{ user_account.user_contact_number }}</td>
                 <td class="contact_row text-center align-middle">
                     {% if user_account.user_status == 1 %}
-                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">ACTIVE</span>
+                        <span class="badge bg-success text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">ACTIVE</span>
                     {% elif user_account.user_status == 2 %}
-                    <span class="badge bg-warning text-uppercase" style="padding: 10px; width: 90px">SUSPENDED</span>
+                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">SUSPENDED</span>
                     {% else %}
                     {% endif %}
                 </td>
@@ -61,11 +61,11 @@
                     </button>
                     <div class="dropdown-menu">
                         {% if user_account.user_status == 2 %}
-                                <a class="text-center delete-staff dropdown-item" data-form-url="{% url 'activate_staff' user_account.pk %}">Activate</a>
+                                <a class="text-left text-success delete-staff dropdown-item" data-form-url="{% url 'activate_staff' user_account.pk %}">ACTIVATE</a>
                         {% else %}
-                                <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'suspend_staff' user_account.pk %}">Suspend</a>
+                                <a class="text-left text-danger  delete-staff dropdown-item" data-form-url="{% url 'suspend_staff' user_account.pk %}">SUSPEND</a>
                         {% endif %}
-                        <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'delete_staff' user_account.pk %}">Delete Staff</a>
+                        <a class="text-left text-danger  delete-staff dropdown-item" data-form-url="{% url 'delete_staff' user_account.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>

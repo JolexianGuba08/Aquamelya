@@ -4,17 +4,17 @@
   {% csrf_token %}
 
   <div class="modal-header">
-    <h3 class="modal-title">Delete Asset</h3>
+    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">DELETE ASSET</h3>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
 
   <div class="modal-body">
     <p class="delete-text">Are you sure you want to delete
-      <strong>{{ asset.asset_description }}</strong>?</p>
+      <strong style="color: var(--c1); letter-spacing: 1px">{{ asset.asset_description }}</strong>?</p>
   </div>
 
   <div class="modal-footer">
-    <button type="submit" name="confirm" value="delete" id="delete-btn" class="btn btn-danger">Delete</button>
+    <button type="submit" name="confirm" value="delete" id="delete-btn" class="btn btn-danger" style="width: 100%; padding: 10px; font-weight: bold; letter-spacing: 1px">DELETE</button>
   </div>
 
 </form>

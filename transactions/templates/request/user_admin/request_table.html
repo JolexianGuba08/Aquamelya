@@ -58,7 +58,9 @@
                         <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
                     {% elif requisition.req_status|lower == 'incomplete' %}
                         <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
-                      {% elif requisition.req_status|lower == 'done' %}
+                    {% elif requisition.req_status|lower == 'done' %}
+                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
+                     {% elif requisition.req_status|lower == 'approved' %}
                         <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
                     {% endif %}
 

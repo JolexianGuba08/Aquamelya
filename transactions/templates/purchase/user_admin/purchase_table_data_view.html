@@ -9,6 +9,13 @@
     <a class="nav-link" href=""/>
 {% endblock delivery %}
 {% block content %}
+
+    <style>
+        table {
+            border: transparent !important;
+        }
+    </style>
+
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
     {% include 'acknowledgement/staff_delivery_modal.html' %}
     <main id="main" class="main">
@@ -32,7 +39,7 @@
             <div class="col-lg-12" id="delivery" data-pk="{{ purchase.purchase_id }}">
                 {% csrf_token %}
                 <div class="card" id="right_section">
-                    <div class="card-body" id="right_body">
+                    <div class="card-body p-5 pt-4 pb-2" id="right_body">
                         <div class="row mt-4">
                             <div class="col-md-3 mb-2">
                                 <label class="form-label" style="font-weight: 600">Requestor's Name</label>
@@ -56,16 +63,24 @@
                         <div class="row mt-4 mb-4">
                             <!-- Left column for Requested Items -->
                             <div class="col-md-6"><label class="form-label" style="font-weight: 600">STATUS: </label>
-                                <span
-                                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase; letter-spacing: 1px; font-weight: lighter">{{ purchase.purchase_status }}</span>
+
+                                {% if purchase.purchase_status|lower == 'pending' %}
+                                    <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
+                                {% elif purchase.purchase_status|lower == 'cancelled' %}
+                                    <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
+                                {% elif purchase.purchase_status|lower == 'in process' %}
+                                    <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
+                                  {% elif purchase.purchase_status|lower == 'done' %}
+                                    <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
+                                {% elif purchase.purchase_status|lower == 'approved' %}
+                                    <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
+                                {% endif %}
                                 <div class="table-responsive">
                                     <!-- Table content remains unchanged -->
                                 </div>
                             </div>
                             <!-- Right column for Select Supplier -->
-                            <div class="col-md-6 text-md-end">
-
-                            </div>
+                            <div style="height: 1px; width: 100%; background-color: var(--c1); margin-top: 30px;"> </div>
                         </div>
 
                         <div class="table-responsive">

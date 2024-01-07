@@ -58,6 +58,8 @@
                         <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
                       {% elif purch.purchase_status|lower == 'done' %}
                         <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% elif purch.purchase_status|lower == 'approved' %}
+                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
                     {% endif %}
 
                 </td>

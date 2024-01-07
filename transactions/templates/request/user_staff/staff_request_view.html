@@ -48,17 +48,21 @@
                                 <p class="card-texte" style=""><b>Request Type:
                                 </b> {{ requisition_data.req_type }}</p>
                                 <p class="card-text " style=""><b>Request Status:</b>
-                                    {% if requisition_data.req_status|lower == 'pending' %}
-                                        <span class="badge bg-warning text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'incomplete' %}
-                                        <span class="badge bg-primary text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'cancelled' %}
-                                        <span class="badge bg-danger text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'completed' %}
-                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'done' %}
-                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% endif %}</p>
+
+                        {% if requisition_data.req_status|lower == 'pending' %}
+                            <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'cancelled' %}
+                            <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'completed' %}
+                            <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'incomplete' %}
+                            <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'done' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'approved' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{requisition_data.req_status }}</span>
+                        {% endif %}
+                                </p>
                                 <p class="card-text " style=""><b>Request Date:</b>
                                     {{ requisition_data.req_date_requested }}</p>
 

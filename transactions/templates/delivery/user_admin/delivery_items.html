@@ -136,11 +136,11 @@
                             <td class="remove_tbl text-center align-middle">{{ item.delivery.order_receive_by }}</td>
                             <td class="text-center align-middle">
                                     {% if item.del_status.name|lower == 'in process' %}
-                                        <span class="badge bg-warning" style="color: black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
+                                        <span class="badge bg-warning" style="color: black; padding: 10px; text-transform: uppercase; width: 110px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
                                     {% elif item.del_status.name|lower == 'delivered' %}
-                                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
+                                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 110px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
                                     {% elif item.del_status.name|lower == 'undelivered' %}
-                                        <span class="badge bg-warning text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
+                                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 110px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
                                     {% endif %}
 
                             </td>
