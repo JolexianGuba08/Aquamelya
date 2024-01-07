@@ -24,4 +24,4 @@ def check_password(input_password, user_password):
     return bcrypt.checkpw(input_password_bytes, stored_password_bytes)
 
 
-print(check_password('jose', '$2b$12$sN59VflI8KyknTrduV.Q..1VpOt.q8AmdLWut9HutGku93euezxaa'))
+print(check_password('2024', '$2b$12$UZmcMtog4EgUYs72MhsGSelIsXTgwsDyjv8guBI4DxxbYvzBQjIru'))
