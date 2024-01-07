@@ -1,6 +1,9 @@
 /* UPDATED */
 :root {
     scroll-behavior: smooth;
+    --c1: #3850a6;
+    --c2: #f15bb7;
+    --c3: #f1eaf5;
 }
 
 body {
@@ -32,10 +35,10 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-    margin-top: 65px;
-    padding: 20px 30px;
-    transition: all 0.3s;
-    margin-left: 90px;
+  margin-top: 85px;
+  padding: 20px 20px;
+  transition: all 0.3s;
+  margin-left: 90px;
 }
 
 /*@media (max-width: 1199px) {*/
@@ -51,12 +54,13 @@ h6 {
     margin-bottom: 10px;
 }
 
-.pagetitle h1 {
-    font-size: 24px;
-    margin-bottom: 0;
-    font-weight: bolder;
-    color: #3850A6;
-    letter-spacing: 2px;
+.pagetitle h1, .page-title h3{
+  font-size: 25px !important;
+  margin-bottom: 20px !important;
+  font-weight: bolder !important;
+  color: #F15BB7 !important;
+  letter-spacing: 5px !important;
+  border-radius: 5px !important;
 }
 
 /*--------------------------------------------------------------
@@ -755,50 +759,104 @@ h6 {
 
 /* Info Cards */
 .dashboard .info-card {
-    padding-bottom: 10px;
-    background-color: rgb(255, 255, 255);
-    transition: background-color 0.3s;
+  padding-bottom: 10px;
+  background-color: rgb(255, 255, 255);
+  transition: background-color 0.3s;
+  cursor: pointer;
 }
 
-.dashboard .info-card:hover {
-    background-color: rgba(27, 48, 234, 0.059);
+.dashboard .info-card:hover{
+  background-color: #F1EAF5 !important;
+}
 
-    /* card hover dashboard background-color: #f15bb846 */
+.dashboard .report-section {
+  background-color: var(--c3) !important ;
+}
+
+/*.dashboard .report-section:hover {*/
+/*  background-color: #ffffff !important ;*/
+/*}*/
+
+.dashboard .right-section {
+    /*background-color: black !important;*/
+}
+.dashboard .stock-section {
+    /*background-color: var(--c3) !important;*/
+    border-radius: 5px !important;
+    height: 100% !important;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1) !important;
+}
+
+.lowstock {
+    border-radius: 10px !important;
+}
+
+.midlabel #midtitle, .midlabel #middesc {
+    margin-left: 0 !important;
+}
+
+.lowstock .result {
+    box-shadow: none !important;
+}
+
+.lowstock .result label:hover {
+    font-size: 30px !important;
+}
+
+.dashboard .right-section .lowstock {
+    padding: 5px !important;
+}
+
+@media (max-width: 1200px) {
+    .dashboard .contain {
+        width: 100% !important;
+        flex-direction: column !important;
+    }
+
+    .dashboard .contain .left {
+        width: 100% !important;
+    }
+
+    .dashboard .right-section {
+    width: 100% !important;
+    }
+
 }
 
 .dashboard .info-card h6 {
-    font-size: 28px;
-    color: #012970;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
+  font-size: 40px;
+  color: #012970;
+  font-weight: bolder;
+  margin: 0;
+  padding: 0;
 }
 
 .dashboard .card-icon {
-    font-size: 32px;
-    line-height: 0;
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-    flex-grow: 0;
+  font-size: 32px;
+  line-height: 0;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
-.dashboard .sales-card .card-icon {
-    color: #4154f1;
-    background: #c9c9ee;
-
+.dashboard .request-card .card-icon {
+  color: #F15BB7;
+  background: #F1EAF5;
 }
 
 
-.dashboard .revenue-card .card-icon {
-    color: #2eca6a;
-    background: #e0f8e9;
+.dashboard .order-card .card-icon {
+  color: #F15BB7;
+  background: #F1EAF5;
 }
 
-.dashboard .customers-card .card-icon {
-    color: #ff771d;
-    background: #ffecdf;
+
+.dashboard .supplier-card .card-icon {
+  color: #F15BB7;
+  background: #F1EAF5;
 }
+
 
 /* News & Updates */
 .dashboard .news .post-item + .post-item {
@@ -881,14 +939,15 @@ h6 {
 }
 
 .profile .profile-card h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     color: #2c384e;
     margin: 10px 0 0 0;
 }
 
 .profile .profile-card h3 {
-    font-size: 18px;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
 .profile .profile-card .social-links a {
@@ -925,6 +984,12 @@ h6 {
 
 .profile .profile-edit img {
     max-width: 120px;
+}
+
+@media (max-width: 1199px) {
+  .profile .row .profile_cont {
+    margin-bottom: 20px !important;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -1130,6 +1195,241 @@ h6 {
 
 /* Define styles for the normal state */
 
+/* TABLES */
+@media (max-width: 800px) {
+    #create-staff {
+        margin-right: 0 !important  ;
+    }
 
+    main {
+        padding-left: 0 !important;
+    }
+}
+
+table thead tr th {
+    color: var(--c1) !important;
+    letter-spacing: 1px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    background-color: var(--c3) !important ;
+    border-top: 1px solid var(--c3) !important;
+    border-bottom: 2px solid white !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table tbody  {
+    border-top: 1px solid var(--c3) !important;
+
+}
+
+table tbody tr {
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: lighter !important;
+    /*transition:  ease-in-out;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 2px solid white !important;
+}
+
+table tbody tr:hover {
+    background-color: var(--c3);
+    /*transition: .3s ease-in-out;*/
+}
+
+table thead tr .name_col{
+    border-left: 1px solid var(--c3) !important;
+}
+
+table thead tr .btn_col{
+    border-right: 1px solid var(--c3) !important;
+}
+
+table tbody th {
+    letter-spacing: 1px !important;
+    font-weight: lighter !important;
+    background-color: var(--c3) !important ;
+    border-bottom: 2px solid white !important;
+}
+
+table {
+    overflow: auto !important;
+}
+
+@media (width < 700px) {
+
+  #staff_table .email_col,
+  #staff_table .contact_col,
+  #staff_table .email_row,
+  #staff_table .contact_row{
+    display: none !important;
+  }
+}
+
+.add_staff_modal label, .edit_staff_modal label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+}
+
+.modal-title {
+    color: var(--c1) !important;
+    font-weight: bolder !important;
+    letter-spacing: 1px !important;
+    width: 100% !important;
+}
+
+.edit_staff_modal .form-control, .add_staff_modal .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
+
+@media (max-width: 700px) {
+    .modal-dialog {
+        max-width: 500px;
+        margin-left: 80px !important;
+    }
+}
+
+@media (max-width: 950px) {
+    #filter_supply {
+        flex-direction: column !important;
+    }
+
+    #filter_supply .search {
+        width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    #filter_supply .sup_type {
+        width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    #filter_supply .supplier {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+
+    #filter_supply .add_supp {
+        width: 100% !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        justify-content: end !important;
+    }
+}
+
+@media (max-width: 500px) {
+    #filter_supply .add_supp {
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    #filter_supply .add_supp button {
+        width: 100% !important;
+    }
+}
+
+@media (width < 700px) {
+
+  #supply-table .qoh_col,
+  #supply-table .supplier_col,
+  #supply-table .qoh_row,
+  #supply-table .supplier_row{
+    display: none !important;
+  }
+}
+
+.add_supply_modal label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+}
+
+.add_supply_modal .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
+
+.update_supply label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+}
+
+.update_supply .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
+
+@media (width < 730px) {
+
+  #asset-table .manufacturer_col,
+  #asset-table .model_col,
+  #asset-table .on_col,
+  #asset-table .manufacturer_row,
+  #asset-table .model_row,
+  #asset-table .on_row{
+    display: none !important;
+  }
+}
+
+@media (max-width: 950px) {
+    #asset_view {
+        flex-direction: column !important;
+    }
+
+    #asset_view .search {
+        width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    #asset_view .asset_type {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+
+    #asset_view .add_asset {
+        width: 100% !important;
+        margin-bottom: 8px !important;
+        display: flex !important;
+        justify-content: end !important;
+    }
+}
+
+@media (max-width: 500px) {
+    #asset_view .add_asset {
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    #asset_view .add_asset button {
+        width: 100% !important;
+    }
+}
+
+.add_asset label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+}
+
+.add_asset .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
+
+.update_asset label {
+    letter-spacing: 2px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+}
+
+.update_asset .form-control {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+}
 
 

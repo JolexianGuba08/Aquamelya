@@ -2,7 +2,7 @@
 {% load static %}
 
 {# Requisition Title #}
-{% block title %} Purchase | AquaMelya {% endblock title %}
+{% block title %} Delivery | Transaction {% endblock title %}
 
 {% block transactions %}
     class="nav-link"
@@ -11,35 +11,50 @@
 {# Content #}
 {% block content %}
 
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
-
+    <style>
+        @media (width < 940px) {
+             #req_view {
+                display: flex !important;
+                 flex-direction: column !important;
+            }
+            #req_view #cont {
+                display: flex !important;
+                flex-direction: column !important;
+                 width: 100% !important;
+            }
+        }
+    </style>
 
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Delivery</h1>
-        </div>
-        <div class="filter-and-search d-flex align-items-right  mb-3">
-            <div class="col-md-4 mb-2">
-                <select class="form-select" id="status_filter">
-                    <option selected value="all">Delivery Status: All</option>
-                    <option value="1">In Process</option>
-                    <option value="2">Order Received</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <input type="text" name="query" class="form-control" id="delivery_search"
-                       placeholder="Search Item"
-                       title="Enter search keyword">
-            </div>
+            <h3 style="font-weight: bold; margin-bottom: 0px !important; color: var(--c2)">TRANSACTION</h3>
+            <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">DELIVERY</p>
 
-        </div>
-        <section class="row">
-            <div style="display: block;">
-                <div class="card">
-                    {% include 'delivery/user_admin/include_delivery_table.html' %}
+            <section class="row">
+                <div style="">
+                    <div class="card p-3">
+                        <div class="card-body p-2">
+                            <div class="filter-and-search d-flex align-items-right mb-3 gap-3" id="req_view">
+                               <div class="" style="width: 100%">
+                                <input type="text" name="query" class="form-control" id="delivery_search"
+                                    placeholder="Search Item"
+                                    title="Enter search keyword">
+                                </div>
+
+                                <div class="mb-2" style="width: 100%">
+                                    <select class="form-select" id="status_filter">
+                                    <option selected value="all">Delivery Status: All</option>
+                                    <option value="1">In Process</option>
+                                    <option value="2">Order Received</option>
+                                    </select>
+                                </div>
+                            </div>
+                        {% include 'delivery/user_admin/include_delivery_table.html' %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

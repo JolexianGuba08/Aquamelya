@@ -1,19 +1,19 @@
-<table class="table table-striped table-hover" id="staff_requisition_table">
+<table class="table table-hover" id="staff_requisition_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Type</th>
-        <th scope="col" class="text-center">Date</th>
-        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center text-uppercase">Type</th>
+        <th scope="col" class="remove_tbl text-center text-uppercase">Date</th>
+        <th scope="col" class="text-center text-uppercase">Status</th>
     </tr>
     </thead>
     <tbody class="text-center">
     {% if requisitions %}
         {% for requisition in requisitions %}
             <tr data-pk="{{ requisition.req_id }}">
-                <td class="text-center align-middle">{{ requisition.req_type }}</td>
-                <td class="text-center align-middle">{{ requisition.date_added }}</td>
+                <th class="text-center align-middle">{{ requisition.req_type }}</th>
+                <td class="remove_tbl text-center align-middle">{{ requisition.date_added }}</td>
                 <td class="text-center align-middle">
-                    <span class="badge bg-success">{{ requisition.req_status }}</span>
+                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px;">{{ requisition.req_status }}</span>
                 </td>
 
             </tr>

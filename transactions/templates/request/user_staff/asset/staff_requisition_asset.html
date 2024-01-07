@@ -66,12 +66,19 @@
         </section>
 
         <div class="card mb-3">
-            <div class="card-body">
+            <div class="card-body p-4">
+
+                <div class="pagetitle" id="req_menu" style="">
+                    <h1 class="" style="margin-bottom: 5px; font-size: 35px">REQUEST</h1>
+                    <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">OVERVIEW</p>
+                </div>
+                <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
+
                 <table class="table table-hover" id="supplier_table">
                     <thead class="text-center">
                         <tr>
-                            <th scope="col" class="text-center">Asset Name</th>
-                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center text-uppercase">Asset Name</th>
+                            <th scope="col" class="text-center text-uppercase">Quantity</th>
                             <th scope="col" class="text-center"></th>
                         </tr>
                     </thead>
@@ -81,9 +88,8 @@
                 </table>
 
                 <div class="row mb-3">
-                    <label class="col-sm-6 col-form-label"></label>
-                    <div class="col-sm-6 justify-content-end" id="req_btn">
-                        <button type="submit" class="submitBtn btn btn" id="submit_btn"
+                    <div class="col-sm-12 justify-content-end" id="req_btn">
+                        <button type="submit" class="submitBtn btn btn" id="submit_btn" style= "border: none !important; min-width: 100% !important;"
                                 onclick="saveFromLocalStorage()">
                             <i class="bi bi-cursor"></i> SUBMIT
                         </button>

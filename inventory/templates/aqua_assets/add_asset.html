@@ -1,11 +1,11 @@
 {% load widget_tweaks %}
 
 <div class="modal-header">
-    <h5 class="modal-title">Add Asset</h5>
+    <h5 class="modal-title">ADD ASSET</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-    <form class="row g-3" method="POST" novalidate>
+    <form class="add_asset row g-3" method="POST" novalidate>
         {% csrf_token %}
         <div class="col-md-12">
             <label for="inputName4" class="form-label">Description</label>
@@ -98,8 +98,8 @@
             </div>
         </div>
 
-        <div class="modal-footer pb-0">
-            <button type="submit" class="btn btn-primary">Add Asset</button>
+        <div class="modal-footer pb-0" style="border: none">
+            <button type="submit" class="btn btn-primary" style="width: 100px; background-color: #0d6efc;">ADD</button>
         </div>
     </form>
 </div>

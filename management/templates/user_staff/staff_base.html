@@ -87,11 +87,9 @@
                         href="#"
                         data-bs-toggle="dropdown"
                 >
-                    <img
-                            src="{{ profile_picture }}"
-                            alt="Profile"
-                            class="rounded-circle"
-                    />
+
+                    <div class="rounded-circle" style="background: url({{ profile_picture }}) no-repeat center center; background-size: cover; width: 30px; height: 30px; border-radius: 50% !important;"></div>
+
                     {# Display Name #}
                     <span class="d-none d-md-block dropdown-toggle ps-2"
                     >{{ first_name }}</span
@@ -205,14 +203,7 @@
 {# Content #}
 {% block content %}
 {% endblock content %}
-<!-- ======= Footer ======= -->
-<footer id="footer" class="footer">
-    <div class="copyright">
-        &copy; Copyright <strong><span>AquaMelya</span></strong
-    >. All Rights Reserved
-    </div>
-</footer>
-<!-- End Footer -->
+
 <a
         href="#"
         class="back-to-top d-flex align-items-center justify-content-center"

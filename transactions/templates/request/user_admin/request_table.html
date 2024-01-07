@@ -1,10 +1,43 @@
-<table class="table table-striped table-hover " id="requisition_table">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+
+<style>
+    .dataTables_length {
+        display: none !important;
+    }
+
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    #requisition_table_paginate {
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--c1) !important;
+    }
+
+    .table  {
+        border-bottom: none !important;
+    }
+
+    @media (width < 940px) {
+      table .remove_tbl {
+        display: none !important;
+  }
+
+}
+    table tbody tr:hover {
+        background-color: var(--c3);
+    }
+</style>
+
+<table class="table table-hover " id="requisition_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center">Requestor</th>
-        <th scope="col" class="text-center">Type</th>
-        <th scope="col" class="text-center">Request Items</th>
-        <th scope="col" class="text-center">Status</th>
+        <th scope="col" class="text-center text-uppercase">Requestor</th>
+        <th scope="col" class="remove_tbl text-center text-uppercase">Type</th>
+        <th scope="col" class="remove_tbl text-center text-uppercase">Request Items</th>
+        <th scope="col" class="text-center text-uppercase">Status</th>
         <th scope="col" class="text-center"></th>
     </tr>
     </thead>
@@ -14,11 +47,11 @@
             <tr data-pk="{{ requisition.req_id }}"
                 data-status="{{ requisition.req_status }}" data-type="{{ requisition.req_type }}" data-name="{{ requisition.req_user }}">
                 <th scope="row" class="text-center align-middle">{{ requisition.req_requestor }}</th>
-                 <th scope="row" class="text-center align-middle">{{ requisition.req_type }}</th>
-                 <td class="text-center align-middle">{{ requisition.req_item_count }}</td>
+                 <th scope="row" class="remove_tbl text-center align-middle">{{ requisition.req_type }}</th>
+                 <td class="remove_tbl text-center align-middle">{{ requisition.req_item_count }}</td>
 
                 <td class="text-center align-middle"><span
-                        class="badge bg-success">{{ requisition.req_status }}</span>
+                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ requisition.req_status }}</span>
                 </td>
                 <td class="text-center align-middle">
                 </td>
@@ -31,3 +64,13 @@
     {% endif %}
     </tbody>
 </table>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#requisition_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script>

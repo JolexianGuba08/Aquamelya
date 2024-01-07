@@ -1,21 +1,21 @@
 {% if requisition_data.req_type == "Supply" or requisition_data.req_type == "Asset" %}
-    <table class="table table-striped table-hover">
+    <table class="table table-hover">
         <thead class="text-center">
         <tr>
-            <th scope="col" class="text-center">Request Item</th>
-            <th scope="col" class="text-center">Quantity</th>
-            <th scope="col" class="text-center">Status</th>
-            <th scope="col" class="text-center"></th>
+            <th scope="col" class="text-center text-uppercase">Request Item</th>
+            <th scope="col" class="remove_tbl text-center text-uppercase">Quantity</th>
+            <th scope="col" class="text-center text-uppercase">Status</th>
+            <th scope="col" class="text-center text-uppercase"></th>
         </tr>
         </thead>
         <tbody class="text-center">
         {% if req_items %}
             {% for item in req_items %}
                 <tr>
-                    <td class="text-center">{{ item.description }}</td>
-                    <td class="text-center">{{ item.quantity }}</td>
+                    <th class="text-center">{{ item.description }}</th>
+                    <td class="remove_tbl text-center">{{ item.quantity }}</td>
                     <td class="text-center">
-                        <span class="badge bg-success">{{ item.req_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
                     </td>
                     <td class="text-center"></td>
                 </tr>
@@ -28,11 +28,11 @@
         </tbody>
     </table>
 {% elif requisition_data.req_type == "Job Order" %}
-    <table class="table table-striped table-hover">
+    <table class="table">
         <thead class="text-center">
         <tr>
-            <th scope="col" class="text-center">Job Description</th>
-            <th scope="col" class="text-center">Status</th>
+            <th scope="col" class="text-center text-uppercase">Job Description</th>
+            <th scope="col" class="text-center text-uppercase">Status</th>
             <th scope="col" class="text-center"></th>
         </tr>
         </thead>
@@ -42,7 +42,7 @@
                 <tr>
                     <td class="text-center">{{ item.description }}</td>
                     <td class="text-center">
-                        <span class="badge bg-success">{{ item.req_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
                     </td>
                     <td class="text-center"></td>
                 </tr>

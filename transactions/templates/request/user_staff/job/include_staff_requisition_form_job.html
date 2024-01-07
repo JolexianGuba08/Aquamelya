@@ -1,9 +1,12 @@
 {% load widget_tweaks %}
 <div class="card" id="left_section">
-    <div class="card-body" id="left_body">
+    <div class="card-body" id="left_body" style="padding: 30px !important" id="left_body">
         <div id="template">
-            <div style="display: flex; justify-content: space-between; align-items: center;"></div>
-            <h5 class="card-title">Request Job</h5>
+            <div class="pagetitle" id="req_menu" style="">
+                <h1 class="" style="margin-bottom: 5px; font-size: 35px">JOB ORDER</h1>
+                <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">REQUISITION</p>
+            </div>
+
             <button type="button" class="btn btn remove_field_btn" id="remove_field_btn">X</button>
             <!-- Request Forms -->
             <form method="post" id="input_form" action="{% url 'staff_requisition_job_url' %}" novalidate>
@@ -15,7 +18,7 @@
                 <div >
                       <!-- Job Name input -->
                      <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Job Name</label>
+                    <label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Job Name</label>
                         <div class="col-sm-12">
                             {% render_field job_form.job_name class="form-control" %}
                         </div>
@@ -26,10 +29,10 @@
                         </div>
                      </div>
 
-                  
+
                       <!-- Job Notes input -->
                      <div class="row mb-3">
-                        <label for="inputText" class="col-sm-12 col-form-label form_label">Notes</label>
+                        <label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Notes</label>
                         <div class="col-sm-12">
                             {% render_field job_form.notes class="form-control" rows="8"%}
                         </div>
@@ -41,10 +44,8 @@
                      </div>
                 </div>
               <div class="row mb-3">
-                    <label class="col-sm-6 col-form-label"></label>
-                    <div class="col-sm-6 justify-content-end" id="req_btn">
-
-                        <button type="submit" class="btn btn" id="submit_btn"><i class="bi bi-cursor"></i> SUBMIT</button>
+                    <div class="col-sm-12 justify-content-end" id="req_btn">
+                        <button type="submit" class="btn btn" id="submit_btn" style= "border: none !important; min-width: 100% !important;"><i class="bi bi-cursor"></i> SUBMIT</button>
                     </div>
                 </div>
             </form>

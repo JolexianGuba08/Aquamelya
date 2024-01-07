@@ -1,10 +1,11 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-   <h5 class="modal-title">Add Staff</h5>
-   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   <h5 class="modal-title" style="color: var(--c1); font-weight: bolder; letter-spacing: 1px;">ADD STAFF</h5>
+{#   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
 </div>
-<div class="modal-body">
-   <form class="row g-3" method="post" action="" novalidate>
+
+<div class="modal-body" style="">
+   <form class="add_staff_modal row g-3" method="post" action="" novalidate>
       {% csrf_token %}
       <div class="col-md-6">
          <label for="inputName5" class="form-label" >FIRST NAME</label>
@@ -87,9 +88,9 @@
             {% endfor %}
          </div>
       </div>
-      <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-         <button type="submit" class="btn btn-primary">Add Staff</button>
+      <div class="modal-footer border-top-0">
+          <button type="submit" class="btn btn-primary" style="width: 100px">ADD</button>
+         <button type="button" class="btn btn-secondary" style="background-color: red; border: none; width: 100px" data-bs-dismiss="modal">CLOSE</button>
       </div>
    </form>
    <!-- End Multi Columns Form -->
