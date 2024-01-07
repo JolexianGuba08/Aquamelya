@@ -13,9 +13,20 @@
     {% include 'acknowledgement/staff_delivery_modal.html' %}
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1 class="" style="margin-bottom: 10px !important">PURCHASE ORDER</h1>
-            <h2 class="card-title" style=" padding: 0; margin-top: 0px; letter-spacing: 1px; margin-bottom: 30px">TRANSACTION</h2>
+            <div class="d-flex align-items-start">
+                <button type="button" class="btn btn-primary" style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
+                        onclick="goBackrequest()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                      <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    </svg>
+                </button>
 
+                <div class="ml-2" style="margin-left: 20px !important">
+                    <h1 class=""  style="margin-bottom: 5px !important">
+                        PURCHASE ORDER</h1>
+                    <h2 class="card-title" style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">TRANSACTION</h2>
+                </div>
+            </div>
         </div>
         <section>
             <div class="col-lg-12" id="delivery" data-pk="{{ purchase.purchase_id }}">
@@ -44,9 +55,9 @@
 
                         <div class="row mt-4 mb-4">
                             <!-- Left column for Requested Items -->
-                            <div class="col-md-6"><label class="form-label" style="font-weight: 600">Status : </label>
+                            <div class="col-md-6"><label class="form-label" style="font-weight: 600">STATUS: </label>
                                 <span
-                                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ purchase.purchase_status }}</span>
+                                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase; letter-spacing: 1px; font-weight: lighter">{{ purchase.purchase_status }}</span>
                                 <div class="table-responsive">
                                     <!-- Table content remains unchanged -->
                                 </div>
@@ -83,7 +94,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td class="text-center" colspan="2">No items requested</td>
+                                        <td class="empty_tbl text-center" colspan="2">NO TRANSACTIONS</td>
                                     </tr>
                                 {% endif %}
                                 </tbody>
@@ -91,14 +102,9 @@
                         </div>
 
                         <div class="row mt-4">
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-primary" style="width: 100%; font-weight: bolder; letter-spacing: 1px"
-                                        onclick="goBackrequest()">BACK
-                                </button>
-                            </div>
-                            <div class="col-md-6 text-md-end">
+                            <div class="col-md-12 text-md-end">
                                 {% if purchase.item_status|lower == 'true' and purchase.purchase_status|lower == 'pending' %}
-                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">Approved
+                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">APPROVED
                                     </button>
                                 {% endif %}
                             </div>

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -35,7 +35,7 @@
 <table class="table table-hover" id="purchase-table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center text-uppercase">Description</th>
+        <th scope="col" class="text-center text-uppercase"">Description</th>
         <th scope="col" class="remove_tbl text-center text-uppercase">Requestor</th>
         <th scope="col" class="remove_tbl text-center text-uppercase">Date</th>
         <th scope="col" class="text-center text-uppercase">Status</th>
@@ -45,19 +45,31 @@
     {% if purchases %}
         {% for purch in purchases %}
             <tr data-pk="{{ purch.purchase_id }}">
-                <th class=" text-center">{{ purch.purchase_description }}</th>
+                <th class=" text-center" style="font-weight: normal !important; color: var(--c1)" >{{ purch.purchase_description }}</th>
                 <td class="remove_tbl text-center">{{ purch.requestor }}</td>
                 <td class="remove_tbl text-center">{{ purch.purchase_date }}</td>
                 <td class="text-center">
-                    <span class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ purch.purchase_status }}</span>
+                    {% if purch.purchase_status|lower == 'pending' %}
+                        <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% elif purch.purchase_status|lower == 'cancelled' %}
+                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% elif purch.purchase_status|lower == 'completed' %}
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% elif purch.purchase_status|lower == 'incomplete' %}
+                        <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purch.purchase_status }}</span>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="12" class="empty_tbl text-center">NO TRANSACTIONS</td>
+        </tr>
     {% endif %}
     </tbody>
 </table>
 
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script>
     new DataTable('#purchase-table', {
@@ -65,5 +77,5 @@
         ordering: false,
         lengthMenu: [[5], [5]],
     });
-</script>
+</script> -->
 

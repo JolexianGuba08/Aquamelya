@@ -8,41 +8,43 @@
 {% block asset %} class="active" {% endblock %}
 {# Content #}
 {% block content %}
+    <style>
+        .card:hover {
+            background-color: white !important;
+        }
+
+        @media (max-width: 1400px) {
+            .sect {
+                flex-direction: column;
+            }
+
+            .card {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+
+
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
     {% include 'request/user_staff/staff_request_modal.html' %}
     {% include 'request/user_staff/confirm_cancel.html' %}
     {% include 'request/user_staff/item_received_modal.html' %}
     <main id="main" class="main">
-        <div>
-            <h1 class="" style="margin-bottom: 30px; font-size: 35px; color: var(--c2); text-transform: uppercase; letter-spacing: 2px ">{{ requisition_data.req_description }}</h1>
-            <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)"></p>
-        </div>
-        <section class="section dashboard d-flex justify-content-between gap-3" id="overview">
-            <div style="width: 60%" id="over_cont">
-                <div class="card" id="req_over" style="padding-bottom: 27px; width: 100% !important">
-                    <div class="card-body p-4 pb-0">
-                        <h2 class="card-title" style="letter-spacing: 2px; margin-bottom: 10px; padding-bottom: 0; padding-top: 0 !important"><i class="bi bi-envelope-paper" style="margin-right: 10px !important;"></i>
-                            OVERVIEW
-                        </h2>
-                    </div>
-                </div>
-            </div>
-        </section>
         <section class="section dashboard">
-            <div style="display: block;">
-                <div class="card" style="padding-bottom: 27px;">
-                    <div class="card-body">
-                        <h2 class="card-title" style="float: left;"><i class="bi bi-envelope-paper"></i> &nbsp;{{ requisition_data.req_description }} ({{ requisition_data.req_id }})
-                        </h2>
-                        <div style="width: 100%; margin: auto; height: 1px; background-color: var(--c1); margin-bottom: 20px"></div>
+            <div class="sect d-flex gap-3">
+
+                <div class="card p-4" style="width: 40%">
+                    <div class="card-body mb-2" style="padding: 0" >
+                        <h1 style="margin-bottom: 5px; letter-spacing: 5px; color: var(--c2)">{{ requisition_data.req_id }}</h1>
+                        <h2 class="card-title text-uppercase" style="padding: 0 !important; letter-spacing: 2px; font-weight: lighter;">{{ requisition_data.req_description }}</h2>
+                        <div class="" style="height: 1px; width: 100%; background-color: var(--c1); margin-bottom: 30px"></div>
                     </div>
 
-
-
-                    <div class=" card-body" style="padding-top: 0 !important; width: 100% !important">
+                    <div class=" card-body" style="padding: 0 !important; width: 100% !important">
                         <div class="row">
-                            <div class="col-md-12" style="width: 100%; margin-left: 5px">
+                            <div class="col-md-12" style="width: 100%;">
                                 <p class="card-texte" style=""><b>Request Type:
                                 </b> {{ requisition_data.req_type }}</p>
                                 <p class="card-text " style=""><b>Request Status:</b>
@@ -85,32 +87,30 @@
                                     <p class="card-text"><b>Reviewer Notes:</b>
                                         No reviewer notes available</p>
                                 {% endif %}
-
                             </div>
                         </div>
                     </div>
 
-                    <div class="px-3">
-                   <div class="d-flex justify-content-end mt-3 mr-5">
+                <div class="ml-3">
+                   <div class="d-flex mt-4">
                         {% if requisition_data.req_status|lower == 'pending' %}
-                            <button class="cancel-request btn btn-warning mr-2" onclick="cancelRequestModal()">
-                                Cancel Request
+                            <button class="cancel-request btn btn-danger mr-2" style="letter-spacing: 2px; width: 100%; font-weight: bold; padding: 10px" onclick="cancelRequestModal()">
+                                CANCEL REQUEST
                             </button>
                         {% elif requisition_data.req_status|lower == 'completed' %}
-                            <button class="btn btn-success" onclick="itemsReceived()">
+                            <button class="btn btn-success" style="letter-spacing: 2px; width: 100%; font-weight: bold; padding: 10px; text-transform: uppercase" onclick="itemsReceived()">
                                 Acknowledge Items
                             </button>
                         {% endif %}
                     </div>
-
                 </div>
             </div>
 
             <div class="card p-4" id="req_over" style="width: 100%">
+                <p style="font-weight: bold; color: var(--c1); letter-spacing: 2px;"><i class="bi bi-envelope-paper"></i> OVERVIEW</p>
                 {% include 'request/user_staff/staff_request_table_view.html' %}
             </div>
         </div>
-
         </section>
     </main>
 

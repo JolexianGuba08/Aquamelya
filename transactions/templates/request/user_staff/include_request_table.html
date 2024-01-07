@@ -10,17 +10,16 @@
     {% if requisitions %}
         {% for requisition in requisitions %}
             <tr data-pk="{{ requisition.req_id }}" data-type="{{ requisition.req_type }}" data-status="{{ requisition.req_status }}">
-                <th class="text-center align-middle">{{ requisition.req_type }}</th>
+                <th class="text-center align-middle" style="color: var(--c1); font-weight: normal !important; text-transform: uppercase">{{ requisition.req_type }}</th>
                 <td class="remove_tbl text-center align-middle">{{ requisition.date_added }}</td>
                 <td class="text-center align-middle">
-                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px;">{{ requisition.req_status }}</span>
+                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
                 </td>
-
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td colspan="5" class="text-center">No Requisition Found</td>
+            <td colspan="5" class="empty_tbl text-center">No Requisition Found</td>
         </tr>
     {% endif %}
     </tbody>

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -32,7 +32,7 @@
         <th scope="col" class="supply_col text-center">SUPPLY</th>
         <th scope="col" class="qoh_col text-center">QTY-OH</th>
         <th scope="col" class="supplier_col text-center">SUPPLIER</th>
-        <th class="text-center" scope="col"></th>
+        <th class="text-center" scope="col">ACTION</th>
     </tr>
     </thead>
     <tbody class="text-center">
@@ -41,7 +41,7 @@
             <tr class="update-supply" data-form-url="{% url 'update_supply_info' supplys.pk %}"
                 data-type="{{ supplys.supply_type.name }}" data-supplier="{{ supplys.supplier_id.supplier_name }}"
                 data-name="{{ supplys.supply_description }}">
-                <th class="text-center align-middle">{{ supplys.supply_description }}</th>
+                <th class="text-center align-middle" style="font-weight: normal !important; color: var(--c1 )">{{ supplys.supply_description }}</th>
                 <td class="qoh_row text-center align-middle">{{ supplys.supply_on_hand }} ({{ supplys.supply_unit }})</td>
                 <td class="supplier_row text-center align-middle">{{ supplys.supplier_id.supplier_name }}</td>
                 <td class="text-center">
@@ -53,21 +53,20 @@
                         <i class="bi bi-three-dots" style="color: black;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="delete-supply dropdown-item" data-form-url="{% url 'delete_supply' supplys.pk %}">Delete
-                            Asset</a>
+                        <a class="delete-supply dropdown-item text-danger" style="letter-spacing: 1px;" data-form-url="{% url 'delete_supply' supplys.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td class="text-center align-middle" colspan="10">No Supplies Found</td>
+            <td class="empty_tbl text-center align-middle" colspan="10">No Supplies Found</td>
         </tr>
     {% endif %}
     </tbody>
 </table>
 
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script>
     new DataTable('#supply-table', {
@@ -75,5 +74,5 @@
         ordering: false,
         lengthMenu: [[5], [5]],
     });
-</script>
+</script> -->
 

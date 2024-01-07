@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -41,7 +41,7 @@
         {% for assets in asset %}
             <tr class="asset-update" data-form-url="{% url 'update_asset_info' assets.pk %}"
                 data-type="{{ assets.asset_type }}" data-name="{{ assets.asset_description }}">
-                <th class="text-center align-middle">{{ assets.asset_description }}</th>
+                <th class="text-center align-middle" style="color: var(--c1) !important; font-weight: normal !important;">{{ assets.asset_description }}</th>
                 <td class="manufacturer_row text-center align-middle">{{ assets.asset_manufacturer }}</td>
                 <td class="model_row text-center align-middle">{{ assets.asset_model }}</td>
                 <td class="on_row text-center align-middle">{{ assets.asset_on_hand }} {{ assets.asset_unit }}</td>
@@ -52,19 +52,18 @@
                         <i class="bi bi-three-dots" style="color: black;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="asset-delete dropdown-item" data-form-url="{% url 'delete_asset' assets.pk %}">Delete
-                            Asset</a>
+                        <a class="asset-delete dropdown-item text-danger" style="letter-spacing: 1px" data-form-url="{% url 'delete_asset' assets.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>
         {% endfor %}
     {% else %}
-        <td class="text-center align-middle" colspan="12">No assets found.</td>
+        <td class="empty_tbl text-center align-middle" colspan="12">No assets found.</td>
     {% endif %}
     </tbody>
 </table>
 
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script>
     new DataTable('#asset-table', {
@@ -72,7 +71,7 @@
         ordering: false,
         lengthMenu: [[5], [5]],
     });
-</script>
+</script> -->
 
 
 

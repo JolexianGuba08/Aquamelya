@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -55,22 +55,27 @@
                 <td class="text-center align-middle"></td>
                 <td class="text-center align-middle">
                     {% if delivery.delivery_status == 1 %}
-                        <span class="badge bg-secondary" style="padding: 10px; width: 90px">PROCESSING</span>
+                        <span class="badge bg-primary" style="padding: 10px; width: 90px; letter-spacing: 1px;">PROCESSING</span>
                     {% else %}
-                        <span class="badge bg-success" style="padding: 10px; width: 90px">RECEIVED</span>
+                        <span class="badge bg-success" style="padding: 10px; width: 90px; letter-spacing: 1px">RECEIVED</span>
                     {% endif %}
                 </td>
             </tr>
         {% endfor %}
+
+        {% else %}
+        <tr>
+            <td colspan="12" class="empty_tbl text-center">NO TRANSACTIONS</td>
+        </tr>
     {% endif %}
     </tbody>
 </table>
 
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script>
     new DataTable('#delivery-table', {
         info: false,
         ordering: false,
         lengthMenu: [[5], [5]],
     });
-</script>
+</script> -->

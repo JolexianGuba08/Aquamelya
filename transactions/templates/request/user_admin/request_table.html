@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -38,7 +38,6 @@
         <th scope="col" class="remove_tbl text-center text-uppercase">Type</th>
         <th scope="col" class="remove_tbl text-center text-uppercase">Request Items</th>
         <th scope="col" class="text-center text-uppercase">Status</th>
-        <th scope="col" class="text-center"></th>
     </tr>
     </thead>
     <tbody class="text-center">
@@ -46,26 +45,32 @@
         {% for requisition in requisitions %}
             <tr data-pk="{{ requisition.req_id }}"
                 data-status="{{ requisition.req_status }}" data-type="{{ requisition.req_type }}" data-name="{{ requisition.req_user }}">
-                <th scope="row" class="text-center align-middle">{{ requisition.req_requestor }}</th>
-                 <th scope="row" class="remove_tbl text-center align-middle">{{ requisition.req_type }}</th>
+                <th scope="row" class="text-center align-middle" style="text-transform: uppercase; color: var(--c1); font-weight: normal !important">{{ requisition.req_requestor }}</th>
+                 <th scope="row" class="remove_tbl text-center align-middle" style="text-transform: uppercase; color: var(--c1); font-weight: normal !important">{{ requisition.req_type }}</th>
                  <td class="remove_tbl text-center align-middle">{{ requisition.req_item_count }}</td>
 
-                <td class="text-center align-middle"><span
-                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ requisition.req_status }}</span>
-                </td>
                 <td class="text-center align-middle">
+                    {% if requisition.req_status|lower == 'pending' %}
+                        <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
+                    {% elif requisition.req_status|lower == 'cancelled' %}
+                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
+                    {% elif requisition.req_status|lower == 'completed' %}
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
+                    {% elif requisition.req_status|lower == 'incomplete' %}
+                        <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition.req_status }}</span>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td colspan="12" class="text-center">No Requisition Found</td>
+            <td colspan="12" class="empty_tbl text-center">NO TRANSACTIONS</td>
         </tr>
     {% endif %}
     </tbody>
 </table>
 
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 <script>
     new DataTable('#requisition_table', {
@@ -73,4 +78,4 @@
         ordering: false,
         lengthMenu: [[5], [5]],
     });
-</script>
+</script> -->

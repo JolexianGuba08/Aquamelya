@@ -12,10 +12,10 @@
         {% if req_items %}
             {% for item in req_items %}
                 <tr>
-                    <th class="text-center">{{ item.description }}</th>
+                    <th class="text-center" style="color: var(--c1); font-weight: normal !important">{{ item.description }}</th>
                     <td class="remove_tbl text-center">{{ item.quantity }}</td>
                     <td class="text-center">
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px; font-size: 12px; letter-spacing: 1px; font-weight: lighter">{{ item.req_status }}</span>
                     </td>
                     <td class="text-center"></td>
                 </tr>
@@ -40,9 +40,9 @@
         {% if req_items %}
             {% for item in req_items %}
                 <tr>
-                    <td class="text-center">{{ item.description }}</td>
+                    <th class="text-center" style="font-weight: normal !important; color: var(--c1) !important">{{ item.description }}</th>
                     <td class="text-center">
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px; font-size: 12px; letter-spacing: 1px; font-weight: lighter">{{ item.req_status }}</span>
                     </td>
                     <td class="text-center"></td>
                 </tr>

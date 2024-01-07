@@ -324,7 +324,7 @@ h6 {
 }
 
 .breadcrumb .active {
-    color: #51678f;
+    color: var(--c2) !important;
     font-weight: 600;
 }
 
@@ -1432,4 +1432,11 @@ table {
     letter-spacing: 1px !important;
 }
 
+.empty_tbl {
+  letter-spacing: 2px;
+  font-size: 18px;
+  padding: 40px 0px !important;
+  background-color: var(--c3) !important;
+  text-transform: uppercase !important;
+}
 

@@ -10,32 +10,42 @@
 {% endblock delivery %}
 {% block content %}
 
+    <style>
+        @media (max-width: 1000px) {
+
+            .filter-and-search {
+                flex-direction: column;
+            }
+
+            .filter-and-search .form-select {
+                width: 100% !important
+            }
+        }
+    </style>
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
     {% include 'acknowledgement/staff_delivery_modal.html' %}
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1 style="margin-bottom: 5px">DELIVERY</h1>
-            <p style="margin-bottom: 30px; font-size: 14px; letter-spacing: 2px; color: var(--c1)">CHECK DELIVERIES TO BE RECEIVED</p>
-        </div>
-        <div class="filter-and-search d-flex align-items-right  mb-3">
-            <div class="col-md-4 mb-2">
-                <select class="form-select" id="status_filter">
-                    <option selected value="all">Delivery Status: All</option>
-                    <option value="1">In Process</option>
-                    <option value="2">Order Received</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <input type="text" name="query" class="form-control" id="delivery_search"
-                       placeholder="Search Item"
-                       title="Enter search keyword">
-            </div>
-
-        </div>
         <section>
             <div class="col-lg-12" id="delivery">
                 <div class="card" id="right_section">
                     <div class="card-body" id="right_body">
+                    <h1 style="margin-bottom: 5px; letter-spacing: 5px; font-weight: bold; color: var(--c2); font-size: 30px">DELIVERY</h1>
+                    <p style="margin-bottom: 10px; font-size: 14px; letter-spacing: 2px; color: var(--c1)">TO RECEIVE</p>
+
+            <div class="filter-and-search d-flex align-items-right  mb-3 mt-4 gap-3">
+                    <div class="" style="width: 100%">
+                        <input type="text" name="query" class="form-control" id="delivery_search"
+                               placeholder="Search Item"
+                               title="Enter search keyword">
+                    </div>
+
+                    <select class="form-select" style="width: 60%" id="status_filter">
+                        <option selected value="all">Delivery Status: All</option>
+                        <option value="1">In Process</option>
+                        <option value="2">Order Received</option>
+                    </select>
+            </div>
                         <!-- DISPLAY REQUISITION -->
                        <table class="table table-hover " id="delivery-table">
                             <thead class="text-center">
@@ -65,10 +75,10 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td class="text-center align-middle" colspan="10">No Delivery Found</td>
-                                </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="empty_tbl text-center">NO REQUISITION FOUND</td>
+                                    </tr>
                             {% endif %}
                             </tbody>
                         </table>
@@ -80,13 +90,15 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
 
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script> -->
     <script>
-        new DataTable('#delivery-table', {
+        /* new DataTable('#delivery-table', {
             info: false,
             ordering: false,
             lengthMenu: [[5], [5]],
-        });
+            searching: false,
+        }); */
+
         $(document).ready(function () {
             $('#delivery-table tbody').on('click', 'tr', function () {
                 var pk = $(this).data('pk');
