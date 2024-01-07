@@ -219,7 +219,7 @@ def admin_profile_function(request):
         return render(request, 'user_staff/staff_profile.html',
                       {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
     elif user_type == 1:
-        return render(request, 'user_admin/admin_profile.html')
+        return render(request, 'user_admin/profile_admin.html')
     else:
         return redirect('login')
 
