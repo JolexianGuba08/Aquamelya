@@ -26,6 +26,8 @@
                             <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
                         {% elif item.req_status|lower == 'approved' %}
                             <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                          {% elif item.req_status|lower == 'declined' %}
+                            <span class="badge bg-danger-light" style="padding: 10px; color: black; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
                         {% endif %}
                     </td>
                 </tr>

@@ -110,7 +110,7 @@
                 {% endif %}
 
                 {% if req_status == "Done" %}
-                    <button type="button" class="btn btn-outline-dark mt-4" style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="showAckInfo({{ req_id }})">
+                    <button type="button" class="btn btn-outline-secondary mt-4" style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="showAckInfo({{ req_id }})">
                     View Acknowledgement
                     </button>
                 {% endif %}
@@ -183,6 +183,8 @@
                                         <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                      {% elif item.req_status__name|lower == 'approved' %}
                                         <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'declined' %}
+                                        <span class="badge bg-danger-light" style="color:black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center align-middle">
