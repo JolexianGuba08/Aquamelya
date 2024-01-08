@@ -9,37 +9,19 @@
     <a class="nav-link" href=""/>
 {% endblock delivery %}
 {% block content %}
-
-    <style>
-        table {
-            border: transparent !important;
-        }
-    </style>
-
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
     {% include 'acknowledgement/staff_delivery_modal.html' %}
     <main id="main" class="main">
         <div class="pagetitle">
-            <div class="d-flex align-items-start">
-                <button type="button" class="btn btn-primary" style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
-                        onclick="goBackrequest()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                      <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                    </svg>
-                </button>
+            <h1 class="" style="margin-bottom: 10px !important">PURCHASE ORDER</h1>
+            <h2 class="card-title" style=" padding: 0; margin-top: 0px; letter-spacing: 1px; margin-bottom: 30px">TRANSACTION</h2>
 
-                <div class="ml-2" style="margin-left: 20px !important">
-                    <h1 class=""  style="margin-bottom: 5px !important">
-                        PURCHASE ORDER</h1>
-                    <h2 class="card-title" style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">TRANSACTION</h2>
-                </div>
-            </div>
         </div>
         <section>
             <div class="col-lg-12" id="delivery" data-pk="{{ purchase.purchase_id }}">
                 {% csrf_token %}
                 <div class="card" id="right_section">
-                    <div class="card-body p-5 pt-4 pb-2" id="right_body">
+                    <div class="card-body" id="right_body">
                         <div class="row mt-4">
                             <div class="col-md-3 mb-2">
                                 <label class="form-label" style="font-weight: 600">Requestor's Name</label>
@@ -49,38 +31,63 @@
                                 <label class="form-label" style="font-weight: 600">Request Type</label>
                                 <input type="text" class="form-control" value="{{ purchase.request_type }}" readonly>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-2 mb-2">
                                 <label class="form-label" style="font-weight: 600">Date Purchased</label>
                                 <input type="text" class="form-control" value="{{ purchase.purchase_date }}" readonly>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-2 mb-2">
                                 <label class="form-label" style="font-weight: 600">Supplier </label>
                                 <input type="text" class="form-control" value="{{ purchase.supplier }}" readonly>
                             </div>
+                        {% if purchase.item_status|lower == 'true' and purchase.purchase_status|lower == 'pending' %}
+                         <div class="col-md-2">
+                                <label class="form-label" style="font-weight: 600">Select Receiver</label>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle form-control" type="button"
+                                            id="receiverDropdown"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        Select Supplier
+                                    </button>
+                                    <ul class="dropdown-menu form-control" aria-labelledby="receiverDropdown">
+                                        <!-- Jinja loop to display suppliers with their IDs -->
+                                        {% if user_data %}
+                                            {% for user in user_data %}
+                                                <li><a class="dropdown-item" href="#"
+                                                       data-pk="{{ user.user_id }}">{{ user }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li><a class="dropdown-item text-center" href="#">No users available</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        {% else %}
+                           <div class="col-md-2">
+        <label class="form-label" style="font-weight: 600">Order Receiver</label>
+        <input type="text" class="form-control" value="{% if delivery %}{{ delivery.0.order_receive_by }}{% endif %}" readonly>
+    </div>
+                        {% endif %}
+
+                        </div>
 
                         </div>
 
                         <div class="row mt-4 mb-4">
                             <!-- Left column for Requested Items -->
-                            <div class="col-md-6"><label class="form-label" style="font-weight: 600">STATUS: </label>
-
-                                {% if purchase.purchase_status|lower == 'pending' %}
-                                    <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
-                                {% elif purchase.purchase_status|lower == 'cancelled' %}
-                                    <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
-                                {% elif purchase.purchase_status|lower == 'in process' %}
-                                    <span class="badge bg-warning" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
-                                  {% elif purchase.purchase_status|lower == 'done' %}
-                                    <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
-                                {% elif purchase.purchase_status|lower == 'approved' %}
-                                    <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ purchase.purchase_status }}</span>
-                                {% endif %}
+                            <div class="col-md-6"><label class="form-label" style="font-weight: 600">Status : </label>
+                                <span
+                                        class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ purchase.purchase_status }}</span>
                                 <div class="table-responsive">
                                     <!-- Table content remains unchanged -->
                                 </div>
                             </div>
                             <!-- Right column for Select Supplier -->
-                            <div style="height: 1px; width: 100%; background-color: var(--c1); margin-top: 30px;"> </div>
+                            <div class="col-md-6 text-md-end">
+
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -109,7 +116,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td class="empty_tbl text-center" colspan="2">NO TRANSACTIONS</td>
+                                        <td class="text-center" colspan="2">No items requested</td>
                                     </tr>
                                 {% endif %}
                                 </tbody>
@@ -117,9 +124,14 @@
                         </div>
 
                         <div class="row mt-4">
-                            <div class="col-md-12 text-md-end">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary" style="width: 100%; font-weight: bolder; letter-spacing: 1px"
+                                        onclick="goBackrequest()">BACK
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-md-end">
                                 {% if purchase.item_status|lower == 'true' and purchase.purchase_status|lower == 'pending' %}
-                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">APPROVED
+                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">Approve
                                     </button>
                                 {% endif %}
                             </div>
@@ -141,7 +153,16 @@
 
         $(document).ready(function () {
             const csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+            let selectedReceiverID; // Variable to store the selected supplier ID
 
+            // Add a click event listener to the dropdown items
+            $('.dropdown-item').on('click', function (event) {
+                event.preventDefault(); // Prevent default action
+
+                const selectedReceiver = $(this).text();
+                $('#receiverDropdown').text(selectedReceiver);
+                selectedReceiverID = $(this).data('pk');
+            });
             $('#createPurchase').on('click', function () {
                 const purchaseID = $('#delivery').data('pk');
                 // add alert to confirm
@@ -156,6 +177,9 @@
                     headers: {
                         'X-CSRFToken': csrftoken
                     },
+                    data: {
+                    'receiver_id': selectedReceiverID,
+                },
                     success: function (response) {
                         if (response.success) {
                             console.log('Purchase Order created successfully');

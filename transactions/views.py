@@ -41,6 +41,7 @@ def admin_required(function):
     return _wrapped_view
 
 
+
 # ---------- ADMIN REQUISITION SECTION ------------ #
 
 @admin_required
@@ -103,7 +104,6 @@ def get_acknowledgement_data(request):
 
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
-@admin_required
 def get_requisition_info(request, pk, supply_description):
     global current_onhand_stock, req_qty, request_statuses, item_name
     if request.session.get('session_user_type') == 0:
@@ -1317,6 +1317,7 @@ def post_delivery_info(request, delivery_id):
         item_type = request.POST.get('item_type')
         if item_type == 'Supply':
             delivery_item = get_object_or_404(DeliverySupply, del_item_id=delivery_id)
+
         elif item_type == 'Asset':
             delivery_item = get_object_or_404(DeliveryAsset, del_item_id=delivery_id)
 
@@ -1530,6 +1531,7 @@ def create_purchase_requisition(request, req_id, supplier_id):
 @admin_required
 def purchase_order_function(request, purch_id):
     try:
+        user_data = User_Account.objects.all()
         purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
         purchase_order_id = purchase_order.purch_id
         purchase_order_date = purchase_order.purch_date.strftime('%Y-%m-%d') if purchase_order.purch_date else "None"
@@ -1541,7 +1543,7 @@ def purchase_order_function(request, purch_id):
         description = requisition.req_description
         requisition_type = requisition.req_type.name
         supplier = purchase_order.supplier
-
+        delivery = Delivery.objects.filter(purch=purchase_order)
         req_items = None
         item_status = False
         if requisition_type == 'Supply':
@@ -1590,7 +1592,7 @@ def purchase_order_function(request, purch_id):
             'item_status': item_status,
         }
         return render(request, 'purchase/user_admin/purchase_table_data_view.html',
-                      {'purchase': purchase_order_data, 'req_items': req_items})
+                      {'purchase': purchase_order_data, 'req_items': req_items, 'delivery':delivery, 'user_data': user_data})
     except Purchase_Order.DoesNotExist:
         raise Http404("Purchase Order does not exist.")
     except Requisition.DoesNotExist:
@@ -1608,8 +1610,7 @@ def purchase_order_approved(request, purch_id):
         # get all the item to that request that is below the on hand
         requisition = Requisition.objects.get(req_id=req_id)
         requisition_type = requisition.req_type.name
-
-        user_id = request.session.get('session_user_id')
+        user_id = request.POST.get('receiver_id')
         user = User_Account.objects.get(user_id=user_id)
         low_stock_supply = []  # Collect low stock supplies
         low_stock_assets = []  # Collect low stock assets
