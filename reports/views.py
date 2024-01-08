@@ -15,20 +15,33 @@ def admin_reports_purchase_function(request):
         return redirect('login')
 
     if request.session.get('session_user_type') == 1:
-        done_purchase_orders = Purchase_Order.objects.filter(purch_status=3).values(
-            'purch_id',
-            'purch_date',
-            'req__req_type__name',
-            'supplier__supplier_name',
-        )
+        purch = Purchase_Order.objects.filter(purch_status=3)
+        purchaser_order = []
 
-        sorted_combined_purchases = sorted(list(done_purchase_orders), key=lambda x: x['req__req_type__name'])
+        for order in purch:
+            req_item_name = ''
+            req_type = order.req.req_type.name
+            quantity_item = 0
+            if req_type == 'Supply':
+                req_item = Request_Supply.objects.filter(req_id=order.req_id)
+                quantity_item = req_item[0].req_supply_qty
+                req_item_name = req_item[0].supply
+            elif req_type == 'Asset':
+                req_item = Request_Assets.objects.filter(req_id=order.req_id)
+                req_item_name = req_item[0].asset
+                quantity_item = req_item[0].req_asset_qty
+                print(req_item_name)
 
-        # To print structured JSON
-        structured_json = json.dumps({'purchase_order': sorted_combined_purchases}, cls=DjangoJSONEncoder, indent=4)
-        print("Purchase Order Context:", structured_json)
+            purchaser_order.append({
+                'purch_date': order.purch_date,
+                'req_type': req_type,
+                'req_item_name': req_item_name,
+                'quantity': quantity_item,
+            })
 
-        return render(request, 'reports_purchase.html', {'purchase_order': sorted_combined_purchases})
+        print("Purchase Order Context:", purchaser_order)
+
+        return render(request, 'reports_purchase.html', {'purchase_order': purchaser_order})
     else:
         raise Http404("You are not authorized to view this page")
 
@@ -179,3 +192,52 @@ def get_monthly_requests_data(request):
     }
 
     return JsonResponse(data)
+
+
+def reports_dashboard(request):
+    try:
+        current_year = datetime.datetime.now().year
+
+        # Fetch approved counts for each month in Request_Supply for the current year
+        approved_supply = Request_Supply.objects.filter(
+            req_id__req_date__year=current_year,
+            req_status__name='Approved'
+        ).values('req_id__req_date__month').annotate(
+            count=Count('req_id')
+        ).order_by('req_id__req_date__month')
+
+        # Fetch approved counts for each month in Request_Assets for the current year
+        approved_assets = Request_Assets.objects.filter(
+            req_id__req_date__year=current_year,
+            req_status__name='Approved'
+        ).values('req_id__req_date__month').annotate(
+            count=Count('req_id')
+        ).order_by('req_id__req_date__month')
+
+        # Fetch approved counts for each month in Job_Order for the current year
+        approved_job_orders = Job_Order.objects.filter(
+            req_id__req_date__year=current_year,
+            req_status__name='Approved'
+        ).values('req_id__req_date__month').annotate(
+            count=Count('req_id')
+        ).order_by('req_id__req_date__month')
+
+        # Create dictionaries to store counts for each month
+        supply_counts = {supply['req_id__req_date__month']: supply['count'] for supply in approved_supply}
+        assets_counts = {asset['req_id__req_date__month']: asset['count'] for asset in approved_assets}
+        job_orders_counts = {job_order['req_id__req_date__month']: job_order['count'] for job_order in
+                             approved_job_orders}
+
+        # Prepare data for the response
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        data = {
+            'months': months,
+            'approved_supply_count': [supply_counts.get(month, 0) for month in range(1, 13)],
+            'approved_assets_count': [assets_counts.get(month, 0) for month in range(1, 13)],
+            'approved_job_orders_count': [job_orders_counts.get(month, 0) for month in range(1, 13)]
+        }
+
+        return JsonResponse(data)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

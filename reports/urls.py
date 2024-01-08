@@ -8,4 +8,5 @@ urlpatterns = [
     path('delivery/', views.admin_reports_delivery_function, name='admin_reports_delivery_url'),
     path('get_monthly_purchase_data/', views.get_monthly_purchase_data, name='get_monthly_purchase_data'),
     path('get_monthly_requests_data/', views.get_monthly_requests_data, name='get_monthly_requests_data'),
+    path('reports_data/', views.reports_dashboard, name='reports_data_dashboard'),
 ]

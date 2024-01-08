@@ -189,50 +189,34 @@
                         </script>
                         <!-- End Suppliers Card -->
                         <!-- Report Script -->
+                        <!-- Report Script -->
                         <div class="col-12">
                             <div class="card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">Today</a></li>
-                                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                                    </ul>
-                                </div>
-
                                 <div class="card-body">
-                                    <h5 class="card-title">Reports <span>/Today</span></h5>
-
+                                    <h5 id="chartTitle" class="card-title">Reports <span>/This Year</span></h5>
                                     <!-- Line Chart -->
                                     <div id="reportsChart"></div>
                                     <script>
-                                        document.addEventListener("DOMContentLoaded", () => {
-                                            new ApexCharts(document.querySelector("#reportsChart"), {
-                                                series: [{
-                                                    name: 'Supplies',
-                                                    data: [31, 40, 28, 51, 42, 82, 56],
-                                                }, {
-                                                    name: 'Assets',
-                                                    data: [11, 32, 45, 32, 34, 52, 41]
-                                                }, {
-                                                    name: 'Job Orders',
-                                                    data: [15, 11, 32, 18, 9, 24, 11]
-                                                }],
+                                        function updateChart() {
+                                            // Perform AJAX request to fetch data from the Django view
+                                            fetch('/reports_data')
+                                                .then(response => response.json())
+                                                .then(data => renderChart(data));
+                                        }
+
+                                        function renderChart(data) {
+                                            const chart = new ApexCharts(document.querySelector("#reportsChart"), {
+                                                series: [
+                                                    {name: 'Supplies', data: data.approved_supply_count},
+                                                    {name: 'Assets', data: data.approved_assets_count},
+                                                    {name: 'Job Orders', data: data.approved_job_orders_count}
+                                                ],
                                                 chart: {
                                                     height: 350,
                                                     type: 'area',
-                                                    toolbar: {
-                                                        show: false
-                                                    },
+                                                    toolbar: {show: false},
                                                 },
-                                                markers: {
-                                                    size: 4
-                                                },
+                                                markers: {size: 4},
                                                 colors: ['#4154f1', '#2eca6a', '#ff771d'],
                                                 fill: {
                                                     type: "gradient",
@@ -243,31 +227,25 @@
                                                         stops: [0, 90, 100]
                                                     }
                                                 },
-                                                dataLabels: {
-                                                    enabled: false
-                                                },
-                                                stroke: {
-                                                    curve: 'smooth',
-                                                    width: 2
-                                                },
-                                                xaxis: {
-                                                    type: 'datetime',
-                                                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                                                },
-                                                tooltip: {
-                                                    x: {
-                                                        format: 'dd/MM/yy HH:mm'
-                                                    },
-                                                }
-                                            }).render();
+                                                dataLabels: {enabled: false},
+                                                stroke: {curve: 'smooth', width: 2},
+                                                xaxis: {categories: data.months},
+                                                tooltip: {x: {format: 'dd/MM/yy HH:mm'}},
+                                            });
+
+                                            chart.render();
+                                        }
+
+                                        // Initialize the chart
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            updateChart();
                                         });
                                     </script>
                                     <!-- End Line Chart -->
-
                                 </div>
-
                             </div>
-                        </div><!-- End Reports -->
+                        </div>
+
                         <!-- End Report Script -->
                     </div>
                 </div>

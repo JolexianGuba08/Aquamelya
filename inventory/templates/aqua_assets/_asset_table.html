@@ -16,20 +16,21 @@
         border-top: 1px solid var(--c1) !important;
     }
 
-    .table  {
+    .table {
         border-bottom: none !important;
-}
+    }
+
     table tbody tr:hover {
-    background-color: var(--c3);
-    /*transition: .3s ease-in-out;*/
-}
+        background-color: var(--c3);
+        /*transition: .3s ease-in-out;*/
+    }
 </style>
 
 <table class="table table-hover" id="asset-table">
     <thead class="text-center">
     <tr>
         <th scope="col" class="text-center">ASSET</th>
-        <th scope="col" class="manufacturer_col text-center">MANUFACTURER</th>
+        <th scope="col" class="manufacturer_col text-center">BRAND</th>
         <th scope="col" class="model_col text-center">MODEL</th>
         <th scope="col" class="on_col text-center">ON HAND</th>
         <th scope="col" class="text-center"></th>
@@ -41,7 +42,8 @@
         {% for assets in asset %}
             <tr class="asset-update" data-form-url="{% url 'update_asset_info' assets.pk %}"
                 data-type="{{ assets.asset_type }}" data-name="{{ assets.asset_description }}">
-                <th class="text-center align-middle" style="color: var(--c1) !important; font-weight: normal !important;">{{ assets.asset_description }}</th>
+                <th class="text-center align-middle"
+                    style="color: var(--c1) !important; font-weight: normal !important;">{{ assets.asset_description }}</th>
                 <td class="manufacturer_row text-center align-middle">{{ assets.asset_manufacturer }}</td>
                 <td class="model_row text-center align-middle">{{ assets.asset_model }}</td>
                 <td class="on_row text-center align-middle">{{ assets.asset_on_hand }} {{ assets.asset_unit }}</td>
@@ -52,7 +54,8 @@
                         <i class="bi bi-three-dots" style="color: black;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="asset-delete dropdown-item text-danger" style="letter-spacing: 1px" data-form-url="{% url 'delete_asset' assets.pk %}">DELETE</a>
+                        <a class="asset-delete dropdown-item text-danger" style="letter-spacing: 1px"
+                           data-form-url="{% url 'delete_asset' assets.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>
