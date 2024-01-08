@@ -40,10 +40,6 @@ def default_ack_req_id():
     return default_starting_id(Acknowledgement_Request, 'ack_req_id')
 
 
-def default_ack_purch_id():
-    return default_starting_id(Acknowledgement_Purch, 'ack_id')
-
-
 class RequisitionStatus(models.Model):
     name = models.CharField(max_length=15, unique=True)
 
@@ -182,6 +178,7 @@ class Delivery(models.Model):
         db_table = 'delivery'
         verbose_name = 'Delivery'
 
+
 class Acknowledgement_Request(models.Model):
     ack_req_id = models.IntegerField(primary_key=True, default=default_ack_req_id)
     acknowledge_by = models.CharField(max_length=100)
@@ -192,20 +189,6 @@ class Acknowledgement_Request(models.Model):
     class Meta:
         db_table = 'ack_request'
         verbose_name = 'ack_request'
-
-
-
-class Acknowledgement_Purch(models.Model):
-    ack_id = models.IntegerField(primary_key=True, default=default_ack_purch_id)
-    acknowledge_by = models.CharField(max_length=100)
-    acknowledge_date = models.DateTimeField(auto_now_add=True)
-    regstr_receive_date = models.DateTimeField()
-    notes = models.TextField(blank=True, null=True)
-    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'acknowledgement_purch'
-        verbose_name = 'Acknowledgement_Purch'
 
 
 class DeliveryStatus(models.Model):
