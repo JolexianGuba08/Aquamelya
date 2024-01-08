@@ -9,11 +9,11 @@ admin.site.register(Request_Assets)
 admin.site.register(Purchase_Order)
 admin.site.register(Delivery)
 admin.site.register(Job_Order)
-admin.site.register(Acknowledgement_Job)
-admin.site.register(Acknowledgement_Purch)
+admin.site.register(Acknowledgement_Request)
 admin.site.register(RequestType)
 admin.site.register(RequestStatus)
 admin.site.register(DeliveryAsset)
 admin.site.register(DeliverySupply)
 admin.site.register(DeliveryStatus)
+
 

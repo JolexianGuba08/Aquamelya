@@ -133,11 +133,11 @@
             var asset_id = $('#asset_name').val();
             var asset_name = $('#asset_name').find('option:selected').text();
 
-            if (asset_quantity <= 0) {
-                alert('Quantity must be greater than 0.');
+
+            if (asset_quantity <= 0 || asset_name === "Select") {
+                alert('Please fill in both Asset Name and Quantity before saving.');
                 return
             }
-
             if (asset_name && asset_quantity) {
                 var existingAsset = checkAndUpdateAsset(asset_id, asset_quantity);
 
@@ -185,7 +185,7 @@
                     <i class="bi bi-three-dots" style="color: black;"></i>
                 </button>
                 <div class="dropdown-menu">
-                    <a class="delete-supplier dropdown-item">Delete Asset</a>
+                    <a class="delete-supplier dropdown-item" onclick="confirmDelete('${asset.asset_id}', '${asset.asset_name}')">Delete Asset</a>
                 </div>
             </td>
         </tr>`;
@@ -197,6 +197,49 @@
             }
         }
 
+        function confirmDelete(supplyId, supplyName) {
+            var confirmDeletion = confirm("Are you sure you want to delete " + supplyName + "?");
+
+            if (confirmDeletion) {
+                deleteSupply(supplyId);
+            }
+        }
+
+       function deleteSupply(supplyId) {
+        // Retrieve existing data from local storage
+        var storedData = localStorage.getItem("request_asset");
+        var suppliesArray = [];
+
+        if (storedData) {
+            suppliesArray = JSON.parse(storedData);
+
+            // Find the index of the supply with the given ID
+            var supplyIndex = suppliesArray.findIndex(function(supply) {
+                return supply.asset_id === supplyId;
+            });
+
+            if (supplyIndex !== -1) {
+            // Remove the item from the array
+            suppliesArray.splice(supplyIndex, 1);
+
+                // Check if the array is empty
+                if (suppliesArray.length === 0) {
+                    // If the array is empty, clear the local storage
+                    localStorage.removeItem("request_asset");
+                    console.log("Local storage cleared");
+                } else {
+                    // Update local storage with the modified array
+                    localStorage.setItem("request_asset", JSON.stringify(suppliesArray));
+                    console.log("Asset with ID " + supplyId + " deleted from local storage");
+                }
+            window.location.reload();
+            } else {
+                console.warn("Asset with ID " + supplyId + " not found in local storage");
+            }
+        } else {
+            console.error("No data found in local storage.");
+        }
+     }
 
         // Function to handle inline quantity increment and update local storage
         function incrementQuantity(btn) {
@@ -329,6 +372,7 @@
                             localStorage.removeItem("request_asset");
                             window.location.reload();
                         } else {
+
                             console.error("Error saving data from local storage:", response.error_message);
                         }
                     },

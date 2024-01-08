@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -16,17 +16,17 @@
         border-top: 1px solid var(--c1) !important;
     }
 
-    .table {
+    .table  {
         border-bottom: none !important;
     }
 
     @media (width < 960px) {
-        table .remove_tbl {
-            display: none !important;
-        }
-    }
+      table .remove_tbl {
+        display: none !important;
+      }
+}
 
-    #supplier_table tbody tr:hover {
+        #supplier_table tbody tr:hover {
         background-color: var(--c3) !important;
     }
 </style>
@@ -38,7 +38,7 @@
         <th scope="col" class="remove_tbl text-center">CONTACT NO.</th>
         <th scope="col" class="remove_tbl text-center">EMAIL</th>
         <th scope="col" class="remove_tbl text-center">ADDRESS</th>
-        <th scope="col" class="remove_tbl text-center">STATUS</th>
+        <th scope="col" class="text-center">STATUS</th>
         <th scope="col" class="text-center"></th>
     </tr>
     </thead>
@@ -47,17 +47,16 @@
         {% for supplier in supplier_list %}
             <tr class="update_supplier" data-form-url="{% url 'supplier_update' supplier.pk %}"
                 data-name="{{ supplier.supplier_name }}">
-                <th scope="row" class="text-center align-middle">{{ supplier.supplier_name }}</th>
+                <th scope="row" class="text-center align-middle" style="color: var(--c1); font-weight: normal !important; text-transform: uppercase">{{ supplier.supplier_name }}</th>
                 <td class="remove_tbl text-center align-middle">{{ supplier.supplier_primary_contact }}</td>
                 <td class="remove_tbl text-center align-middle">{{ supplier.supplier_email }}</td>
                 <td class="remove_tbl text-center align-middle">{{ supplier.supplier_address }}</td>
                 <td class="text-center align-middle">
+
                     {% if supplier.supplier_status|lower == 'blacklisted' %}
-                        <span class="badge bg-danger text-uppercase"
-                              style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ supplier.supplier_status }}</span>
                     {% else %}
-                        <span class="badge bg-success text-uppercase"
-                              style="padding: 10px; width: 90px">{{ supplier.supplier_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ supplier.supplier_status }}</span>
                     {% endif %}
 
                 </td>
@@ -68,16 +67,26 @@
                         <i class="bi bi-three-dots" style="color: black;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="delete-supplier dropdown-item"
-                           data-form-url="{% url 'supplier_delete' supplier.pk %}">Delete Supplier</a>
+                        <a class="delete-supplier dropdown-item text-danger" style="letter-spacing: 1px"
+                           data-form-url="{% url 'supplier_delete' supplier.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td colspan="12" class="text-center">No Supplier Found</td>
+            <td colspan="12" class="empty_tbl text-center">No Supplier Found</td>
         </tr>
     {% endif %}
     </tbody>
 </table>
+
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#supplier_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[1], [1]],
+    });
+</script> -->

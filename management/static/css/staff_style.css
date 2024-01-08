@@ -1449,3 +1449,9 @@ table tbody th {
   }
 }
 
+.empty_tbl {
+  letter-spacing: 2px;
+  font-size: 18px;
+  padding: 40px 0px !important;
+  background-color: var(--c3) !important;
+}

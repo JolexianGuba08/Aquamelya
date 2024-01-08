@@ -324,7 +324,7 @@ h6 {
 }
 
 .breadcrumb .active {
-    color: #51678f;
+    color: var(--c2) !important;
     font-weight: 600;
 }
 
@@ -1270,8 +1270,8 @@ table {
 }
 
 .add_staff_modal label, .edit_staff_modal label {
-    letter-spacing: 2px !important;
-    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
 .modal-title {
@@ -1282,8 +1282,8 @@ table {
 }
 
 .edit_staff_modal .form-control, .add_staff_modal .form-control {
-    font-size: 12px !important;
     letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
 @media (max-width: 700px) {
@@ -1343,25 +1343,25 @@ table {
 }
 
 .add_supply_modal label {
-    letter-spacing: 2px !important;
-    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    font-size: 14px !important;
     text-transform: uppercase !important;
 }
 
 .add_supply_modal .form-control {
-    font-size: 12px !important;
     letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
 .update_supply label {
-    letter-spacing: 2px !important;
-    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    font-size: 14px !important;
     text-transform: uppercase !important;
 }
 
 .update_supply .form-control {
-    font-size: 12px !important;
     letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
 @media (width < 730px) {
@@ -1411,25 +1411,32 @@ table {
 }
 
 .add_asset label {
-    letter-spacing: 2px !important;
-    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    font-size: 14px !important;
     text-transform: uppercase !important;
 }
 
 .add_asset .form-control {
-    font-size: 12px !important;
     letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
 .update_asset label {
-    letter-spacing: 2px !important;
-    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    font-size: 14px !important;
     text-transform: uppercase !important;
 }
 
 .update_asset .form-control {
-    font-size: 12px !important;
     letter-spacing: 1px !important;
+    font-size: 14px !important;
 }
 
+.empty_tbl {
+  letter-spacing: 2px;
+  font-size: 18px;
+  padding: 40px 0px !important;
+  background-color: var(--c3) !important;
+  text-transform: uppercase !important;
+}
 

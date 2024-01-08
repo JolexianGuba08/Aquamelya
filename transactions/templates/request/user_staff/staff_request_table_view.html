@@ -5,24 +5,36 @@
             <th scope="col" class="text-center text-uppercase">Request Item</th>
             <th scope="col" class="remove_tbl text-center text-uppercase">Quantity</th>
             <th scope="col" class="text-center text-uppercase">Status</th>
-            <th scope="col" class="text-center text-uppercase"></th>
         </tr>
         </thead>
         <tbody class="text-center">
         {% if req_items %}
             {% for item in req_items %}
                 <tr>
-                    <th class="text-center">{{ item.description }}</th>
+                    <th class="text-center" style="color: var(--c1); font-weight: normal !important">{{ item.description }}</th>
                     <td class="remove_tbl text-center">{{ item.quantity }}</td>
                     <td class="text-center">
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
+                        {% if item.req_status|lower == 'pending' %}
+                            <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% elif item.req_status|lower == 'cancelled' %}
+                            <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% elif item.req_status|lower == 'completed' %}
+                            <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% elif item.req_status|lower == 'incomplete' %}
+                            <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% elif item.req_status|lower == 'done' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% elif item.req_status|lower == 'approved' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                          {% elif item.req_status|lower == 'declined' %}
+                            <span class="badge bg-danger-light" style="padding: 10px; color: black; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status }}</span>
+                        {% endif %}
                     </td>
-                    <td class="text-center"></td>
                 </tr>
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="4" class="text-center">No Request Item Found</td>
+                <td colspan="4" class="empty_tbl text-center">NO TRANSACTIONS</td>
             </tr>
         {% endif %}
         </tbody>
@@ -40,11 +52,10 @@
         {% if req_items %}
             {% for item in req_items %}
                 <tr>
-                    <td class="text-center">{{ item.description }}</td>
+                    <th class="text-center" style="font-weight: normal !important; color: var(--c1) !important">{{ item.description }}</th>
                     <td class="text-center">
-                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">{{ item.req_status }}</span>
+                        <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px; font-size: 12px; letter-spacing: 1px; font-weight: lighter">{{ item.req_status }}</span>
                     </td>
-                    <td class="text-center"></td>
                 </tr>
             {% endfor %}
         {% else %}

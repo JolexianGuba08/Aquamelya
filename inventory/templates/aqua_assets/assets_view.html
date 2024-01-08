@@ -14,13 +14,13 @@
             <h3 style="font-weight: bold; margin-bottom: 0px !important; ">INVENTORY</h3>
             <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">ASSET</p>
 
-            <div class="filter-and-search d-flex align-items-right" id="asset_view">
-                <div class="search col-md-4" style="margin-right: 5px">
+            <div class="filter-and-search d-flex gap-3" id="asset_view">
+                <div class="search" style="width: 100%; margin-right: 5px">
                     <input type="text" id="search_asset" name="query" class="form-control" placeholder="Search"
                            title="Enter search keyword">
                 </div>
 
-                <div class="asset_type col-md-4" style="margin-right: 5px">
+                <div class="asset_type" style="width:50%; margin-right: 5px">
                     <select class="form-select" id="asset_type_filter">
                         <option selected value="all">Asset Type: All</option>
                         {% for asset in asset_type %}
@@ -29,7 +29,7 @@
                     </select>
                 </div>
 
-                <div class="add_asset col-md-3 d-flex align-items-right justify-content-end" style="width: 32.5%">
+                <div class="add_asset d-flex align-items-right justify-content-end" style="width: 32.5%">
                     <button id="create-asset" class="btn btn-primary" style="font-weight: bold; " type="button"
                             name="button">
                         <i class="bi bi-house-add"></i>&nbsp; ADD ASSET

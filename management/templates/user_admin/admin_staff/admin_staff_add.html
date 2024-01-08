@@ -1,63 +1,63 @@
 {% load widget_tweaks %}
 <div class="modal-header">
-   <h5 class="modal-title" style="color: var(--c1); font-weight: bolder; letter-spacing: 2px !important;">ADD STAFF</h5>
-{#   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">ADD STAFF</h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <div class="modal-body" style="">
    <form class="add_staff_modal row g-3" method="post" action="" novalidate>
       {% csrf_token %}
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName5" class="form-label" >FIRST NAME</label>
          {% render_field form.user_first_name class="form-control" placeholder="" %}
          <div class="{% if form.user_first_name.errors %} invalid{% endif %}">
             {% for error in form.user_first_name.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName4" class="form-label">LAST NAME</label>
          {% render_field form.user_last_name class="form-control" placeholder="" %}
          <div class="{% if form.user_last_name.errors %} invalid{% endif %}">
             {% for error in form.user_last_name.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName4" class="form-label">MIDDLE NAME</label>
          {% render_field form.user_middle_name class="form-control" placeholder="" %}
          <div class="{% if form.user_middle_name.errors %} invalid{% endif %}">
             {% for error in form.user_middle_name.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName4" class="form-label">CONTACT NO.</label>
          {% render_field form.user_contact_number class="form-control" placeholder="" %}
          <div class="{% if form.user_contact_number.errors %} invalid{% endif %}">
             {% for error in form.user_contact_number.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName4" class="form-label">BIRTHDATE</label>
          {% render_field form.user_birthdate class="form-control" %}
          <div class="{% if form.user_birthdate.errors %} invalid{% endif %}">
             {% for error in form.user_birthdate.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
          <label for="inputName4" class="form-label">HIRED DATE</label>
          {% render_field form.user_date_hired class="form-control" %}
          <div class="{% if form.user_date_hired.errors %} invalid{% endif %}">
             {% for error in form.user_date_hired.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
@@ -66,7 +66,7 @@
          {% render_field form.user_address class="form-control" placeholder="" %}
          <div class="{% if form.user_address.errors %} invalid{% endif %}">
             {% for error in form.user_address.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
@@ -75,7 +75,7 @@
          {% render_field form.user_email class="form-control" placeholder="user@gmail.com" %}
          <div class="{% if form.user_email.errors %} invalid{% endif %}">
             {% for error in form.user_email.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
@@ -84,13 +84,13 @@
          {% render_field form.user_password class="form-control" placeholder="*********" %}
          <div class="{% if form.user_password.errors %} invalid{% endif %}">
             {% for error in form.user_password.errors %}
-            <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+            <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
             {% endfor %}
          </div>
       </div>
       <div class="modal-footer border-top-0">
-          <button type="submit" class="btn btn-primary" style="width: 100px; letter-spacing: 1px; font-weight: bold">ADD</button>
-         <button type="button" class="btn btn-danger" style="font-weight: bold; letter-spacing: 1px; border: none; width: 100px" data-bs-dismiss="modal">CANCEL</button>
+          <button type="submit" class="btn btn-primary" style="width: 100%; letter-spacing: 1px; font-weight: bold">REGISTER</button>
+         <button type="button" class="btn btn-danger" style="font-weight: bold; letter-spacing: 1px; border: none; width: 100%" data-bs-dismiss="modal">CANCEL</button>
       </div>
    </form>
    <!-- End Multi Columns Form -->

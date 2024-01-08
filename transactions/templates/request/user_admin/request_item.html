@@ -13,20 +13,35 @@
     </style>
 
     {% include 'request/user_admin/request_info.html' %}
-
+    {% include 'request/user_admin/ack_info.html' %}
     <main id="main" class="main">
-        <h3 style="font-weight: bold; letter-spacing: 5px;   margin-bottom: 0px !important; color: var(--c2)">REQUISITION</h3>
-        <p style="margin-bottom: 20px !important; letter-spacing: 2px !important; font-size: 20px !important; color: var(--c1)">TRANSACTION</p>
+        <div class="pagetitle">
+            <div class="d-flex align-items-start">
+                <button type="button" class="btn btn-primary" style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
+                        onclick="goBackrequest()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                      <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    </svg>
+                </button>
+
+                <div class="ml-2" style="margin-left: 20px !important">
+                    <h1 class=""  style="margin-bottom: 5px !important">
+                        REQUISITION</h1>
+                    <h2 class="card-title" style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">TRANSACTION</h2>
+                </div>
+            </div>
+        </div>
+
         <div class="card" style="max-height: none; overflow-y: auto;">
             {% csrf_token %}
             <div class="card-body p-4">
                 <div class="row mt-0">
                     <div class="col-md-3 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter style="font-weight: lighter; letter-spacing: 2px" ">Date Requested:</label>
+                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Requested:</label>
                         <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_requested">{{ req_date }}</label>
                     </div>
                     <div class="col-md-6 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter style="font-weight: lighter; letter-spacing: 2px" ">Date Last Modified:</label>
+                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Last Modified:</label>
                             <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_last_mod">{{ req_reviewed_date }}</label>
                     </div>
                 </div>
@@ -62,13 +77,14 @@
                                     <input type="number" min="1" class="form-control" id="worker_count"
                                            value="{{ req_data.worker_count }}">
                                 </div>
+                                <br>
                                 <div class="col-md-6">
-                                    <label for="job_order_start" style="font-weight: 600;">Start Date</label>
+                                    <label for="job_order_start" style="font-weight: 600; margin-top: 20px!important">Start Date</label>
                                     <input type="date" class="form-control" id="job_order_start"
                                            value="{{ req_data.job_start_date }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="job_order_end" style="font-weight: 600;">End Date</label>
+                                    <label for="job_order_end" style="font-weight: 600;  margin-top: 20px!important">End Date</label>
                                     <input type="date" class="form-control" id="job_order_end"
                                            value="{{ req_data.job_end_date }}">
                                 </div>
@@ -78,18 +94,24 @@
                 {% endif %}
 
                 {% if req_type != "Job Order" %}
-                    <button type="button" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" class="btn btn-primary mt-4" onclick="updateNote({{ req_id }})">
+                    <button type="button" class="btn btn-primary mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateNote({{ req_id }})">
                         ADD NOTE
                     </button>
-                    <button type="button" id="releaseButton" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" data-reqid="{{ req_id }}" onclick="releaseItems()"
+                    <button type="button" id="releaseButton" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" data-reqid="{{ req_id }}" onclick="releaseItems()"
                             class="btn btn-success mt-2">
-                        RELEASE ITEMS
+                        RELEASED ITEMS
                     </button>
-                    <button type="button" class="btn btn-dark mt-2" style="padding: 10px; font-weight: bold; letter-spacing: 1px; width: 100%" onclick="createPurchase({{ req_id }})">
+                    <button type="button" class="btn btn-dark mt-2" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="createPurchase({{ req_id }})">
                         CREATE PURCHASE ORDER
                     </button>
                 {% else %}
-                    <button type="button" class="btn btn-success mt-4" onclick="updateJoborder({{ req_id }})">Submit
+                    <button type="button" class="btn btn-success mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateJoborder({{ req_id }})">SUBMIT
+                    </button>
+                {% endif %}
+
+                {% if req_status == "Done" %}
+                    <button type="button" class="btn btn-outline-secondary mt-4" style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="showAckInfo({{ req_id }})">
+                    View Acknowledgement
                     </button>
                 {% endif %}
 
@@ -100,7 +122,7 @@
 
         <div class="card mt-4 p-2" style="padding-bottom: 27px;">
             <div class="card-body">
-                <h2 class="card-title">OVERVIEW</h2>
+                <h2 class="card-title" style="font-weight: lighter; letter-spacing: 2px">OVERVIEW <span>( {{ req_id }} )</span></h2>
 
                 {# Table Request Supply #}
                 <table class="table " id="requisition_table">
@@ -109,15 +131,14 @@
                         <th scope="col" class="text-center text-uppercase">Request Item</th>
                         <th scope="col" class="remove_tbl text-center text-uppercase">Quantity or Worker</th>
                         <th scope="col" class="remove_tbl text-center text-uppercase">Status</th>
-                        <th scope="col" class="remove_tbl text-center text-uppercase">Action</th>
-                        <th scope="col" class="text-center text-uppercase"></th>
+                        <th scope="col" class=" text-center text-uppercase">Action</th>
                     </tr>
                     </thead>
                     <tbody class="text-center">
                     {% if req_data %}
                         {% for item in req_data %}
                             <tr data-pk="{{ item.req_id }}" data-type="{{ item.req_id__req_type__name }}">
-                                <th class="text-center align-middle">
+                                <th class="text-center align-middle" style="color: var(--c1);font-weight: normal;">
                                     {% if req_type == "Supply" %}
                                         {{ item.supply__supply_description }}
                                     {% elif req_type == "Asset" %}
@@ -150,32 +171,47 @@
                                     {% endif %}
                                 </td>
                                 <td class="remove_tbl text-center align-middle">
-                                    <span class="badge bg-success" style="padding: 10px; width: 90px; text-transform: uppercase">{{ item.req_status__name }}</span>
+                                    {% if item.req_status__name|lower == 'pending' %}
+                                        <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'cancelled' %}
+                                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'completed' %}
+                                        <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'incomplete' %}
+                                        <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'done' %}
+                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                     {% elif item.req_status__name|lower == 'approved' %}
+                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'declined' %}
+                                        <span class="badge bg-danger-light" style="color:black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% endif %}
                                 </td>
                                 <td class="text-center align-middle">
                                     {% if req_type == "Supply" %}
-                                        <button type="button" class="btn btn-warning btn-sm"
+                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
                                             ACTION
                                         </button>
                                     {% elif req_type == "Asset" %}
-                                        <button type="button" class="btn btn-warning btn-sm"
+                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.asset__asset_description }}')">
                                             ACTION
                                         </button>
                                     {% elif req_type == "Job Order" %}
-                                        <button type="button" class="btn btn-warning btn-sm"
+                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.job_name }}')">
                                             ACTION
                                         </button>
                                     {% endif %}
+
+
                                 </td>
-                                <td class="text-center align-middle"></td>
                             </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="12" class="text-center">No Requisition Found</td>
+                            <td colspan="12" class="empty_tbl text-center">NO TRANSACTIONS</td>
                         </tr>
                     {% endif %}
                     </tbody>
@@ -185,10 +221,38 @@
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>function createPurchase(param) {
+    <script>
+        function createPurchase(param) {
         window.location.href = `/transactions/generate_purchase_requisition/${param}`;
     }
+            function goBackrequest() {
+            window.location.href = `/transactions/requests`;
+        }
+    function showAckInfo(req_id) {
+        console.log(req_id)
+        $.ajax({
+            type: 'GET',
+            url: '/transactions/get_acknowledgement_data/',
+            data: {'req_id':req_id },
+            success: function (data) {
+                console.log(data);
+                var dateString = data.acknowledge_date;
+                var formattedDate = dateString.slice(0, -5); //
 
+                $('#request_description').html(data.req_description);
+                $('#acknowledge_by').val(data.acknowledge_by);
+                $('#acknowledge_date').val(formattedDate);
+                $('#notes').val(data.acknowledge_notes);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            },
+            complete: function () {
+                $('#ackInfo').modal('show');
+            }
+        });
+
+    }
     function fetchDataAndUpdateModal(pk, supply_description) {
         $.ajax({
             url: `/transactions/get_data/${pk}/${supply_description}`,

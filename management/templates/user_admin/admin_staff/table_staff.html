@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css"> -->
 
 <style>
     .dataTables_length {
@@ -42,14 +42,14 @@
                 data-email="{{ user_account.user_email }}"
                 data-name="{{ user_account.user_first_name }} {{ user_account.user_last_name }}">
                 <th scope="row"
-                    class="text-center align-middle">{{ user_account.user_first_name }} {{ user_account.user_last_name }}</th>
+                    class="text-center align-middle" style="font-weight: normal !important; color: var(--c1)">{{ user_account.user_first_name }} {{ user_account.user_last_name }}</th>
                 <td class="email_row text-center align-middle">{{ user_account.user_email }}</td>
                 <td class="contact_row text-center align-middle">{{ user_account.user_contact_number }}</td>
                 <td class="contact_row text-center align-middle">
                     {% if user_account.user_status == 1 %}
-                    <span class="badge bg-success text-uppercase" style="padding: 10px; width: 90px">ACTIVE</span>
+                        <span class="badge bg-success text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">ACTIVE</span>
                     {% elif user_account.user_status == 2 %}
-                    <span class="badge bg-warning text-uppercase" style="padding: 10px; width: 90px">SUSPENDED</span>
+                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">SUSPENDED</span>
                     {% else %}
                     {% endif %}
                 </td>
@@ -61,19 +61,29 @@
                     </button>
                     <div class="dropdown-menu">
                         {% if user_account.user_status == 2 %}
-                                <a class="text-center delete-staff dropdown-item" data-form-url="{% url 'activate_staff' user_account.pk %}">Activate</a>
+                                <a class="text-left text-success delete-staff dropdown-item" data-form-url="{% url 'activate_staff' user_account.pk %}">ACTIVATE</a>
                         {% else %}
-                                <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'suspend_staff' user_account.pk %}">Suspend</a>
+                                <a class="text-left text-danger  delete-staff dropdown-item" data-form-url="{% url 'suspend_staff' user_account.pk %}">SUSPEND</a>
                         {% endif %}
-                        <a class="text-center  delete-staff dropdown-item" data-form-url="{% url 'delete_staff' user_account.pk %}">Delete Staff</a>
+                        <a class="text-left text-danger  delete-staff dropdown-item" data-form-url="{% url 'delete_staff' user_account.pk %}">DELETE</a>
                     </div>
                 </td>
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td colspan="4" class="text-center">No Staff</td>
+            <td colspan="4" class="empty_tbl text-center">NO STAFF</td>
         </tr>
     {% endif %}
     </tbody>
 </table>
+
+<!-- <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    new DataTable('#staff_table', {
+        info: false,
+        ordering: false,
+        lengthMenu: [[5], [5]],
+    });
+</script> -->

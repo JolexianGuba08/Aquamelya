@@ -1,0 +1,33 @@
+<div class="modal fade" id="receivedModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Received this request ({{ requisition_data.req_id }})</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="receivedForm" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <br>
+                    <div class="form-group">
+                        <label for="additionalComments" class="form-label">Additional Notes:</label>
+                        <textarea class="form-control" id="additionalNotes" name="additionalNotes" rows="3"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="acknowledgedBy" class="form-label">Acknowledged by: </label>
+                        <input type="text" class="form-control" id="acknowledgedBy" name="acknowledgedBy" value="{{ requisition_data.user }}" readonly>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirm-cancel-btn" onclick="itemsReceivedPost({{ requisition_data.req_id }})">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

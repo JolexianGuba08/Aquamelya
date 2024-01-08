@@ -43,9 +43,8 @@ def admin_required(function):
 
 # ---------- ADMIN REQUISITION SECTION ------------ #
 
+@admin_required
 def admin_transaction_requests_function(request):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     global requisition_data, req_item_count
     if not user_already_logged_in(request):
         return redirect('login')
@@ -79,11 +78,34 @@ def admin_transaction_requests_function(request):
 
         except Exception as e:
             return render(request, 'request/user_admin/request_view.html', {'requisitions': requisition_data})
-    else:
-        raise Http404("You are not allowed to access this page.")
+
+def get_acknowledgement_data(request):
+    req_id = request.GET.get('req_id')
+    try:
+        ack_data = Acknowledgement_Request.objects.get(req_id=req_id)
+        if ack_data:
+            data = {
+                'acknowledge_by':ack_data.acknowledge_by,
+                'acknowledge_date':ack_data.acknowledge_date if ack_data.acknowledge_date else "",
+                'acknowledge_notes':ack_data.notes if ack_data.notes else "No available notes",
+                'req_description':ack_data.req_id.req_description,
+            }
+            return JsonResponse(data)
+    except Acknowledgement_Request.DoesNotExist:
+        data = {
+            'acknowledge_by': "",
+            'acknowledge_date': "",
+            'acknowledge_notes': "",
+            'req_description': "Not yet acknowledged",
+        }
+        return JsonResponse(data)
+
+
+
 
 
 # GETTING THE REQUISITION INFO MODAL ENDPOINT
+@admin_required
 def get_requisition_info(request, pk, supply_description):
     global current_onhand_stock, req_qty, request_statuses, item_name
     if request.session.get('session_user_type') == 0:
@@ -114,7 +136,8 @@ def get_requisition_info(request, pk, supply_description):
             req_qty = None
 
         req_status = req_item.req_status.__str__()
-        request_statuses = RequisitionStatus.objects.exclude(name='Cancelled').values('id', 'name')
+        exclude = ['Cancelled', 'Done']
+        request_statuses = RequisitionStatus.objects.exclude(name__in=exclude).values('id', 'name')
         if data.req_type.name == 'Supply' or data.req_type.name == 'Asset':
             if current_onhand_stock < req_qty:
                 low_stock = True
@@ -141,13 +164,23 @@ def get_requisition_info(request, pk, supply_description):
 
 
 # ADD NOTE BUTTON ENDPOINT
+@admin_required
 def update_note(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     try:
 
         note_text = request.POST.get('note_text')
         requisition = get_object_or_404(Requisition, req_id=req_id)
+
+
+        if requisition.request_status.name != 'Pending' and requisition.request_status.name != 'In Process' and requisition.request_status.name != 'Incomplete':
+            messages.warning(request, 'Cannot update note. Request is already completed/cancelled.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already completed.'})
+
+        if requisition.request_status.name == 'Done':
+            messages.warning(request, 'Cannot update note. Request is already done.')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update note. Request is already done.'})
+
+
         if note_text == requisition.reviewer_notes:
             messages.warning(request, 'No changes were made.')
             return JsonResponse({'status': 'error', 'message': 'No changes were made.'})
@@ -159,31 +192,25 @@ def update_note(request, req_id):
         messages.error(request, 'Error updating note!')
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
-
+@admin_required
 def updateJoborder(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     try:
         req_form = get_object_or_404(Requisition, req_id=req_id)
         job_order = get_object_or_404(Job_Order, req_id=req_id)
         job_order_status = job_order.req_status.name
 
-        if job_order_status == 'Approved':
-            messages.warning(request, 'Cannot update job order. Job order is already approved.')
-            return JsonResponse(
-                {'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
-        elif job_order_status == 'Done':
+        if req_form.request_status.name == RequestStatus.objects.get(name='Completed').name:
             messages.warning(request, 'Cannot update job order. Job order is already completed.')
             return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job order is already approved.'})
+        elif req_form.request_status.name == RequestStatus.objects.get(name='Done').name:
+            messages.warning(request, 'Cannot update job order. Job order is already done.')
+            return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
-        elif job_order_status == 'Declined':
+        elif req_form.request_status.name == RequestStatus.objects.get(name='Cancelled').name:
             messages.warning(request, 'Cannot update job order. Job order is already declined.')
             return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
-        elif job_order_status == 'Cancelled':
-            messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
-            return JsonResponse(
-                {'status': 'error', 'message': 'Cannot update job order. Job order is already cancelled.'})
 
         req = get_object_or_404(Job_Order, req_id=req_id)
         req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
@@ -204,18 +231,17 @@ def updateJoborder(request, req_id):
 
 
 # Action to be performed when save changes in request item
+@admin_required
 def post_requisition_info(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     global req_form
     req_form = None  # Initialize req_form
     try:
-
         requisition = get_object_or_404(Requisition, req_id=req_id)
         req_type = requisition.req_type.name
         item_description = request.POST.get('item_name')
-        message_context = "Changes saved successfully!"
         selected_status = RequisitionStatus.objects.get(pk=(request.POST.get('req_status'))).name
+
+
         # Fetching the appropriate OBJECT based on req_type
         if req_type == "Supply":
             req_form = get_object_or_404(Request_Supply, req_id_id=req_id, supply__supply_description=item_description)
@@ -230,6 +256,11 @@ def post_requisition_info(request, req_id):
             messages.warning(request, 'No changed were made')
             return JsonResponse({'status': 'error', 'message': 'No changed were made'})
 
+        elif selected_status == 'Done':
+            messages.warning(request, 'Cannot update request to done')
+            return JsonResponse({'status': 'error', 'message': 'Cannot update request. Request is already done.'})
+
+
         # Update requisition status
         if req_type == "Supply":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
@@ -237,16 +268,9 @@ def post_requisition_info(request, req_id):
                     messages.warning(request, 'Cannot approve request. Not enough stock.')
                     return JsonResponse({'status': 'error', 'message': 'Cannot approve request. Not enough stock.'})
                 else:
-                    # need to add a CONFIRMATION MODAL BEFORE PERFORMING THE FOLLOWING ACTIONS!
-                    # Updating the current stock on hand
                     req_form.req_status.pk = int(request.POST.get('req_status'))
                     req_form.save()
 
-                    supply_data = Request_Supply.objects.filter(req_id=req_id)
-                    if not all(item.req_status.name == 'Approved' for item in supply_data):
-                        requisition.request_status = RequestStatus.objects.get(name='Incomplete')
-                        requisition.save()
-                    message_context = "Request approved successfully!"
         elif req_type == "Asset":
             if int(request.POST.get('req_status')) == RequisitionStatus.objects.get(name='Approved').id:
                 if req_form.asset.asset_on_hand < req_form.req_asset_qty:
@@ -256,19 +280,35 @@ def post_requisition_info(request, req_id):
                     # need to add a CONFIRMATION MODAL BEFORE PERFORMING THE FOLLOWING ACTIONS!
                     req_form.req_status.pk = int(request.POST.get('req_status'))
                     req_form.save()
-                    asset_data = Request_Assets.objects.filter(req_id=req_id)
-                    if not all(item.req_status.name == 'Approved' for item in asset_data):
-                        requisition.request_status = RequestStatus.objects.get(name='Incomplete')
-                        requisition.save()
-                    # Sending Notification to the staff (Acknowledgement) if DONE == Updating the request to
-                    message_context = "Request approved successfully!"
 
         elif req_type == "Job Order":
-            req_form.req_status.pk = int(request.POST.get('req_status'))
-            req_form.save()
-            if selected_status == 'Approved':
+            print()
+            selected = RequisitionStatus.objects.get(pk=int(request.POST.get('req_status'))).name
+            if selected == 'Approved':
+
                 requisition.request_status = RequestStatus.objects.get(name='Completed')
+                req_form.req_status_id = int(request.POST.get('req_status'))
                 requisition.save()
+                req_form.save()
+                messages.success(request, 'Request updated successfully!!!!')
+                return JsonResponse({'status': 'success'})
+            elif selected == 'Declined':
+
+                requisition.request_status = RequestStatus.objects.get(name='Cancelled')
+                req_form.req_status_id = int(request.POST.get('req_status'))
+                requisition.save()
+                req_form.save()
+                messages.success(request, 'Request updated successfully!')
+                return JsonResponse({'status': 'success'})
+            else:
+                print("Job Order Else block")
+                req_form.req_status_id = int(request.POST.get('req_status'))
+                req_form.save()
+                print(int(request.POST.get('req_status')))
+                print(req_form.req_status.pk)
+                messages.success(request, 'Request updated successfully!')
+                return JsonResponse({'status': 'success'})
+
 
         if selected_status == 'Approved' or selected_status == 'Done':
             message_context = "Request approved successfully!"
@@ -281,32 +321,64 @@ def post_requisition_info(request, req_id):
 
         elif selected_status == 'Declined':
             message_context = "Request declined successfully!"
+
         else:
             message_context = "Request updated successfully!"
 
-        # Check if there are any changes made
-        if req_form.req_status_id == int(
-                request.POST.get('req_status')) and req_form.job_start_date == request.POST.get(
-            'job_order_start') and req_form.job_end_date == request.POST.get(
-            'job_order_end') and req_form.worker_count == request.POST.get('worker_count'):
-            message_context = "No Changes were made"
 
-        # Updating and Saving the current request fields
-        req_form.req_status_id = request.POST.get('req_status')
-        req_form.save()
+        if req_type == "Supply":
+            req_form.req_status_id = int(request.POST.get('req_status'))
+            req_form.save()
+            supply_data = Request_Supply.objects.filter(req_id=req_id)
+            # Get the RequestStatus instance for 'Declined'
+            declined_status = RequisitionStatus.objects.get(name='Declined')
 
-        messages.success(request, message_context)
-        return JsonResponse({'status': 'success'})
+            # Check if all items are declined
+            if all(item.req_status == declined_status for item in supply_data):
+                requisition.request_status = RequestStatus.objects.get(name='Cancelled')
+                requisition.save()
+
+            # Check if not all items are approved and not all items are declined
+            if not all(
+                    item.req_status == RequisitionStatus.objects.get(name='Approved') for item in supply_data) and not all(
+                    item.req_status == declined_status for item in supply_data):
+                requisition.request_status = RequestStatus.objects.get(name='Incomplete')
+                requisition.save()
+
+            messages.success(request, message_context)
+            return JsonResponse({'status': 'success'})
+
+        elif req_type == "Asset":
+            req_form.req_status_id = int(request.POST.get('req_status'))
+            req_form.save()
+            asset_data = Request_Assets.objects.filter(req_id=req_id)
+            # Get the RequestStatus instance for 'Declined'
+            declined_status = RequisitionStatus.objects.get(name='Declined')
+
+            # Check if all items are declined
+            if all(item.req_status == declined_status for item in asset_data):
+                requisition.request_status = RequestStatus.objects.get(name='Cancelled')
+                requisition.save()
+                print("All declined")
+
+            # Check if not all items are approved and not all items are declined
+            if not all(
+                    item.req_status == RequisitionStatus.objects.get(name='Approved') for item in
+                    asset_data) and not all(
+                item.req_status == declined_status for item in asset_data):
+                requisition.request_status = RequestStatus.objects.get(name='Incomplete')
+                requisition.save()
+
+            messages.success(request, message_context)
+            return JsonResponse({'status': 'success'})
 
     except Exception as e:
         print(e)
         messages.error(request, f'Error saving changes!')
         return JsonResponse({'status': f'error: {e}'})
 
-
+@admin_required
 def release_items(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
     if request.method == 'GET':
         try:
             requisition = get_object_or_404(Requisition, req_id=req_id)
@@ -318,6 +390,14 @@ def release_items(request, req_id):
                 messages.warning(request, 'Cannot release items. Request is already completed.')
                 return JsonResponse(
                     {'status': 'error', 'message': 'Cannot release items. Request is already completed.'})
+            elif (req_status == 'Cancelled'):
+                messages.warning(request, 'Cannot release items. Request is already cancelled.')
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot release items. Request is already cancelled.'})
+            elif (req_status == 'Done'):
+                messages.warning(request, 'Request is already done.')
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot release items. Request is already done.'})
 
             if requisition_type == 'Supply':
                 supply_data = Request_Supply.objects.filter(req_id=req_id)
@@ -343,8 +423,6 @@ def release_items(request, req_id):
 
                 if not approved_items:
                     messages.warning(request, 'Cannot release items. No approved items.')
-                    requisition.request_status = RequestStatus.objects.get(name='Incomplete')
-                    requisition.save()
                     return JsonResponse(
                         {'status': 'error', 'message': 'Cannot release items. No approved items.'})
 
@@ -385,8 +463,6 @@ def release_items(request, req_id):
 
                 if not approved_items:
                     messages.warning(request, 'Cannot release items. No approved request items yet.')
-                    requisition.request_status = RequestStatus.objects.get(name='Incomplete')
-                    requisition.save()
                     return JsonResponse(
                         {'status': 'error', 'message': 'Cannot release items. No approved items.'})
 
@@ -413,9 +489,8 @@ def release_items(request, req_id):
         raise Http404("Invalid request method.")
 
 
+@admin_required
 def request_item_end_point(request, req_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
 
     if request.method == 'GET':
         try:
@@ -433,7 +508,7 @@ def request_item_end_point(request, req_id):
                     '%Y-%m-%d') if requisition.req_reviewed_date else 'None',
                 'requestor_notes': requisition.requestor_notes,
                 'reviewer_notes': requisition.reviewer_notes if requisition.reviewer_notes else '',
-
+                'req_status': requisition.request_status.name,
             }
 
             if requisition_type == 'Supply':
@@ -477,7 +552,6 @@ def request_item_end_point(request, req_id):
 
                     }
                     formatted_job_data.append(formatted_item)
-                    print(formatted_job_data)
 
                 context['req_data'] = formatted_job_data
 
@@ -562,7 +636,7 @@ def staff_requisition_supply_view_endpoint(request):
         # Iterate through request supply items and associate with requisition
         for supply_item in supply_data:
             # Get or create a Supply instance based on the name
-            print(supply_item['supply_id'])
+
             supply_instance = Supply.objects.get(supply_id=supply_item['supply_id'])
             unit_measure = supply_instance.supply_unit
 
@@ -604,7 +678,6 @@ def staff_requisition_asset_view_endpoint(request):
         # Iterate through request supply items and associate with requisition
         for asset_item in asset_data:
             # Get or create a Supply instance based on the name
-            print(asset_item['asset_id'])
             asset_instance = Assets.objects.get(asset_id=asset_item['asset_id'])
 
             # Create Request_Supply instance
@@ -783,8 +856,10 @@ def get_requisition_info_staff_view(request, pk):
             'req_status': requisition.request_status.name,
             'req_date_requested': requisition.req_date if requisition.req_date else "None",
             'reviewed_date': requisition.req_reviewed_date if requisition.req_reviewed_date else "None",
+            'user': requisition.user.user_first_name + " " + requisition.user.user_last_name,
         }
         request_data = {
+
             'req_item': req_items,
             'req_status': requisition.request_status.name,
             'req_quantity': qty,
@@ -864,11 +939,14 @@ def post_requisition_info_staff(request, req_id):
             req_form.save()
             messages.success(request, 'Changes saved successfully!')
             return JsonResponse({'status': 'success'})
+
         elif current_status == RequisitionStatus.objects.get(name='Cancelled'):
             messages.warning(request, 'Request already cancelled')
             return JsonResponse({'status': f'error: Request already cancelled'})
+
         elif req_type == RequisitionStatus.objects.get(name='Declined'):
             req_id.request_status = RequestStatus.objects.get(name='Cancelled')
+
         else:
             messages.warning(request, f'Request is already in process')
             return JsonResponse({'status': f'error: Request already cancelled'})
@@ -1175,11 +1253,15 @@ class DeliveryUpdateView(BSModalUpdateView):
 
 
 def delivery_items(request, pk):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
-
+    global template
     try:
-        delivery = get_object_or_404(Delivery, pk=pk)
+        if request.session.get('session_user_type') == 1:
+            delivery = get_object_or_404(Delivery, pk=pk)
+            template = 'delivery/user_admin/delivery_items.html'
+        else:
+            delivery = get_object_or_404(Delivery, pk=pk, order_receive_by=request.session.get('session_user_id'))
+            template = 'acknowledgement/acknowledgement_view.html'
+
         request_type = delivery.purch.req.req_type.name
 
         delivery_data = {
@@ -1192,26 +1274,22 @@ def delivery_items(request, pk):
             'purch_order': delivery.purch.purch_id,
             'item_type': request_type,
             'supplier': delivery.purch.supplier.supplier_name,
+            'user_type': request.session.get('session_user_type'),
         }
 
         delivery_items = None
         if request_type == "Supply":
             delivery_items = DeliverySupply.objects.filter(delivery=pk)
-            print("Hey")
-            for item in delivery_items:
-                print(item.del_status.name)
         elif request_type == "Asset":
             delivery_items = DeliveryAsset.objects.filter(delivery=pk)
-            print("Hey")
-            for item in delivery_items:
-                print(item.del_status.name)
+
 
     except Delivery.DoesNotExist:
         delivery_data = None
     except Exception as e:
         delivery_data = None
         delivery_items = None
-    return render(request, 'delivery/user_admin/delivery_items.html', {'delivery': delivery_data,
+    return render(request, template, {'delivery': delivery_data,
                                                                        'delivery_items': delivery_items})
 
 
@@ -1219,8 +1297,6 @@ def delivery_items(request, pk):
 def get_delivery_info(request, pk, item_type):
     global delivery_item
     user_type = request.session.get('session_user_type')
-    if user_type != 0 and user_type != 1:
-        raise Http404("You are not allowed to access this page.")
     try:
         if item_type == 'Supply':
             delivery_item = get_object_or_404(DeliverySupply, pk=pk)
@@ -1232,23 +1308,18 @@ def get_delivery_info(request, pk, item_type):
             'item_type': item_type,
             'delivery_id': delivery_item.delivery_id,
             'delivery_status': delivery_item.del_status.name,
-            'item_name': delivery_item.req_supply.supply.supply_description if item_type == 'Supply' else delivery_item.req_asset.asset.asset_description,
+            'item_name':delivery_item.req_supply.supply.supply_description if item_type == 'Supply' else delivery_item.req_asset.asset.asset_description,
         }
         return JsonResponse(delivery_data)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
 # If Admin/Staff Received the delivery then, update the stock
 def post_delivery_info(request, delivery_id):
     global delivery_item
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
-
     try:
         delivery_status = request.POST.get('delivery_status')
         item_type = request.POST.get('item_type')
-
         if item_type == 'Supply':
             delivery_item = get_object_or_404(DeliverySupply, del_item_id=delivery_id)
         elif item_type == 'Asset':
@@ -1277,22 +1348,19 @@ def post_delivery_info(request, delivery_id):
         else:
             messages.warning(request, 'Invalid delivery status.')
             return JsonResponse({'status': 'error'})
-
+        print("Endpoint Activated")
     except Exception as e:
         messages.error(request, f'Error saving changes!')
         return JsonResponse({'status': f'error: {e}'})
 
-
-def warehousing_endpoint(request, delivery_id, item_type):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
-
+@admin_required
+def warehousing_endpoint(request,delivery_id,item_type):
     try:
-        delivery_id = get_object_or_404(Delivery, delivery_id=delivery_id)
-
+        delivery_id = get_object_or_404(Delivery, delivery_id =delivery_id)
         if delivery_id.delivery_status == 2:
             messages.warning(request, 'Delivery already added to warehouse.')
             return JsonResponse({'status': 'error', 'message': 'Error'})
+
 
         if item_type == 'Supply':
             delivery_item = DeliverySupply.objects.filter(delivery=delivery_id)
@@ -1324,7 +1392,9 @@ def warehousing_endpoint(request, delivery_id, item_type):
 
             # Update the requisition status
             delivery_id.delivery_status = 2
+            delivery_id.order_receive_date = timezone.now()
             delivery_id.save()
+
 
             if undelivered_items:
                 messages.success(request, 'Successfully added to warehouse. Some items are undelivered.')
@@ -1364,6 +1434,7 @@ def warehousing_endpoint(request, delivery_id, item_type):
 
             # Update the requisition status
             delivery_id.delivery_status = 2
+            delivery_id.order_receive_date = timezone.now()
             delivery_id.save()
 
             if undelivered_items:
@@ -1372,6 +1443,8 @@ def warehousing_endpoint(request, delivery_id, item_type):
             else:
                 messages.success(request, 'Successfully added to warehouse.')
                 return JsonResponse({'status': 'success'})
+
+
 
     except Exception as e:
         print(e)
@@ -1541,7 +1614,6 @@ def purchase_order_approved(request, purch_id):
         # get all the item to that request that is below the on hand
         requisition = Requisition.objects.get(req_id=req_id)
         requisition_type = requisition.req_type.name
-
         user_id = request.session.get('session_user_id')
         user = User_Account.objects.get(user_id=user_id)
         low_stock_supply = []  # Collect low stock supplies
@@ -1609,3 +1681,33 @@ def purchase_order_approved(request, purch_id):
     except Exception as e:
         print(e)
         raise Http404("Error")
+
+
+# ---------- ACKNOWLEDGEMENT REQUEST SECTION ------------ #
+def items_received(request):
+    req_id = request.POST.get('req_id')
+    additional_notes = request.POST.get('addition_notes')
+    acknowledged_by = request.POST.get('acknowledged_by')
+    print("here")
+    print(req_id, additional_notes, acknowledged_by)
+    try:
+        req_instance = get_object_or_404(Requisition, req_id=req_id)
+        if req_id is None  or acknowledged_by is None:
+            messages.warning(request, 'Please fill up received date')
+            return JsonResponse({'message': 'Invalid Request Data'})
+
+        acknowledgement = Acknowledgement_Request.objects.create(
+            req_id=req_instance,
+            acknowledge_date= timezone.now(),
+            notes=additional_notes,
+            acknowledge_by=acknowledged_by,
+        )
+        acknowledgement.save()
+        req_instance.request_status = RequestStatus.objects.get(name='Done')
+        req_instance.save()
+        messages.success(request, 'Items acknowledged successfully!')
+        return JsonResponse({'status':'success','message': 'success'})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'failed', 'error_message': str(e)})
