@@ -58,7 +58,7 @@
     {% if requests_data %}
         {% for data in requests_data %}
             <tr data-bs-target="#supplierinfo">
-                <th class="text-center align-middle">{{ data.req_type }}</th>
+                <th class="text-center align-middle" style="color: var(--c1); font-weight: normal !important">{{ data.req_type }}</th>
                 <td class="purchase_tbl text-center align-middle">{{ data.req_description }}</td>
                 <td class="purchase_tbl text-center align-middle">{{ data.user }}</td>
                 <td class="text-center align-middle">{{ data.req_date }}</td>
@@ -66,7 +66,7 @@
         {% endfor %}
     {% else %}
         <tr>
-            <td class="text-center align-middle" colspan="6">No reports found.</td>
+            <td class="empty_tbl text-uppercase text-center align-middle" colspan="6">No reports found</td>
         </tr>
     {% endif %}
     </tbody>

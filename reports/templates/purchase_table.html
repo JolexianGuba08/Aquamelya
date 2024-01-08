@@ -48,8 +48,8 @@
 <table class="table" id="supplier_table">
     <thead class="text-center">
     <tr>
-        <th scope="col" class="text-center text-uppercase">Item Type</th>
-        <th scope="col" class="text-center text-uppercase">Item Name</th>
+        <th scope="col" class="text-center text-uppercase" >Item Type</th>
+        <th scope="col" class="text-center text-uppercase" >Item Name</th>
         <th scope="col" class="purchase_tbl text-center text-uppercase">Qty</th>
         <th scope="col" class="purchase_tbl text-center text-uppercase">Purchase Date</th>
     </tr>
@@ -58,14 +58,14 @@
     {% if purchase_order %}
         {% for purchase in purchase_order %}
             <tr>
-                <th>{{ purchase.req_type }}</th>
-                <th>{{ purchase.req_item_name }}</th>
+                <th style="color: var(--c1); font-weight: normal !important">{{ purchase.req_type }}</th>
+                <th style="color: var(--c1); font-weight: normal !important">{{ purchase.req_item_name }}</th>
                 <td class="purchase_tbl">{{ purchase.quantity }}</td>
                 <td class="purchase_tbl">{{ purchase.purch_date }}</td>
             </tr>
         {% endfor %}
     {% else %}
-        <td class="text-center align-middle" colspan="12">No reports found.</td>
+        <td class="empty_tbl text-uppercase text-center align-middle" colspan="12">No reports found</td>
     {% endif %}
     </tbody>
 </table>
