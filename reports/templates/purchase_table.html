@@ -60,7 +60,7 @@
     {% if purchase_order %}
         {% for purchase in purchase_order %}
             <tr>
-                <th>{{ purchase.purch_item_type }}</th>
+                <th>{{ purchase.req__req_type__name }}</th>
                 <th>{{ purchase.purch_item_name }}</th>
                 <td class="purchase_tbl">{{ purchase.purch_qty }}</td>
                 <td class="purchase_tbl">{{ purchase.supplier__supplier_name }}</td>

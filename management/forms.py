@@ -1,3 +1,4 @@
+import re
 from datetime import date, timedelta, datetime
 from django import forms
 from django.core.exceptions import ValidationError
@@ -7,6 +8,22 @@ from management.models import Supplier, SupplierStatus
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from management.models import User_Account
+
+
+class AddressValidator:
+    def __init__(self, field_name):
+        self.field_name = field_name
+
+    def __call__(self, value):
+        if len(value) == 1 and value == "'":
+            raise forms.ValidationError(f"{self.field_name} should not contain only a single quote.")
+        if len(value) > 1 and all(char == "'" for char in value):
+            raise forms.ValidationError(f"{self.field_name} should not contain only single quotes.")
+        if value.isdigit():
+            raise forms.ValidationError(f"{self.field_name} should not contain only numbers.")
+        # Add additional checks or patterns here if needed
+        if not re.match("^[a-zA-Z0-9\s',.-]+$", value):
+            raise forms.ValidationError(f"{self.field_name} should contain valid characters.")
 
 
 class UserForm(forms.Form):
@@ -125,8 +142,17 @@ class SupplierNameValidator:
         self.field_name = field_name
 
     def __call__(self, value):
+        if len(value) == 1 and value == "'":
+            raise forms.ValidationError(f"{self.field_name} should not contain only a single quote.")
+
+        if len(value) > 1 and all(char == "'" for char in value):
+            raise forms.ValidationError(f"{self.field_name} should not contain only single quotes.")
+
         if value.isdigit():
             raise forms.ValidationError(f"{self.field_name} should not contain only numbers.")
+
+        if not re.match("^[a-zA-Z0-9\s']+$", value):
+            raise forms.ValidationError(f"{self.field_name} should only contain letters, numbers, and single quotes.")
 
 
 def validate_contact_number(value):
@@ -146,6 +172,10 @@ class SupplierForm(BSModalModelForm):
     supplier_primary_contact = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         validators=[validate_contact_number]
+    )
+    supplier_address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[AddressValidator("Supplier address")]
     )
 
     class Meta:
@@ -168,6 +198,14 @@ class SupplierForm(BSModalModelForm):
 class UpdateSupplierForm(BSModalModelForm):
     supplier_status = forms.ModelChoiceField(queryset=SupplierStatus.objects.exclude(name='Deleted'),
                                              empty_label="Select Status")
+    supplier_address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[AddressValidator("Supplier address")]
+    )
+    supplier_primary_contact = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[validate_contact_number]
+    )
 
     class Meta:
         model = Supplier
@@ -229,19 +267,24 @@ class PasswordValidator:
             raise ValidationError("Password must contain both letters and numbers.")
 
 
+def NoSpecialCharactersValidator(value):
+    if not re.match("^[a-zA-Z0-9\s]*$", value):
+        raise ValidationError("Name cannot contain special characters.")
+
+
 class User_Account_ModelForm(BSModalModelForm):
     user_first_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        validators=[NameValidator("First name")]
+        validators=[NameValidator("First name"), NoSpecialCharactersValidator]
     )
     user_middle_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        validators=[NameValidator("Middle name")],
+        validators=[NameValidator("Middle name"), NoSpecialCharactersValidator],
         required=False
     )
     user_last_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        validators=[NameValidator("Last name")]
+        validators=[NameValidator("Last name"), NoSpecialCharactersValidator]
     )
 
     user_password = forms.CharField(
@@ -258,6 +301,31 @@ class User_Account_ModelForm(BSModalModelForm):
         ),
         validators=[DateHiredValidator()]
     )
+
+    user_address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[AddressValidator("User address")]
+    )
+
+    # validate name = first name + last name .UPPERCASE()
+    def clean(self):
+        cleaned_data = super().clean()
+        first_name = cleaned_data.get('user_first_name')
+        last_name = cleaned_data.get('user_last_name')
+
+        # Check if a user with the same first and last name exists
+        if first_name and last_name:
+            existing_users = User_Account.objects.filter(
+                user_first_name__iexact=first_name,
+                user_last_name__iexact=last_name
+            ).exclude(pk=self.instance.pk if self.instance else None)
+
+            if existing_users.exists():
+                self.add_error('user_first_name', forms.ValidationError("A user with this name already exists."))
+                self.add_error('user_last_name', forms.ValidationError("A user with this name already exists."))
+
+        return cleaned_data
 
     class Meta:
         model = User_Account
@@ -281,6 +349,11 @@ class User_Account_Update_ModelForm(BSModalModelForm):
         validators=[PasswordValidator()],
         required=False
     )
+    user_address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[AddressValidator("User address")]
+    )
 
     class Meta:
         model = User_Account
@@ -302,3 +375,20 @@ class User_Account_Update_ModelForm(BSModalModelForm):
             return existing_password  # Return the existing password if no new password is provided
 
         return user_password  # Otherwise, return the new password (even if it's blank)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user_first_name = cleaned_data.get('user_first_name')
+        user_last_name = cleaned_data.get('user_last_name')
+
+        if user_first_name and user_last_name:
+            existing_users = User_Account.objects.filter(
+                user_first_name__iexact=user_first_name,
+                user_last_name__iexact=user_last_name
+            ).exclude(pk=self.instance.pk if self.instance else None)
+
+            if existing_users.exists():
+                self.add_error('user_first_name', forms.ValidationError("A user with this name already exists."))
+                self.add_error('user_last_name', forms.ValidationError("A user with this name already exists."))
+
+        return cleaned_data

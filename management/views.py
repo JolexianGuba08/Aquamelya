@@ -321,34 +321,30 @@ def error_404_view(request, exception):
 # ------------------REPORTS DASHBOARD------------------#
 
 def reports_data(request):
-    filter_type = request.GET.get('filter_type')
+    try:
+        filter_type = request.GET.get('filter_type')
 
-    today = datetime.now().date()
-    current_year = today.year
-    current_month = today.month
-    start_of_month = today.replace(day=1)
-    start_of_year = today.replace(month=1, day=1)
-    last_year = start_of_year - timedelta(days=365)
+        supplies_count = Request_Supply.objects.count()
+        assets_count = Request_Assets.objects.count()
+        job_orders_count = Job_Order.objects.count()
 
-    if filter_type == 'this_day':
-        data = fetch_data_for_day(today)
-    elif filter_type == 'this_month':
-        data = fetch_data_for_month(current_year, current_month)
-    elif filter_type == 'this_year':
-        data = fetch_data_for_year(current_year)
-    elif filter_type == 'last_year':
-        data = fetch_data_for_last_year(last_year.year)
-    else:
-        data = fetch_default_data()
+        data = {
+            'Supplies': supplies_count,
+            'Assets': assets_count,
+            'Job Orders': job_orders_count
+        }
 
-    return JsonResponse(data)
+        return JsonResponse(data)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 def fetch_data_for_day(date_now):
     # Fetching counts for each type of request for the current day
-    supplies_count = Request_Supply.objects.filter(req_id__req_date__date=date_now).count()
-    assets_count = Request_Assets.objects.filter(req_id__req_date__date=date_now).count()
-    job_orders_count = Job_Order.objects.filter(req_id__req_date__date=date_now).count()
+    supplies_count = Request_Supply.objects.count()
+    assets_count = Request_Assets.objects.count()
+    job_orders_count = Job_Order.objects.count()
 
     return {
         'Supplies': supplies_count,
@@ -405,9 +401,9 @@ def fetch_data_for_last_year(last_year):
 def fetch_default_data():
     # Fetching counts for each type of request for the current day
     today = datetime.now().date()
-    supplies_count = Request_Supply.objects.filter(req_id__req_date__date=today).count()
-    assets_count = Request_Assets.objects.filter(req_id__req_date__date=today).count()
-    job_orders_count = Job_Order.objects.filter(req_id__req_date__date=today).count()
+    supplies_count = Request_Supply.objects.count()
+    assets_count = Request_Assets.objects.count()
+    job_orders_count = Job_Order.objects.count()
 
     return {
         'Supplies': supplies_count,

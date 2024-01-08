@@ -15,14 +15,14 @@ def admin_reports_purchase_function(request):
         return redirect('login')
 
     if request.session.get('session_user_type') == 1:
-        done_purchase_orders = Purchase_Order.objects.filter(req_id=3).values(
+        done_purchase_orders = Purchase_Order.objects.filter(req__request_status__name='Completed').values(
             'purch_id',
             'purch_date',
-            'req__req_type',
+            'req__req_type__name',
             'supplier__supplier_name',
         )
 
-        sorted_combined_purchases = sorted(list(done_purchase_orders), key=lambda x: x['purch_item_type'])
+        sorted_combined_purchases = sorted(list(done_purchase_orders), key=lambda x: x['req__req_type__name'])
 
         # To print structured JSON
         structured_json = json.dumps({'purchase_order': sorted_combined_purchases}, cls=DjangoJSONEncoder, indent=4)
@@ -66,7 +66,6 @@ def admin_reports_requests_function(request):
                 'user': job_request.req_id.user,
                 'req_date': job_request.req_id.req_date.strftime('%Y-%m-%d')
             })
-
         return render(request, 'reports_request.html', {'requests_data': requests_data})
     else:
         raise Http404("You are not authorized to view this page")
@@ -102,7 +101,7 @@ def get_monthly_purchase_data(request):
     done_supply_purchases = Purchase_Order.objects.filter(
         purch_date__year=current_year,
         purch_status=3,  # 'Done' status
-        purch_item_type='Supply'  # Adjust based on your model structure
+        req__req_type__name='Supply'  # Adjust based on your model structure
     ).values('purch_date__month').annotate(
         supply_count=Count('purch_id')
     ).order_by('purch_date__month')
@@ -111,7 +110,7 @@ def get_monthly_purchase_data(request):
     done_assets_purchases = Purchase_Order.objects.filter(
         purch_date__year=current_year,
         purch_status=3,  # 'Done' status
-        purch_item_type='Asset'  # Adjust based on your model structure
+        req__req_type__name='Asset'  # Adjust based on your model structure
     ).values('purch_date__month').annotate(
         asset_count=Count('purch_id')
     ).order_by('purch_date__month')

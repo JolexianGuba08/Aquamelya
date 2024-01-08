@@ -1,3 +1,5 @@
+import re
+
 from bootstrap_modal_forms.forms import BSModalForm, BSModalModelForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -10,6 +12,16 @@ from .models import Supply, Assets, SupplyType, AssetType, OnHandUnit
 def validate_description(value):
     if value.isdigit():
         raise ValidationError('Description cannot consist only of digits')
+    if len(value) == 1 and value == "'":
+        raise ValidationError('Description cannot consist only of single qoute')
+    if len(value) == 1 and value == "(" or value == ")":
+        raise ValidationError('Description cannot consist only of single parenthesis')
+    if len(value) > 1 and all(char == "'" for char in value):
+        raise ValidationError('Description cannot consist all only of single qoutes')
+    if len(value) > 1 and all(char == "(" or char == ")" for char in value):
+        raise ValidationError('Description cannot consist all only parenthesis')
+    if not re.match("^[a-zA-Z0-9\s'()]+$", value):
+        raise forms.ValidationError(f"Should only contain letters, numbers, comma and single quotes.")
 
 
 # SUPPLY FORMS SECTION
