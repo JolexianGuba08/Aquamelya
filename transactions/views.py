@@ -206,7 +206,7 @@ def updateJoborder(request, req_id):
             return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already completed.'})
         elif req_form.request_status.name == RequestStatus.objects.get(name='Cancelled').name:
-            messages.warning(request, 'Cannot update job order. Job order is already declined.')
+            messages.warning(request, 'Cannot update job order. Job order is already cancelled.')
             return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
 
