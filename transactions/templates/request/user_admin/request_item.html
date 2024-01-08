@@ -6,9 +6,9 @@
 
     <style>
         @media (width < 940px) {
-          table .remove_tbl {
-            display: none !important;
-      }
+            table .remove_tbl {
+                display: none !important;
+            }
         }
     </style>
 
@@ -17,17 +17,22 @@
     <main id="main" class="main">
         <div class="pagetitle">
             <div class="d-flex align-items-start">
-                <button type="button" class="btn btn-primary" style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
+                <button type="button" class="btn btn-primary"
+                        style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
                         onclick="goBackrequest()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                      <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                         style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill"
+                         viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                     </svg>
                 </button>
 
                 <div class="ml-2" style="margin-left: 20px !important">
-                    <h1 class=""  style="margin-bottom: 5px !important">
+                    <h1 class="" style="margin-bottom: 5px !important">
                         REQUISITION</h1>
-                    <h2 class="card-title" style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">TRANSACTION</h2>
+                    <h2 class="card-title"
+                        style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">
+                        TRANSACTION</h2>
                 </div>
             </div>
         </div>
@@ -37,12 +42,18 @@
             <div class="card-body p-4">
                 <div class="row mt-0">
                     <div class="col-md-3 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Requested:</label>
-                        <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_requested">{{ req_date }}</label>
+                        <label class="form-label text-uppercase"
+                               style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date
+                            Requested:</label>
+                        <label class="form-label" style="font-weight: lighter; letter-spacing: 2px"
+                               id="req_date_requested">{{ req_date }}</label>
                     </div>
                     <div class="col-md-6 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Last Modified:</label>
-                            <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_last_mod">{{ req_reviewed_date }}</label>
+                        <label class="form-label text-uppercase"
+                               style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date
+                            Last Modified:</label>
+                        <label class="form-label" style="font-weight: lighter; letter-spacing: 2px"
+                               id="req_date_last_mod">{{ req_reviewed_date }}</label>
                     </div>
                 </div>
 
@@ -79,12 +90,14 @@
                                 </div>
                                 <br>
                                 <div class="col-md-6">
-                                    <label for="job_order_start" style="font-weight: 600; margin-top: 20px!important">Start Date</label>
+                                    <label for="job_order_start" style="font-weight: 600; margin-top: 20px!important">Start
+                                        Date</label>
                                     <input type="date" class="form-control" id="job_order_start"
                                            value="{{ req_data.job_start_date }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="job_order_end" style="font-weight: 600;  margin-top: 20px!important">End Date</label>
+                                    <label for="job_order_end" style="font-weight: 600;  margin-top: 20px!important">End
+                                        Date</label>
                                     <input type="date" class="form-control" id="job_order_end"
                                            value="{{ req_data.job_end_date }}">
                                 </div>
@@ -94,24 +107,34 @@
                 {% endif %}
 
                 {% if req_type != "Job Order" %}
-                    <button type="button" class="btn btn-primary mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateNote({{ req_id }})">
+                    <button type="button" class="btn btn-primary mt-4"
+                            style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold"
+                            onclick="updateNote({{ req_id }})">
                         ADD NOTE
                     </button>
-                    <button type="button" id="releaseButton" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" data-reqid="{{ req_id }}" onclick="releaseItems()"
+                    <button type="button" id="releaseButton"
+                            style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold"
+                            data-reqid="{{ req_id }}" onclick="releaseItems()"
                             class="btn btn-success mt-2">
                         RELEASED ITEMS
                     </button>
-                    <button type="button" class="btn btn-dark mt-2" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="createPurchase({{ req_id }})">
+                    <button type="button" class="btn btn-dark mt-2"
+                            style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold"
+                            onclick="createPurchase({{ req_id }})">
                         CREATE PURCHASE ORDER
                     </button>
                 {% else %}
-                    <button type="button" class="btn btn-success mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateJoborder({{ req_id }})">SUBMIT
+                    <button type="button" class="btn btn-success mt-4"
+                            style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold"
+                            onclick="updateJoborder({{ req_id }})">SUBMIT
                     </button>
                 {% endif %}
 
                 {% if req_status == "Done" %}
-                    <button type="button" class="btn btn-outline-secondary mt-4" style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="showAckInfo({{ req_id }})">
-                    View Acknowledgement
+                    <button type="button" class="btn btn-outline-secondary mt-4"
+                            style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold"
+                            onclick="showAckInfo({{ req_id }})">
+                        View Acknowledgement
                     </button>
                 {% endif %}
 
@@ -122,7 +145,8 @@
 
         <div class="card mt-4 p-2" style="padding-bottom: 27px;">
             <div class="card-body">
-                <h2 class="card-title" style="font-weight: lighter; letter-spacing: 2px">OVERVIEW <span>( {{ req_id }} )</span></h2>
+                <h2 class="card-title" style="font-weight: lighter; letter-spacing: 2px">OVERVIEW
+                    <span>( {{ req_id }} )</span></h2>
 
                 {# Table Request Supply #}
                 <table class="table " id="requisition_table">
@@ -172,34 +196,47 @@
                                 </td>
                                 <td class="remove_tbl text-center align-middle">
                                     {% if item.req_status__name|lower == 'pending' %}
-                                        <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-primary"
+                                              style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% elif item.req_status__name|lower == 'cancelled' %}
-                                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-danger text-uppercase"
+                                              style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% elif item.req_status__name|lower == 'completed' %}
-                                        <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-success-light text-uppercase"
+                                              style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% elif item.req_status__name|lower == 'incomplete' %}
-                                        <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-warning-light"
+                                              style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% elif item.req_status__name|lower == 'done' %}
-                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
-                                     {% elif item.req_status__name|lower == 'approved' %}
-                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-success"
+                                              style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'approved' %}
+                                        <span class="badge bg-success"
+                                              style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% elif item.req_status__name|lower == 'declined' %}
-                                        <span class="badge bg-danger-light" style="color:black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                        <span class="badge bg-danger-light"
+                                              style="color:black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'in process' %}
+                                        <span class="badge bg-warning"
+                                              style="color:black; padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center align-middle">
                                     {% if req_type == "Supply" %}
-                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                                style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.supply__supply_description }}')">
                                             ACTION
                                         </button>
                                     {% elif req_type == "Asset" %}
-                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                                style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.asset__asset_description }}')">
                                             ACTION
                                         </button>
                                     {% elif req_type == "Job Order" %}
-                                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                                style="border-radius: 40px !important; width: 100%; font-weight: bold; padding: 10px 5px; height: 100%"
                                                 onclick="fetchDataAndUpdateModal('{{ req_id }}', '{{ item.job_name }}')">
                                             ACTION
                                         </button>
@@ -223,211 +260,214 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function createPurchase(param) {
-        window.location.href = `/transactions/generate_purchase_requisition/${param}`;
-    }
-            function goBackrequest() {
+            window.location.href = `/transactions/generate_purchase_requisition/${param}`;
+        }
+
+        function goBackrequest() {
             window.location.href = `/transactions/requests`;
         }
-    function showAckInfo(req_id) {
-        console.log(req_id)
-        $.ajax({
-            type: 'GET',
-            url: '/transactions/get_acknowledgement_data/',
-            data: {'req_id':req_id },
-            success: function (data) {
-                console.log(data);
-                var dateString = data.acknowledge_date;
-                var formattedDate = dateString.slice(0, -5); //
 
-                $('#request_description').html(data.req_description);
-                $('#acknowledge_by').val(data.acknowledge_by);
-                $('#acknowledge_date').val(formattedDate);
-                $('#notes').val(data.acknowledge_notes);
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            },
-            complete: function () {
-                $('#ackInfo').modal('show');
-            }
-        });
+        function showAckInfo(req_id) {
+            console.log(req_id)
+            $.ajax({
+                type: 'GET',
+                url: '/transactions/get_acknowledgement_data/',
+                data: {'req_id': req_id},
+                success: function (data) {
+                    console.log(data);
+                    var dateString = data.acknowledge_date;
+                    var formattedDate = dateString.slice(0, -5); //
 
-    }
-    function fetchDataAndUpdateModal(pk, supply_description) {
-        $.ajax({
-            url: `/transactions/get_data/${pk}/${supply_description}`,
-            method: 'GET',
-            success: function (data) {
-                console.log(data);
-                $('#request_description').html(data.item_name);
-                $('#req_type').val(data.req_type);
-                $('#req_id').val(data.req_id);
-                var reqId = String(data.req_id);
-                // check if request is done then disable all the buttons and inputs, Then hiding the low stock message
-                if (data.req_status === 'Done' || data.req_status === 'Cancelled' || data.req_status === 'Declined' || data.req_status === 'Approved') {
-                    $(' #textarea, #status_select, #request_submt_btn').prop('disabled', true);
-                    $('#low_stock_message').hide();
+                    $('#request_description').html(data.req_description);
+                    $('#acknowledge_by').val(data.acknowledge_by);
+                    $('#acknowledge_date').val(formattedDate);
+                    $('#notes').val(data.acknowledge_notes);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+                complete: function () {
+                    $('#ackInfo').modal('show');
                 }
-                // default values will be set
-                else {
-                    $('#textarea, #status_select, #request_submt_btn').prop('disabled', false);
-                    $('#low_stock_message').show();
-                }
+            });
 
-                // check stock is sufficient
-                if (data.low_stock === true) {
-                    $('#low_stock_div').show();
-                    $('#low_stock_message').html("Warning: You have <a href='/transactions/purchase/?req_id=" + reqId + "'>insufficient stock</a> for this");
+        }
+
+        function fetchDataAndUpdateModal(pk, supply_description) {
+            $.ajax({
+                url: `/transactions/get_data/${pk}/${supply_description}`,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('#request_description').html(data.item_name);
+                    $('#req_type').val(data.req_type);
+                    $('#req_id').val(data.req_id);
+                    var reqId = String(data.req_id);
+                    // check if request is done then disable all the buttons and inputs, Then hiding the low stock message
+                    if (data.req_status === 'Done' || data.req_status === 'Cancelled' || data.req_status === 'Declined' || data.req_status === 'Approved') {
+                        $(' #textarea, #status_select, #request_submt_btn').prop('disabled', true);
+                        $('#low_stock_message').hide();
+                    }
+                    // default values will be set
+                    else {
+                        $('#textarea, #status_select, #request_submt_btn').prop('disabled', false);
+                        $('#low_stock_message').show();
+                    }
+
+                    // check stock is sufficient
+                    if (data.low_stock === true) {
+                        $('#low_stock_div').show();
+                        $('#low_stock_message').html("Warning: You have <a href='/transactions/purchase/?req_id=" + reqId + "'>insufficient stock</a> for this");
 
 
-                } else {
-                    $('#low_stock_div').hide();
-                }
+                    } else {
+                        $('#low_stock_div').hide();
+                    }
 
-                // Dropdown population
-                var dropdown = $('#status_select');
-                dropdown.empty();
-                data.req_status_list.forEach(function (status) {
-                    var option = $('<option>', {
-                        value: status.id,
-                        text: status.name
+                    // Dropdown population
+                    var dropdown = $('#status_select');
+                    dropdown.empty();
+                    data.req_status_list.forEach(function (status) {
+                        var option = $('<option>', {
+                            value: status.id,
+                            text: status.name
+                        });
+
+                        // Check if the status ID matches the current req_status
+                        if (status.name === data.req_status) {
+                            option.attr('selected', 'selected');
+                        }
+                        dropdown.append(option);
                     });
 
-                    // Check if the status ID matches the current req_status
-                    if (status.name === data.req_status) {
-                        option.attr('selected', 'selected');
+                    // for job order request
+                    if (data.req_type === 'Job Order') {
+                        $('#job_order_start').val(data.job_start_date);
+                        $('#job_order_end').val(data.job_end_date);
+                        $('#worker_count').val(data.worker_count);
+                        $('#job_order_div').show();
+                    } else {
+                        $('#job_order_div').hide();
                     }
-                    dropdown.append(option);
-                });
 
-                // for job order request
-                if (data.req_type === 'Job Order') {
-                    $('#job_order_start').val(data.job_start_date);
-                    $('#job_order_end').val(data.job_end_date);
-                    $('#worker_count').val(data.worker_count);
-                    $('#job_order_div').show();
-                } else {
-                    $('#job_order_div').hide();
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    console.error('Error fetching data');
                 }
+            });
+        }
 
-                $('#myModal').modal('show');
-            },
-            error: function () {
-                console.error('Error fetching data');
-            }
-        });
-    }
+        function updateData() {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var req_id = $('#req_id').val()
+            var postData = {
+                'req_status': $('#status_select').val(),
+                'item_name': $('#request_description').html(),
+            };
 
-    function updateData() {
-        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-        var req_id = $('#req_id').val()
-        var postData = {
-            'req_status': $('#status_select').val(),
-            'item_name': $('#request_description').html(),
-        };
+            $.ajax({
+                url: `/transactions/post_data/${req_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        console.log(response)
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+                        console.error(response);
 
-        $.ajax({
-            url: `/transactions/post_data/${req_id}/`,
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: postData,
-            success: function (response) {
-                if (response.status === 'success') {
+                    }
+                },
+            });
+        }
+
+        function releaseItems() {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var req_id = $('#releaseButton').data('reqid')
+            var postData = {
+                req_status: $('#status_select').val(),
+                item_name: $('#request_description').html(),
+            };
+            $.ajax({
+                url: `/transactions/release_items/${req_id}/`,
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (response) {
                     console.log(response)
-                    window.location.reload();
-                } else {
-                    window.location.reload();
-                    console.error(response);
+                    if (response.status === 'success') {
+                        window.location.reload();
+                    } else if (response.status === 'error') {
+                        window.location.reload();
+                        console.error('Error updating data');
 
+                    }
+                },
+            });
+        }
+
+        function updateJoborder(req_id) {
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var postData = {
+                'req_id': req_id,
+                'worker_count': $('#worker_count').val(),
+                'job_order_start': $('#job_order_start').val(),
+                'job_order_end': $('#job_order_end').val(),
+                'reviewer_notes': $('#req_reviewer_notes').val(),
+            };
+            $.ajax({
+                url: `/transactions/updateJoborder/${req_id}/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: postData,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+                        console.error('Error updating data');
+
+                    }
+                },
+            });
+        }
+
+        function updateNote(req_id) {
+            var noteText = $('#req_reviewer_notes').val();
+            var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+            var reqId = req_id;
+
+            // AJAX request to update the note
+            $.ajax({
+                type: 'POST',
+                url: '/transactions/update_note/' + reqId + '/',
+                headers: {
+                    'X-CSRFToken': csrf_token
+                },
+                data: {'note_text': noteText},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        window.location.reload();
+
+                    }
+                },
+                error: function (error) {
+                    alert('An error occurred while updating the note.', error);
                 }
-            },
-        });
-    }
-
-    function releaseItems() {
-        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-        var req_id = $('#releaseButton').data('reqid')
-        var postData = {
-            req_status: $('#status_select').val(),
-            item_name: $('#request_description').html(),
-        };
-        $.ajax({
-            url: `/transactions/release_items/${req_id}/`,
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: postData,
-            success: function (response) {
-                console.log(response)
-                if (response.status === 'success') {
-                    window.location.reload();
-                } else if (response.status === 'error') {
-                    window.location.reload();
-                    console.error('Error updating data');
-
-                }
-            },
-        });
-    }
-
-    function updateJoborder(req_id) {
-        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-        var postData = {
-            'req_id': req_id,
-            'worker_count': $('#worker_count').val(),
-            'job_order_start': $('#job_order_start').val(),
-            'job_order_end': $('#job_order_end').val(),
-            'reviewer_notes': $('#req_reviewer_notes').val(),
-        };
-        $.ajax({
-            url: `/transactions/updateJoborder/${req_id}/`,
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: postData,
-            success: function (response) {
-                if (response.status === 'success') {
-                    window.location.reload();
-                } else {
-                    window.location.reload();
-                    console.error('Error updating data');
-
-                }
-            },
-        });
-    }
-
-    function updateNote(req_id) {
-        var noteText = $('#req_reviewer_notes').val();
-        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
-        var reqId = req_id;
-
-        // AJAX request to update the note
-        $.ajax({
-            type: 'POST',
-            url: '/transactions/update_note/' + reqId + '/',
-            headers: {
-                'X-CSRFToken': csrf_token
-            },
-            data: {'note_text': noteText},
-            dataType: 'json',
-            success: function (data) {
-                if (data.status === 'success') {
-                    window.location.reload();
-                } else {
-                    window.location.reload();
-
-                }
-            },
-            error: function (error) {
-                alert('An error occurred while updating the note.', error);
-            }
-        });
-    }
+            });
+        }
 
     </script>
 {% endblock %}

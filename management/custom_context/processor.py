@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from inventory.models import Supply
 from management.models import User_Account, Supplier
 from login.views import user_already_logged_in
-from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order, Requisition
+from transactions.models import Request_Supply, Request_Assets, Job_Order, Purchase_Order, Requisition, Delivery
 
 
 def check_user_status(request):
@@ -79,6 +79,21 @@ def dashboard_context(request):
             'pending_req_count': request_pending_count,
             'pending_orders_count': order_count,
             'low_stock_list': low_stock_list,
+        }
+        return context
+    else:
+        return {}
+
+
+def staff_dashboard_context(request):
+    if user_already_logged_in(request):
+        user = User_Account.objects.get(user_id=request.session.get('session_user_id'))
+        pending_count = Requisition.objects.filter(request_status__name='Pending', user=user.user_id).count()
+        delivery_count = Delivery.objects.filter(delivery_status=1, order_receive_by=user.user_id).count()
+
+        context = {
+            'staff_req_count': pending_count,
+            'delivery_count': delivery_count,
         }
         return context
     else:

@@ -73,6 +73,7 @@ TEMPLATES = [
                 'management.custom_context.processor.get_user_info',
                 'management.custom_context.processor.dashboard_context',
                 'management.custom_context.processor.check_user_status',
+                'management.custom_context.processor.staff_dashboard_context'
             ],
         },
     },

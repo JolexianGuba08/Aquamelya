@@ -15,7 +15,7 @@ def admin_reports_purchase_function(request):
         return redirect('login')
 
     if request.session.get('session_user_type') == 1:
-        done_purchase_orders = Purchase_Order.objects.filter(req__request_status__name='Completed').values(
+        done_purchase_orders = Purchase_Order.objects.filter(purch_status=3).values(
             'purch_id',
             'purch_date',
             'req__req_type__name',
