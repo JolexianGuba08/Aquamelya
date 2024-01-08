@@ -62,15 +62,15 @@
                                 {% for delivery in delivery %}
                                     <tr data-pk="{{ delivery.pk }}" data-name="{{ delivery.purch.req.req_description }}"
                                         data-status="{{ delivery.delivery_status }}">
-                                        <th class="text-center align-middle">{{ delivery.purch.req.req_description}}</th>
+                                        <th class="text-center align-middle" style="font-weight: normal !important; color: var(--c1)">{{ delivery.purch.req.req_description}}</th>
                                         <td class="remove_tbl text-center align-middle">{{ delivery.purch.req.user }}</td>
                                         <td class="remove_tbl text-center align-middle">{{ delivery.purch.purch_date_modified}}</td>
                                         <td class="remove_tbl text-center align-middle"></td>
                                         <td class="text-center align-middle">
                                             {% if delivery.delivery_status == 1 %}
-                                                <span class="badge bg-secondary" style="padding: 10px; width: 90px;">PROCESSING</span>
+                                                <span class="badge bg-warning-light" style="padding: 10px; color: black; width: 90px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">IN PROCESSING</span>
                                             {% else %}
-                                                <span class="badge bg-success">Order Received</span>
+                                                <span class="badge bg-success"  style="padding: 10px; width: 90px; letter-spacing: 1px; font-weight: lighter; font-size: 12px" >RECEIVED</span>
                                             {% endif %}
                                         </td>
                                     </tr>

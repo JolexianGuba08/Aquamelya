@@ -4,12 +4,12 @@
   {% csrf_token %}
 
   <div class="modal-header">
-    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">DELETE STAFF</h3>
+    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">SUSPEND STAFF</h3>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
 
   <div class="modal-body">
-    <p class="delete-text">Are you sure you want to delete
+    <p class="delete-text" style="">Are you sure you want to suspend
       <strong style="color: var(--c1); letter-spacing: 1px">{{ user_account.user_first_name }} {{ user_account.user_last_name }}</strong>?</p>
   </div>
 
@@ -17,7 +17,7 @@
         {% csrf_token %}
 
       <div class="modal-footer">
-        <button type="submit" name="confirm" value="delete" id="delete-btn" class="btn btn-danger" style="width: 100%; padding: 10px; font-weight: bold; letter-spacing: 1px">DELETE</button>
+        <button type="submit" name="confirm" value="suspend" id="delete-btn" class="btn btn-danger" style="width: 100%; padding: 10px; font-weight: bold; letter-spacing: 1px">SUSPEND</button>
       </div>
 
  </form>

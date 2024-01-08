@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 
    <div class="modal-header">
-      <h5 class="modal-title" style="letter-spacing: 2px !important">ADD SUPPLY</h5>
+    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">ADD SUPPLY</h3>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
    </div>
    <div class="modal-body">
@@ -18,7 +18,7 @@
             </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-12">
             <label for="inputName4" class="form-label">Type</label>
             {% render_field form.supply_type class="form-control" placeholder=" "%}
             <div class="{% if form.supply_type.errors %}invalid{% endif %}">
@@ -28,7 +28,7 @@
             </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-12">
             <label for="inputName4" class="form-label">Supplier</label>
             {% render_field form.supplier_id class="form-control" placeholder=""%}
             <div class="{% if form.supplier_id.errors %}invalid{% endif %}">
@@ -77,8 +77,9 @@
             </div>
       </div>
 
-   <div class="modal-footer pb-0" style="border: none !important">
-      <button type="submit" class="btn btn-primary" style="width: 100px !important; letter-spacing: 1px; font-weight: bold ">ADD</button>
+          <hr>
+   <div class="modal-footer pb-0" style="border: none !important; margin: 0; padding: 0">
+      <button type="submit" class="btn btn-primary" style="padding: 10px; width: 100%  !important; letter-spacing: 1px; font-weight: bold ">ADD</button>
    </div>
 </form>
    </div>

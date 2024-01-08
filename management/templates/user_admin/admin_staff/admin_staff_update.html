@@ -1,110 +1,135 @@
 {% load widget_tweaks %}
-            <div class="modal-header">
-                <h5 class="modal-title" style="letter-spacing: 2px  !important">STAFF DETAILS</h5>
-                <button type="button" class="btn btn-primary" style="font-weight: bold; letter-spacing: 1px; border: none; color: #ffffff;" id="purchaseBtn" onclick="enableForm()"> EDIT</button>
-{#                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+<div class="modal-header">
+    <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">STAFF DETAILS</h3>
+    <button type="button" class="btn btn-primary"
+            style="font-weight: bold; letter-spacing: 1px; border: none; color: #ffffff;" id="purchaseBtn"
+            onclick="enableForm()"> <i class="bi bi-pencil-square"></i>
+    </button>
+</div>
+
+<div class="modal-body">
+    <form class="edit_staff_modal row g-3" id="myForm" action="#" method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row d-flex flex-column p-2 pb-0" style="border: none; width: 100%; padding: 0">
+            <div class="col-md-12" style="border: none">
+                <label class="form-label text-center" style="color: var(--c1);">Date Added:</label>
+                <label class="form-label"
+                       style="">{{ user_account.user_date_added }}</label>
             </div>
-            <div class="modal-body">
-                <form class="edit_staff_modal row g-3" id="myForm" action="#" method="post" novalidate>
-                    {% csrf_token %}
-                    <div class="col-md-6">
-                    <label for="inputName5" class="form-label">FIRST NAME</label>
-                        {% render_field form.user_first_name class="form-control" placeholder="FIRST NAME" disabled="disabled" %}
-                        <div class="{% if form.user_first_name.errors %} invalid{% endif %}">
-                            {% for error in form.user_first_name.errors %}
-                               <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputName4" class="form-label">LAST NAME</label>
-                        {% render_field form.user_last_name class="form-control" placeholder="LAST NAME" disabled="disabled" %}
-                            <div class="{% if form.user_last_name.errors %} invalid{% endif %}">
-                              {% for error in form.user_last_name.errors %}
-                                 <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="inputName4" class="form-label">MIDDLE NAME</label>
-                        {% render_field form.user_middle_name class="form-control" placeholder=user_account.user_middle_name disabled="disabled" %}
-                            <div class="{% if form.user_middle_name.errors %} invalid{% endif %}">
-                              {% for error in form.user_middle_name.errors %}
-                                   <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputName4" class="form-label">BIRTHDATE</label>
-                            {% render_field form.user_birthdate class="form-control" placeholder="YYYY-MM-DD" disabled="disabled" %}
-                            <div class="{% if form.user_birthdate.errors %} invalid{% endif %}">
-                              {% for error in form.user_birthdate.errors %}
-                                 <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-                     <div class="col-md-6">
-                        <label for="inputName4" class="form-label">CONTACT NO.</label>
-                        {% render_field form.user_contact_number class="form-control" placeholder="+63XXXXXXXXXX" disabled="disabled" %}
-                            <div class="{% if form.user_contact_number.errors %} invalid{% endif %}">
-                              {% for error in form.user_contact_number.errors %}
-                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="inputName4" class="form-label">ADDRESS</label>
-                        {% render_field form.user_address class="form-control" placeholder=user_account.user_address disabled="disabled" %}
-                            <div class="{% if form.user_address.errors %} invalid{% endif %}">
-                              {% for error in form.user_address.errors %}
-                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="inputName4" class="form-label">EMAIL ADDRESS</label>
-                        {% render_field form.user_email class="form-control" placeholder="user@gmail.com" disabled="disabled" %}
-                            <div class="{% if form.user_email.errors %} invalid{% endif %}">
-                              {% for error in form.user_email.errors %}
-                                  <p class="text-danger" style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
-                              {% endfor %}
-                            </div>
-                    </div>
-                    <div class="col-md-12">
-                        <hr>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <label class="form-label" style="color: var(--c1); font-weight: bold;">DATE ADDED</label>
-                            <label class="form-label" style="display: block; margin-bottom: 8px;">{{ user_account.user_date_added }}</label>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label" style="color: var(--c1); font-weight: bold;">DATE MODIFIED</label>
-                            <label class="form-label" style="display: block; margin-bottom: 8px;">{{ user_account.user_date_modified }}</label>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer justify-content-end">
-                        <button type="button" class="btn btn-danger me-auto" data-bs-dismiss="modal" style="font-weight: bold; letter-spacing: 1px; border: none; width: 100px">CLOSE</button>
-                        <button type="submit" class="btn btn-success invisible" id="saveBtn" style="font-weight: bold; letter-spacing: 1px; border: none; width: 160px">SAVE CHANGES</button>
-                    </div>
-                </form><!-- End Multi Columns Form -->
-
+            <div class="col-md-12">
+                <label class="form-label text-center" style="color: var(--c1);">Date Last Modified:</label>
+                <label class="form-label"
+                       style="">{{ user_account.user_date_modified }}</label>
             </div>
-    <script>
-        function enableForm() {
-            // Get all elements with the class "form-control" inside the form with the id "myForm"
-            const formControls = document.querySelectorAll('#myForm .form-control');
+        </div>
 
-            // Loop through each element and remove the "disabled" attribute
-            formControls.forEach(function (element) {
-                element.removeAttribute('disabled');
-            });
+        <div class="col-md-12">
+            <label for="inputName5" class="form-label" style="padding-top: 0px">FIRST NAME</label>
+            {% render_field form.user_first_name class="form-control" placeholder="FIRST NAME" disabled="disabled" %}
+            <div class="{% if form.user_first_name.errors %} invalid{% endif %}">
+                {% for error in form.user_first_name.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">LAST NAME</label>
+            {% render_field form.user_last_name class="form-control" placeholder="LAST NAME" disabled="disabled" %}
+            <div class="{% if form.user_last_name.errors %} invalid{% endif %}">
+                {% for error in form.user_last_name.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">MIDDLE NAME</label>
+            {% render_field form.user_middle_name class="form-control" placeholder=user_account.user_middle_name disabled="disabled" %}
+            <div class="{% if form.user_middle_name.errors %} invalid{% endif %}">
+                {% for error in form.user_middle_name.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">BIRTHDATE</label>
+            {% render_field form.user_birthdate class="form-control" placeholder="YYYY-MM-DD" disabled="disabled" %}
+            <div class="{% if form.user_birthdate.errors %} invalid{% endif %}">
+                {% for error in form.user_birthdate.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">CONTACT NO.</label>
+            {% render_field form.user_contact_number class="form-control" placeholder="+63XXXXXXXXXX" disabled="disabled" %}
+            <div class="{% if form.user_contact_number.errors %} invalid{% endif %}">
+                {% for error in form.user_contact_number.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">ADDRESS</label>
+            {% render_field form.user_address class="form-control" placeholder=user_account.user_address disabled="disabled" %}
+            <div class="{% if form.user_address.errors %} invalid{% endif %}">
+                {% for error in form.user_address.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
 
-            // Make the "Save Changes" button visible
-            const saveChangesButton = document.querySelector('#saveBtn');
-            saveChangesButton.classList.remove('invisible');
-        }
-    </script>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">EMAIL ADDRESS</label>
+            {% render_field form.user_email class="form-control" placeholder="user@gmail.com" disabled="disabled" %}
+            <div class="{% if form.user_email.errors %} invalid{% endif %}">
+                {% for error in form.user_email.errors %}
+                    <p class="text-danger"
+                       style="letter-spaceing: 1px;font-size:12px; margin-bottom: 0 !important;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="inputName4" class="form-label">PASSWORD</label>
+            {% render_field form.user_password class="form-control" placeholder="*********" disabled="disabled" %}
+            <div class="{% if form.user_password.errors %} invalid{% endif %}">
+                {% for error in form.user_password.errors %}
+                    <p class="help-block text-danger " style="font-size:13px;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <hr style=" margin-bottom: 0px; margin-top: 25px">
+
+        <div class="modal-footer justify-content-end border-0 px-2 pb-3 mx-0">
+            <button type="submit" class="btn btn-success d-none mx-0" id="saveBtn"
+                    style="font-weight: bold; letter-spacing: 1px; border: none; width: 100%; margin-right: 0px; padding: 10px">SAVE CHANGES
+            </button>
+            <button type="button" class="btn btn-danger me-auto mx-0" data-bs-dismiss="modal"
+                    style="font-weight: bold; letter-spacing: 1px; border: none; width: 100%; padding: 10px">CLOSE
+            </button>
+        </div>
+    </form><!-- End Multi Columns Form -->
+
+</div>
+<script>
+    function enableForm() {
+        // Get all elements with the class "form-control" inside the form with the id "myForm"
+        const formControls = document.querySelectorAll('#myForm .form-control');
+
+        // Loop through each element and remove the "disabled" attribute
+        formControls.forEach(function (element) {
+            element.removeAttribute('disabled');
+        });
+
+        // Make the "Save Changes" button visible
+        const saveChangesButton = document.querySelector('#saveBtn');
+        saveChangesButton.classList.remove('d-none');
+    }
+</script>

@@ -14,25 +14,26 @@ def login_view(request):
         email = form.cleaned_data['user_email']
         password = form.cleaned_data['user_password']
 
-        user = User_Account.objects.filter(user_email=email).first()
+        try:
+            user = User_Account.objects.get(user_email=email)
 
-        if user:
-            print('Found User')
-            print(user.user_password)
-            
-            if check_password(password, user.user_password):
-                print('Login successful')
+            if user.user_status == 2:
+                error_message = 'Account is suspended'
+            elif user.user_status == 3:
+                error_message = 'Account is deleted'
+            elif not check_password(password, user.user_password):
+                error_message = 'Incorrect Email or Password'
+            else:
                 create_session(request, user)
                 return redirect('homepage')
-            else:
-                print('Login failed')
-                error_message = 'Incorrect Email or Password' if user else 'Invalid Email Address'
-                form = LoginForm() if user else form
-                return render(request, 'login.html', {'error_message': error_message, 'form': form})
-        else:
-            print('Login failed')
+
+            form = LoginForm()
+            return render(request, 'login.html', {'error_message': error_message, 'form': form})
+
+        except User_Account.DoesNotExist:
             error_message = 'User does not exist'
-            form = LoginForm() if user else form
+            form = LoginForm()
+
             return render(request, 'login.html', {'error_message': error_message, 'form': form})
 
     return render(request, 'login.html', {'form': form})
@@ -49,7 +50,6 @@ def create_session(request, user):
 
 
 def check_password(input_password, user_password):
-    # Assuming input_password is the password entered by a user
     input_password_bytes = input_password.encode('utf-8')  # Convert the input password to bytes
     stored_password_bytes = user_password.encode('utf-8')  # Convert the stored password to bytes
 

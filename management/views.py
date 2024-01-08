@@ -6,7 +6,8 @@ from bootstrap_modal_forms.generic import (
 import cloudinary.uploader
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404
+from django.forms import model_to_dict
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -153,7 +154,7 @@ class AdminStaffIndexView(generic.ListView):
     template_name = 'user_admin/admin_staff/admin_staff_view.html'
 
     def get_queryset(self):
-        qs = super().get_queryset().exclude(user_status=4).exclude(user_type=1).order_by('-user_date_hired')
+        qs = super().get_queryset().exclude(user_status=3).exclude(user_type=1).order_by('-user_date_hired')
         if 'type' in self.request.GET:
             qs = qs.filter(user_type=int(self.request.GET['type']))
         return qs
@@ -168,13 +169,31 @@ class AdminStaffView(BSModalUpdateView):
     form_class = User_Account_Update_ModelForm
     model = User_Account
     template_name = 'user_admin/admin_staff/admin_staff_update.html'
-    success_message = 'Success: Staff was updated.'
     success_url = reverse_lazy('admin_staff_view_url')
 
     def dispatch(self, request, *args, **kwargs):
         if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
             raise Http404("You are not allowed to access this page.")
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+        initial_data = model_to_dict(self.object)
+
+        form_data = form.cleaned_data
+
+        changes_detected = any(
+            field in initial_data and form_data.get(field) != initial_data[field]
+            for field in form_data
+        )
+
+        if changes_detected:
+            form.save()  # Save the form changes to the database
+            messages.success(self.request, 'Success: Staff was updated.')
+        else:
+            messages.info(self.request, 'No changes found.')
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class DeleteStaff(View):
@@ -189,7 +208,7 @@ class DeleteStaff(View):
 
         # Check if the user confirmed the deletion
         if request.POST.get('confirm') == 'delete':
-            user_acc.user_status = 4  # 'DELETED' status
+            user_acc.user_status = 3  # 'DELETED' status
             try:
                 messages.success(request, 'Staff was successfully deleted.')
                 user_acc.save()
@@ -208,32 +227,83 @@ class DeleteStaff(View):
         return super().dispatch(request, *args, **kwargs)
 
 
+class SuspendStaff(View):
+    template_name = 'user_admin/admin_staff/admin_staff_suspend.html'
+
+    def get(self, request, pk):
+        user_acc = get_object_or_404(User_Account, pk=pk)
+        return render(request, self.template_name, {'user_account': user_acc})
+
+    def post(self, request, pk):
+        user_acc = get_object_or_404(User_Account, pk=pk)
+
+        # Check if the user confirmed the deletion
+        if request.POST.get('confirm') == 'suspend':
+            user_acc.user_status = 2  # 'DELETED' status
+            try:
+                messages.success(request, 'Staff was successfully suspended.')
+                user_acc.save()
+                return redirect('admin_staff_view_url')
+            except Exception as e:
+                # Handle the exception as needed
+                return HttpResponseBadRequest(f'Error: {str(e)}')
+        else:
+            # User chose not to delete, redirect or render another template as needed
+            messages.error(request, 'Cancelled: Staff status not updated.')
+            return redirect('admin_staff_view_url')
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ActivateStaff(View):
+    template_name = 'user_admin/admin_staff/admin_staff_activate.html'
+
+    def get(self, request, pk):
+        user_acc = get_object_or_404(User_Account, pk=pk)
+        return render(request, self.template_name, {'user_account': user_acc})
+
+    def post(self, request, pk):
+        user_acc = get_object_or_404(User_Account, pk=pk)
+
+        # Check if the user confirmed the deletion
+        if request.POST.get('confirm') == 'activate':
+            user_acc.user_status = 1  # 'DELETED' status
+            try:
+                messages.success(request, 'Staff was successfully activated.')
+                user_acc.save()
+                return redirect('admin_staff_view_url')
+            except Exception as e:
+                # Handle the exception as needed
+                return HttpResponseBadRequest(f'Error: {str(e)}')
+        else:
+            # User chose not to delete, redirect or render another template as needed
+            messages.error(request, 'Cancelled: Staff status not updated.')
+            return redirect('admin_staff_view_url')
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'session_user_type' not in request.session or request.session['session_user_type'] != 1:
+            raise Http404("You are not allowed to access this page.")
+        return super().dispatch(request, *args, **kwargs)
+
+
 def admin_profile_function(request):
+    context_data = get_user_info(request)
+    staff_profile_edit = StaffProfileEdit(user_info=context_data)
+    staff_change_password = StaffChangePasswordForm()
     if not user_already_logged_in(request):
         return redirect('login')
     user_type = request.session['session_user_type']
     if user_type == 0:
-        context_data = get_user_info(request)
-        staff_profile_edit = StaffProfileEdit(user_info=context_data)
-        staff_change_password = StaffChangePasswordForm()
         return render(request, 'user_staff/staff_profile.html',
                       {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
     elif user_type == 1:
-        return render(request, 'user_admin/admin_profile.html')
+        return render(request, 'user_admin/profile_admin.html',
+                      {'staff_profile_edit': staff_profile_edit, 'staff_change_password': staff_change_password})
     else:
         return redirect('login')
-
-
-def admin_edit_profile_function(request):
-    return None
-
-
-def admin_edit_password_function(request):
-    return None
-
-
-def un_authorized_view(request):
-    return None
 
 
 def logout_view(request):

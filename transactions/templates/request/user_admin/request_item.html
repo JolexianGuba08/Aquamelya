@@ -37,11 +37,11 @@
             <div class="card-body p-4">
                 <div class="row mt-0">
                     <div class="col-md-3 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter style="font-weight: lighter; letter-spacing: 2px" ">Date Requested:</label>
+                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Requested:</label>
                         <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_requested">{{ req_date }}</label>
                     </div>
                     <div class="col-md-6 text-left">
-                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter style="font-weight: lighter; letter-spacing: 2px" ">Date Last Modified:</label>
+                        <label class="form-label text-uppercase" style="color: var(--c1); letter-spacing: 2px; font-weight: lighter; font-weight: lighter; letter-spacing: 2px">Date Last Modified:</label>
                             <label class="form-label" style="font-weight: lighter; letter-spacing: 2px" id="req_date_last_mod">{{ req_reviewed_date }}</label>
                     </div>
                 </div>
@@ -77,13 +77,14 @@
                                     <input type="number" min="1" class="form-control" id="worker_count"
                                            value="{{ req_data.worker_count }}">
                                 </div>
+                                <br>
                                 <div class="col-md-6">
-                                    <label for="job_order_start" style="font-weight: 600;">Start Date</label>
+                                    <label for="job_order_start" style="font-weight: 600; margin-top: 20px!important">Start Date</label>
                                     <input type="date" class="form-control" id="job_order_start"
                                            value="{{ req_data.job_start_date }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="job_order_end" style="font-weight: 600;">End Date</label>
+                                    <label for="job_order_end" style="font-weight: 600;  margin-top: 20px!important">End Date</label>
                                     <input type="date" class="form-control" id="job_order_end"
                                            value="{{ req_data.job_end_date }}">
                                 </div>
@@ -104,13 +105,13 @@
                         CREATE PURCHASE ORDER
                     </button>
                 {% else %}
-                    <button type="button" class="btn btn-success mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateJoborder({{ req_id }})">Submit
+                    <button type="button" class="btn btn-success mt-4" style="width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="updateJoborder({{ req_id }})">SUBMIT
                     </button>
                 {% endif %}
 
                 {% if req_status == "Done" %}
-                    <button type="button" class="btn btn-outline-dark mt-4" onclick="showAckInfo({{ req_id }})">
-                    View Acknowledgement Info
+                    <button type="button" class="btn btn-outline-dark mt-4" style="text-transform: uppercase; width: 100%; padding: 10px; letter-spacing: 1px; font-weight: bold" onclick="showAckInfo({{ req_id }})">
+                    View Acknowledgement
                     </button>
                 {% endif %}
 
@@ -172,10 +173,16 @@
                                 <td class="remove_tbl text-center align-middle">
                                     {% if item.req_status__name|lower == 'pending' %}
                                         <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
-                                    {% elif item.req_status__name|lower == 'declined' %}
-                                        <span class="badge bg-danger text-uppercase" style="padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
-                                    {% elif item.req_status__name|lower == 'in process' %}
-                                        <span class="badge bg-warning text-uppercase" style="padding: 10px; color: black; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'cancelled' %}
+                                        <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'completed' %}
+                                        <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'incomplete' %}
+                                        <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                    {% elif item.req_status__name|lower == 'done' %}
+                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
+                                     {% elif item.req_status__name|lower == 'approved' %}
+                                        <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.req_status__name }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center align-middle">

@@ -36,7 +36,17 @@
             <div class="sect d-flex gap-3">
 
                 <div class="card p-4" style="width: 40%">
-                    <div class="card-body mb-2" style="padding: 0" >
+        <div class="pagetitle">
+            <div class="d-flex align-items-start">
+                <button type="button" class="btn btn-primary" style=" font-weight: bolder; padding: 0; letter-spacing: 1px; background-color: transparent; border: none; color: red"
+                        onclick="goBackrequest()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" style="color: var(--c2); border: none" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                      <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+                    <div class="card-body mb-2 mt-3" style="padding: 0" >
                         <h1 style="margin-bottom: 5px; letter-spacing: 5px; color: var(--c2)">{{ requisition_data.req_id }}</h1>
                         <h2 class="card-title text-uppercase" style="padding: 0 !important; letter-spacing: 2px; font-weight: lighter;">{{ requisition_data.req_description }}</h2>
                         <div class="" style="height: 1px; width: 100%; background-color: var(--c1); margin-bottom: 30px"></div>
@@ -48,17 +58,21 @@
                                 <p class="card-texte" style=""><b>Request Type:
                                 </b> {{ requisition_data.req_type }}</p>
                                 <p class="card-text " style=""><b>Request Status:</b>
-                                    {% if requisition_data.req_status|lower == 'pending' %}
-                                        <span class="badge bg-warning text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'incomplete' %}
-                                        <span class="badge bg-primary text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'cancelled' %}
-                                        <span class="badge bg-danger text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'completed' %}
-                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% elif requisition_data.req_status|lower == 'done' %}
-                                        <span class="badge bg-success text-uppercase" style="padding: 8px; width: 90px">{{ requisition_data.req_status }}</span>
-                                    {% endif %}</p>
+
+                        {% if requisition_data.req_status|lower == 'pending' %}
+                            <span class="badge bg-primary" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'cancelled' %}
+                            <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'completed' %}
+                            <span class="badge bg-success-light text-uppercase" style="color: black; padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'incomplete' %}
+                            <span class="badge bg-warning-light" style="padding: 10px; text-transform: uppercase; color: black !important; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'done' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ requisition_data.req_status }}</span>
+                        {% elif requisition_data.req_status|lower == 'approved' %}
+                            <span class="badge bg-success" style="padding: 10px; text-transform: uppercase; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{requisition_data.req_status }}</span>
+                        {% endif %}
+                                </p>
                                 <p class="card-text " style=""><b>Request Date:</b>
                                     {{ requisition_data.req_date_requested }}</p>
 
@@ -121,6 +135,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
     <script>
+
+        function goBackrequest() {
+            window.location.href = `{% url 'requisition_table' %}`;
+        }
+
         // fetch data and populate modal of STAFF REQUISITION
         function fetchDataAndModal(pk) {
             $.ajax({
