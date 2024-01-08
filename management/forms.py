@@ -22,7 +22,7 @@ class AddressValidator:
         if value.isdigit():
             raise forms.ValidationError(f"{self.field_name} should not contain only numbers.")
         # Add additional checks or patterns here if needed
-        if not re.match("^[a-zA-Z0-9\s',.-]+$", value):
+        if not re.match(r"^[a-zA-Z0-9\s',.-]+$", value):
             raise forms.ValidationError(f"{self.field_name} should contain valid characters.")
 
 
@@ -151,7 +151,7 @@ class SupplierNameValidator:
         if value.isdigit():
             raise forms.ValidationError(f"{self.field_name} should not contain only numbers.")
 
-        if not re.match("^[a-zA-Z0-9\s']+$", value):
+        if not re.match(r"^[a-zA-Z0-9\s']+$", value):
             raise forms.ValidationError(f"{self.field_name} should only contain letters, numbers, and single quotes.")
 
 
@@ -268,7 +268,7 @@ class PasswordValidator:
 
 
 def NoSpecialCharactersValidator(value):
-    if not re.match("^[a-zA-Z0-9\s]*$", value):
+    if not re.match(r"^[a-zA-Z0-9\s]*$", value):
         raise ValidationError("Name cannot contain special characters.")
 
 

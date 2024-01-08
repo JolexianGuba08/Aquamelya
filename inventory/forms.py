@@ -20,7 +20,7 @@ def validate_description(value):
         raise ValidationError('Description cannot consist all only of single qoutes')
     if len(value) > 1 and all(char == "(" or char == ")" for char in value):
         raise ValidationError('Description cannot consist all only parenthesis')
-    if not re.match("^[a-zA-Z0-9\s'()]+$", value):
+    if not re.match(r"^[a-zA-Z0-9\s'()]+$", value):
         raise forms.ValidationError(f"Should only contain letters, numbers, comma and single quotes.")
 
 
