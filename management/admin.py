@@ -22,5 +22,3 @@ class Supplier_Admin(admin.ModelAdmin):
 admin.site.register(User_Account, User_AccountAdmin)
 admin.site.register(Supplier, Supplier_Admin)
 admin.site.register(SupplierStatus)
-admin.site.register(Notification)
-admin.site.register(NotificationTitle)

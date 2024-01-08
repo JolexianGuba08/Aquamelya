@@ -136,25 +136,3 @@ class Supplier(models.Model):
     class Meta:
         db_table = 'supplier'
         verbose_name = 'Supplier'
-
-
-# Model for Notification
-class NotificationTitle(models.Model):
-    title_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.title
-
-
-class Notification(models.Model):
-    notification_id = models.AutoField(primary_key=True)
-    notification_title = models.ForeignKey(NotificationTitle, on_delete=models.CASCADE)
-    notification_message = models.TextField()
-    notification_date = models.DateTimeField(auto_now_add=True)
-    notification_is_read = models.BooleanField(default=False)
-    user_id = models.ForeignKey(User_Account, on_delete=models.CASCADE, db_column='user_id')
-
-    class Meta:
-        db_table = 'notification'
-        verbose_name = 'Notification'
