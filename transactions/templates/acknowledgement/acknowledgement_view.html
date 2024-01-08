@@ -34,8 +34,7 @@
                 </button>
 
                 <div class="ml-2" style="margin-left: 20px !important">
-                    <h1 class=""  style="margin-bottom: 5px !important; font-size: 40px !important">
-                        DISPLAY DELIVERY ID</h1>
+                    <h1 class=""  style="margin-bottom: 5px !important; font-size: 40px !important">{{ delivery.delivery_id }} </h1>
                     <h2 class="card-title" style="font-weight: lighter; padding: 0; margin-top: 0px; letter-spacing: 3px; margin-bottom: 30px">DELIVERY</h2>
                 </div>
             </div>
@@ -138,7 +137,7 @@
                             <td class="remove_tbl text-center align-middle">
 
                     {% if item.del_status.name|lower == 'delivered' %}
-                        <span class="badge bg-success text-uppercase" style=" padding: 10px; width: 100px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
+                        <span class="badge bg-success text-uppercase" style=" padding: 10px; width: 110px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
                     {% elif item.del_status.name|lower == 'undelivered' %}
                         <span class="badge bg-danger text-uppercase" style=" padding: 10px; width: 110px; letter-spacing: 1px; font-weight: lighter; font-size: 12px">{{ item.del_status.name }}</span>
                     {% endif %}
@@ -165,6 +164,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
     <script>
+
+       function goBackrequest() {
+            window.location.href = `{% url 'staff_delivery_url' %}`;
+        }
+
         function fetchDataAndUpdateModalDelivery(pk, item_type) {
                 $.ajax({
                     url: `/transactions/get_delivery_data/${pk}/${item_type}`,
