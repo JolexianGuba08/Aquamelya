@@ -23,6 +23,19 @@ def validate_description(value):
     if not re.match(r"^[a-zA-Z0-9\s'()]+$", value):
         raise forms.ValidationError(f"Should only contain letters, numbers, comma and single quotes.")
 
+def validate_model(value):
+    if value.isdigit():
+        raise ValidationError('Model cannot consist only of digits')
+    if len(value) == 1 and value == "'" or value == "-":
+        raise ValidationError('Model cannot consist only of single qoute or dash')
+    if len(value) == 1 and value == "(" or value == ")" or value == "-":
+        raise ValidationError('Model cannot consist only of single parenthesis')
+    if len(value) > 1 and all(char == "'" for char in value):
+        raise ValidationError('Model cannot consist all only of single qoutes')
+    if len(value) > 1 and all(char == "(" or char == ")" or char == "-" for char in value):
+        raise ValidationError('Model cannot consist all only parenthesis')
+    if not re.match(r"^[a-zA-Z0-9\s'()-]+$", value):
+        raise forms.ValidationError(f"Should only contain letters, numbers, dash, comma and single quotes.")
 
 # SUPPLY FORMS SECTION
 class SupplyModelForm(BSModalModelForm):
@@ -156,6 +169,18 @@ class AssetModelForm(BSModalModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=True,
         validators=[validate_description]
+    )
+
+    asset_manufacturer = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_model]
+    )
+
+    asset_model = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_model]
     )
 
     def clean(self):
