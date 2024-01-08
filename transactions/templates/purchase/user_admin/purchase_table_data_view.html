@@ -31,14 +31,47 @@
                                 <label class="form-label" style="font-weight: 600">Request Type</label>
                                 <input type="text" class="form-control" value="{{ purchase.request_type }}" readonly>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-2 mb-2">
                                 <label class="form-label" style="font-weight: 600">Date Purchased</label>
                                 <input type="text" class="form-control" value="{{ purchase.purchase_date }}" readonly>
                             </div>
-                            <div class="col-md-3 mb-2">
+                            <div class="col-md-2 mb-2">
                                 <label class="form-label" style="font-weight: 600">Supplier </label>
                                 <input type="text" class="form-control" value="{{ purchase.supplier }}" readonly>
                             </div>
+                        {% if purchase.item_status|lower == 'true' and purchase.purchase_status|lower == 'pending' %}
+                         <div class="col-md-2">
+                                <label class="form-label" style="font-weight: 600">Select Receiver</label>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle form-control" type="button"
+                                            id="receiverDropdown"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        Select Supplier
+                                    </button>
+                                    <ul class="dropdown-menu form-control" aria-labelledby="receiverDropdown">
+                                        <!-- Jinja loop to display suppliers with their IDs -->
+                                        {% if user_data %}
+                                            {% for user in user_data %}
+                                                <li><a class="dropdown-item" href="#"
+                                                       data-pk="{{ user.user_id }}">{{ user }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li><a class="dropdown-item text-center" href="#">No users available</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        {% else %}
+                           <div class="col-md-2">
+        <label class="form-label" style="font-weight: 600">Order Receiver</label>
+        <input type="text" class="form-control" value="{% if delivery %}{{ delivery.0.order_receive_by }}{% endif %}" readonly>
+    </div>
+                        {% endif %}
+
+                        </div>
 
                         </div>
 
@@ -98,7 +131,7 @@
                             </div>
                             <div class="col-md-6 text-md-end">
                                 {% if purchase.item_status|lower == 'true' and purchase.purchase_status|lower == 'pending' %}
-                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">Approved
+                                    <button type="button" id="createPurchase" class="btn btn-success ms-2">Approve
                                     </button>
                                 {% endif %}
                             </div>
@@ -120,7 +153,16 @@
 
         $(document).ready(function () {
             const csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+            let selectedReceiverID; // Variable to store the selected supplier ID
 
+            // Add a click event listener to the dropdown items
+            $('.dropdown-item').on('click', function (event) {
+                event.preventDefault(); // Prevent default action
+
+                const selectedReceiver = $(this).text();
+                $('#receiverDropdown').text(selectedReceiver);
+                selectedReceiverID = $(this).data('pk');
+            });
             $('#createPurchase').on('click', function () {
                 const purchaseID = $('#delivery').data('pk');
                 // add alert to confirm
@@ -135,6 +177,9 @@
                     headers: {
                         'X-CSRFToken': csrftoken
                     },
+                    data: {
+                    'receiver_id': selectedReceiverID,
+                },
                     success: function (response) {
                         if (response.success) {
                             console.log('Purchase Order created successfully');

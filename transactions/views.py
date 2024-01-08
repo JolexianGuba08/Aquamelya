@@ -936,6 +936,7 @@ def post_delivery_info(request, delivery_id):
         # Get the delivery object and get the delivery status
         delivery = get_object_or_404(Delivery, delivery_id=delivery_id)
         delivery_status = request.POST.get('delivery_status')
+
         # If delivery is arrived then, update the stock
         if delivery_status == '2':
             # getting the item type and name
@@ -1241,18 +1242,20 @@ def get_delivery_info(request, pk, item_type):
 # If Admin/Staff Received the delivery then, update the stock
 def post_delivery_info(request, delivery_id):
     global delivery_item
+    global new_delivery
     if request.session.get('session_user_type') == 0:
         raise Http404("You are not allowed to access this page.")
 
     try:
         delivery_status = request.POST.get('delivery_status')
         item_type = request.POST.get('item_type')
+        user_id = request.POST.get('user_id')
 
         if item_type == 'Supply':
             delivery_item = get_object_or_404(DeliverySupply, del_item_id=delivery_id)
+
         elif item_type == 'Asset':
             delivery_item = get_object_or_404(DeliveryAsset, del_item_id=delivery_id)
-
 
         if delivery_status == delivery_item.del_status.name:
             messages.warning(request, 'No changes were made.')
@@ -1260,11 +1263,15 @@ def post_delivery_info(request, delivery_id):
 
         # If delivery is arrived then, update the stock
         if delivery_status == 'Delivered':
-            # getting the item type and name
-            delivery_item.del_status = DeliveryStatus.objects.get(name='Delivered')
-            delivery_item.save()
-            messages.success(request, 'Changes saved successfully!')
-            return JsonResponse({'status': 'success'})
+            try:
+
+                delivery_item.del_status = DeliveryStatus.objects.get(name='Delivered')
+                delivery_item.save()
+                messages.success(request, 'Changes saved successfully!')
+            except User_Account.DoesNotExist:
+                messages.error(request, 'User does not exist.')  # or handle it as appropriate
+            except Exception as e:
+                messages.error(request, f'Error saving changes: {e}')
         elif delivery_status == 'Undelivered':
             delivery_item.del_status = DeliveryStatus.objects.get(name='Undelivered')
             delivery_item.save()
@@ -1463,6 +1470,7 @@ def create_purchase_requisition(request, req_id, supplier_id):
 @admin_required
 def purchase_order_function(request, purch_id):
     try:
+        user_data = User_Account.objects.all()
         purchase_order = get_object_or_404(Purchase_Order, purch_id=purch_id)
         purchase_order_id = purchase_order.purch_id
         purchase_order_date = purchase_order.purch_date.strftime('%Y-%m-%d') if purchase_order.purch_date else "None"
@@ -1474,7 +1482,7 @@ def purchase_order_function(request, purch_id):
         description = requisition.req_description
         requisition_type = requisition.req_type.name
         supplier = purchase_order.supplier
-
+        delivery = Delivery.objects.filter(purch=purchase_order)
         req_items = None
         item_status = False
         if requisition_type == 'Supply':
@@ -1523,7 +1531,7 @@ def purchase_order_function(request, purch_id):
             'item_status': item_status,
         }
         return render(request, 'purchase/user_admin/purchase_table_data_view.html',
-                      {'purchase': purchase_order_data, 'req_items': req_items})
+                      {'purchase': purchase_order_data, 'req_items': req_items, 'delivery':delivery, 'user_data': user_data})
     except Purchase_Order.DoesNotExist:
         raise Http404("Purchase Order does not exist.")
     except Requisition.DoesNotExist:
@@ -1541,7 +1549,7 @@ def purchase_order_approved(request, purch_id):
         # get all the item to that request that is below the on hand
         requisition = Requisition.objects.get(req_id=req_id)
         requisition_type = requisition.req_type.name
-        user_id = request.session.get('session_user_id')
+        user_id = request.POST.get('receiver_id')
         user = User_Account.objects.get(user_id=user_id)
         low_stock_supply = []  # Collect low stock supplies
         low_stock_assets = []  # Collect low stock assets
