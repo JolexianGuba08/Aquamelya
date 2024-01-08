@@ -53,6 +53,32 @@
         <!-- End General Form Elements -->
     </div>
 </div>
+<script>
+$(document).ready(function(){
+    var wrapper = $("#template");  // Use a more appropriate selector
+    var add_button = $("#submit_btn");
+
+    $(add_button).click(function(e){
+        e.preventDefault();
+
+        var jobNameInput = prompt("Enter job name:");
+
+        if (/^[A-Za-z\s]+$/.test(jobNameInput)) {
+            // Input contains only characters
+            $(wrapper).append('<div class="row mb-3"><label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Job Name</label><div class="col-sm-12"><input type="text" class="form-control" placeholder="Job Name" value="' + jobNameInput + '"></div></div><div class="row mb-3"><label for="inputText" class="col-sm-12 col-form-label form_label text-uppercase" style="letter-spacing: 2px">Notes</label><div class="col-sm-12"><textarea class="form-control" id="uniqueTextareaId" placeholder="Notes" rows="8"></textarea></div></div>'); // Add input box
+        } else {
+            // Input contains numbers or invalid characters
+            alert("Please enter a valid job name without numbers.");
+        }
+    });
+
+    $(wrapper).on("click","#submit_btn", function(e){  // Use #submit_btn for ID selector
+        e.preventDefault();
+        $(this).parent('div').remove();
+    });
+});
+
+</script>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 

@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 
 from bootstrap_modal_forms.generic import BSModalUpdateView
@@ -795,17 +796,26 @@ def staff_requisition_job_view(request):
         try:
             job_form = RequestJobForm(request.POST)
             user_id = request.session.get('session_user_id')
+
             if job_form.is_valid():
-                request_form = Requisition.objects.create(
-                    req_description=job_form.cleaned_data['job_name'],
-                    req_type=RequestType.objects.get(name='Job Order'),
-                    user_id=user_id
-                )
-                job_form = job_form.save(commit=False)
-                job_form.req_id = request_form
-                job_form.save()
-                job_form = RequestJobForm()
-                messages.success(request, 'Request submitted successfully!')
+                job_name_input = job_form.cleaned_data['job_name']
+
+                # Check if job_name contains a number
+                if re.search(r'\d', job_name_input):
+                    messages.error(request, 'Job Name should not contain numbers.')
+                else:
+                    request_form = Requisition.objects.create(
+                        req_description=job_name_input,
+                        req_type=RequestType.objects.get(name='Job Order'),
+                        user_id=user_id
+                    )
+
+                    job_form = job_form.save(commit=False)
+                    job_form.req_id = request_form
+                    job_form.save()
+
+                    job_form = RequestJobForm()
+                    messages.success(request, 'Request submitted successfully!')
         except Exception as e:
             messages.error(request, 'Error submitting request!')
 
