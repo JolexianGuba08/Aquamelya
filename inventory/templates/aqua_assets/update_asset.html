@@ -6,13 +6,13 @@
             style="color: white; border: none; font-weight: bold;"
             id="purchaseBtn" onclick="enableForm()"><i class="bi bi-pencil-square"></i>
     </button>
-{#    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+    {#    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
 </div>
 <div class="modal-body">
     <form id="myForm" class="update_asset row g-3" method="POST" novalidate>
         {% csrf_token %}
 
-            <div class="row  justify-content-center mt-3">
+        <div class="row  justify-content-center mt-3">
             <div class="col-md-4 text-center">
                 <label class="form-label" style="color: var(--c1);">Date Added</label>
                 <label class="form-label"
@@ -34,7 +34,7 @@
             {% render_field form.asset_description class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_description.errors %} invalid{% endif %}">
                 {% for error in form.asset_description.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -44,27 +44,17 @@
             {% render_field form.asset_condition class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_condition.errors %} invalid{% endif %}">
                 {% for error in form.asset_condition.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
 
         <div class="col-md-12">
-            <label for="inputName4" class="form-label">On Hand</label>
-            {% render_field form.asset_on_hand class="form-control" placeholder=""% disabled="disabled" %}
-            <div class="{% if form.asset_on_hand.errors %} invalid{% endif %}">
-                {% for error in form.asset_on_hand.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <label for="inputName4" class="form-label">Manufacturer</label>
+            <label for="inputName4" class="form-label">Brand</label>
             {% render_field form.asset_manufacturer class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_manufacturer.errors %} invalid{% endif %}">
                 {% for error in form.asset_manufacturer.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -74,7 +64,7 @@
             {% render_field form.asset_model class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_model.errors %} invalid{% endif %}">
                 {% for error in form.asset_model.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -84,7 +74,7 @@
             {% render_field form.asset_type class="form-control" placeholder=""% disabled="disabled" %}
             <div class="{% if form.asset_type.errors %} invalid{% endif %}">
                 {% for error in form.asset_type.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -93,7 +83,7 @@
             {% render_field form.asset_supplier class="form-control" placeholder="" disabled="disabled" %}
             <div class="{% if form.asset_supplier.errors %}invalid{% endif %}">
                 {% for error in form.asset_supplier.errors %}
-                     <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -112,8 +102,13 @@
         </div>
 
         <div class="modal-footer justify-content-end pt-3" style="margin: 0">
-            <button type="submit" class="btn btn-success d-none mx-0" id="saveBtn" style="padding: 10px; width: 100%; border: none; font-weight: bold; letter-spacing: 1px">SAVE CHANGES</button>
-                   <button type="button" class="btn btn-danger me-auto mx-0" data-bs-dismiss="modal" style="padding: 10px; width: 100%; font-weight: bold; letter-spacing: 1px; border: none">CLOSE</button>
+            <button type="submit" class="btn btn-success d-none mx-0" id="saveBtn"
+                    style="padding: 10px; width: 100%; border: none; font-weight: bold; letter-spacing: 1px">SAVE
+                CHANGES
+            </button>
+            <button type="button" class="btn btn-danger me-auto mx-0" data-bs-dismiss="modal"
+                    style="padding: 10px; width: 100%; font-weight: bold; letter-spacing: 1px; border: none">CLOSE
+            </button>
 
         </div>
     </form>

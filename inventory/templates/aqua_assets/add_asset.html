@@ -39,7 +39,7 @@
 
 
         <div class="col-md-12">
-            <label for="inputName4" class="form-label">Manufacturer</label>
+            <label for="inputName4" class="form-label">Brand</label>
             {% render_field form.asset_manufacturer class="form-control" placeholder="" %}
             <div class="{% if form.asset_manufacturer.errors %}invalid{% endif %}">
                 {% for error in form.asset_manufacturer.errors %}
@@ -101,7 +101,9 @@
         <hr style="margin-bottom: 0px">
 
         <div class="modal-footer p-0" style="border: none">
-            <button type="submit" class="btn btn-primary" style="padding: 10px; width: 100%; font-weight: bold; letter-spacing: 1px; ">REGISTER</button>
+            <button type="submit" class="btn btn-primary"
+                    style="padding: 10px; width: 100%; font-weight: bold; letter-spacing: 1px; ">REGISTER
+            </button>
         </div>
     </form>
 </div>

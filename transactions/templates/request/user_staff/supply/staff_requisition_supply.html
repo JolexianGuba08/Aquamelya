@@ -8,154 +8,159 @@
 {% block requisition %}
     class="nav-link"
 {% endblock requisition %}
-{% block supply %} class="active" {% endblock%}
+{% block supply %} class="active" {% endblock %}
 {# Content #}
 {% block content %}
 
-{# Simple Datatables CSS #}
-<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    {# Simple Datatables CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
-<main id="main" class="main">
+    <main id="main" class="main">
 
-    <div class="container mt-3">
-        <section class="section dashboard">
-            <div class="row">
-                <!-- Left side columns -->
-                <div class="col-lg-12" id="left">
-                    {% include 'request/user_staff/supply/include_staff_requisition_form_supply.html' %}
+        <div class="container mt-3">
+            <section class="section dashboard">
+                <div class="row">
+                    <!-- Left side columns -->
+                    <div class="col-lg-12" id="left">
+                        {% include 'request/user_staff/supply/include_staff_requisition_form_supply.html' %}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <div class="card mt-3">
-            <div class="card-body p-4">
+            <div class="card mt-3">
+                <div class="card-body p-4">
 
-                <div class="pagetitle" id="req_menu" style="">
-                    <h1 class="" style="margin-bottom: 5px; font-size: 35px">REQUEST</h1>
-                    <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">OVERVIEW</p>
-                </div>
-                <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
+                    <div class="pagetitle" id="req_menu" style="">
+                        <h1 class="" style="margin-bottom: 5px; font-size: 35px">REQUEST</h1>
+                        <p class="" style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">
+                            OVERVIEW</p>
+                    </div>
+                    <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
 
-                <div class="table-responsive mt-3">
-                    <table class="table table-hover" id="supplier_table">
-                        <thead class="text-center">
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover" id="supplier_table">
+                            <thead class="text-center">
                             <tr>
                                 <th scope="col" class="text-center text-uppercase">Supply Name</th>
                                 <th scope="col" class="text-center text-uppercase">Quantity</th>
                                 <th scope="col" class="text-center"></th>
                             </tr>
-                        </thead>
-                        <tbody class="text-center">
+                            </thead>
+                            <tbody class="text-center">
                             <!-- Content will be dynamically added here -->
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <div class="row mb-3">
-                    <div class="col-sm-12 justify-content-end" id="req_btn">
-                        <button type="submit" class="btn btn-success" id="submit_btn" style= "border: none !important; min-width: 100% !important;" onclick="saveFromLocalStorage()">
-                            <i class="bi bi-cursor"></i> SUBMIT
-                        </button>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 justify-content-end" id="req_btn">
+                            <button type="submit" class="btn btn-success" id="submit_btn"
+                                    style="border: none !important; min-width: 100% !important;"
+                                    onclick="saveFromLocalStorage()">
+                                <i class="bi bi-cursor"></i> SUBMIT
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main><!-- End #main -->
+    </main><!-- End #main -->
 
 
 
-{# jQuery #}
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-{# TINYMCE #}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
-{# Simple Datatables js#}
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {# TINYMCE #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
+    {# Simple Datatables js#}
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        loadExistingData();
-    });
+    <script>
+        $(document).ready(function () {
+            loadExistingData();
+        });
 
-    function mySave() {
-        var supply_quantity = $('#supply_quantity').val();
-        var supply_id = $('#supply_name').val();
-        var supply_name = $('#supply_name').find('option:selected').text();
+        function mySave() {
+            var supply_quantity = $('#supply_quantity').val();
+            var supply_id = $('#supply_name').val();
+            var supply_name = $('#supply_name').find('option:selected').text();
 
-        // Check if both fields have values before saving
-        if (supply_name && supply_quantity) {
-            // Retrieve existing data from local storage
-            var storedData = localStorage.getItem("request_supplies");
-            var suppliesArray = [];
+            // Check if both fields have values before saving
+            if (supply_name && supply_quantity) {
+                // Retrieve existing data from local storage
+                var storedData = localStorage.getItem("request_supplies");
+                var suppliesArray = [];
 
-            if (storedData) {
-                // If there is existing data, parse it
-                suppliesArray = JSON.parse(storedData);
+                if (storedData) {
+                    // If there is existing data, parse it
+                    suppliesArray = JSON.parse(storedData);
 
-                // Check if the supply with the current ID already exists
-                var existingSupplyIndex = suppliesArray.findIndex(function(supply) {
-                    return supply.supply_id === supply_id;
-                });
+                    // Check if the supply with the current ID already exists
+                    var existingSupplyIndex = suppliesArray.findIndex(function (supply) {
+                        return supply.supply_id === supply_id;
+                    });
 
-                if (existingSupplyIndex !== -1) {
-                    // Ask for confirmation to add the quantity to the existing supply
-                    var confirmAddQuantity = confirm(supply_name + " already added. Do you want to add the quantity to the existing supply?");
+                    if (existingSupplyIndex !== -1) {
+                        // Ask for confirmation to add the quantity to the existing supply
+                        var confirmAddQuantity = confirm(supply_name + " already added. Do you want to add the quantity to the existing supply?");
 
-                    if (!confirmAddQuantity) {
-                        // User canceled the operation, do not add the supply
+                        if (!confirmAddQuantity) {
+                            // User canceled the operation, do not add the supply
+                            return;
+                        }
+
+                        // Log existing supply details for debugging
+                        console.log("Existing supply details:", suppliesArray[existingSupplyIndex]);
+
+                        // Convert supply_quantity from the form to integer
+                        var quantityToAdd = parseInt(supply_quantity, 10);
+
+                        // Convert existing supply_quantity to integer
+                        var existingQuantity = parseInt(suppliesArray[existingSupplyIndex].supply_quantity, 10);
+
+                        // Ensure both quantities are valid numbers
+                        if (!isNaN(quantityToAdd) && !isNaN(existingQuantity)) {
+                            // Add the quantities and update the existing supply
+                            suppliesArray[existingSupplyIndex].supply_quantity = existingQuantity + quantityToAdd;
+
+                            // Update the local storage with the modified array
+                            localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
+                            window.location.reload();
+                            console.log("Quantity added to existing supply in local storage:", suppliesArray);
+                        } else {
+                            console.error("Invalid quantity provided:", supply_quantity);
+                        }
+
                         return;
                     }
 
-                    // Log existing supply details for debugging
-                    console.log("Existing supply details:", suppliesArray[existingSupplyIndex]);
-
-                    // Convert supply_quantity from the form to integer
-                    var quantityToAdd = parseInt(supply_quantity, 10);
-
-                    // Convert existing supply_quantity to integer
-                    var existingQuantity = parseInt(suppliesArray[existingSupplyIndex].supply_quantity, 10);
-
-                    // Ensure both quantities are valid numbers
-                    if (!isNaN(quantityToAdd) && !isNaN(existingQuantity)) {
-                        // Add the quantities and update the existing supply
-                        suppliesArray[existingSupplyIndex].supply_quantity = existingQuantity + quantityToAdd;
-
-                        // Update the local storage with the modified array
-                        localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
-                        window.location.reload();
-                        console.log("Quantity added to existing supply in local storage:", suppliesArray);
-                    } else {
-                        console.error("Invalid quantity provided:", supply_quantity);
-                    }
-
-                    return;
                 }
 
+
+                // Create a new supply data object with a unique identifier
+                var newSupply = {
+                    'supply_id': supply_id,
+                    'supply_quantity': supply_quantity,
+                    'supply_name': supply_name,
+                };
+                addSupplyTable(newSupply);
+                // Add the new supply data to the array
+                suppliesArray.push(newSupply);
+                // Convert the array to a string and store it in local storage
+                localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
+                $('#supply_name').val('');
+                $('#supply_quantity').val('');
+                console.log("Data saved to local storage:", suppliesArray);
+            } else {
+                alert("Please fill in both Supply List and Quantity before adding.");
             }
-
-
-            // Create a new supply data object with a unique identifier
-            var newSupply = {
-                'supply_id': supply_id,
-                'supply_quantity': supply_quantity,
-                'supply_name': supply_name,
-            };
-            addSupplyTable(newSupply);
-            // Add the new supply data to the array
-            suppliesArray.push(newSupply);
-            // Convert the array to a string and store it in local storage
-            localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
-            console.log("Data saved to local storage:", suppliesArray);
-        } else {
-            alert("Please fill in both Supply List and Quantity before adding.");
         }
-    }
 
-    function addSupplyTable(supply) {
-    var tableBody = $('#supplier_table tbody');
+        function addSupplyTable(supply) {
+            var tableBody = $('#supplier_table tbody');
 
-    var newRow = `
+            var newRow = `
         <tr>
             <td class="text-center align-middle">${supply.supply_name}</td>
             <td class="text-center align-middle">${supply.supply_quantity}</td>
@@ -171,103 +176,103 @@
             </td>
         </tr>`;
 
-    tableBody.append(newRow);
-    $('#no-supply-message').remove(); // Remove the "No supply inserted" message
-}
-
-
-    function confirmDelete(supplyId, supplyName) {
-        var confirmDeletion = confirm("Are you sure you want to delete" + supplyName + "?");
-
-        if (confirmDeletion) {
-            deleteSupply(supplyId);
+            tableBody.append(newRow);
+            $('#no-supply-message').remove(); // Remove the "No supply inserted" message
         }
-    }
 
-    function deleteSupply(supplyId) {
-        // Retrieve existing data from local storage
-        var storedData = localStorage.getItem("request_supplies");
-        var suppliesArray = [];
 
-        if (storedData) {
-            suppliesArray = JSON.parse(storedData);
+        function confirmDelete(supplyId, supplyName) {
+            var confirmDeletion = confirm("Are you sure you want to delete" + supplyName + "?");
 
-            // Find the index of the supply with the given ID
-            var supplyIndex = suppliesArray.findIndex(function(supply) {
-                return supply.supply_id === supplyId;
-            });
-
-            if (supplyIndex !== -1) {
-            // Remove the item from the array
-            suppliesArray.splice(supplyIndex, 1);
-
-                // Check if the array is empty
-                if (suppliesArray.length === 0) {
-                    // If the array is empty, clear the local storage
-
-                    localStorage.removeItem("request_supplies");
-                    console.log("Local storage cleared");
-                } else {
-                    // Update local storage with the modified array
-                    localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
-                    console.log("Supply with ID " + supplyId + " deleted from local storage");
-                }
-            window.location.reload();
-            } else {
-                console.warn("Supply with ID " + supplyId + " not found in local storage");
+            if (confirmDeletion) {
+                deleteSupply(supplyId);
             }
-        } else {
-            console.error("No data found in local storage.");
         }
-    }
 
+        function deleteSupply(supplyId) {
+            // Retrieve existing data from local storage
+            var storedData = localStorage.getItem("request_supplies");
+            var suppliesArray = [];
 
-    function loadExistingData() {
-        var storedData = localStorage.getItem("request_supplies");
-        var tableBody = $('#supplier_table tbody');
+            if (storedData) {
+                suppliesArray = JSON.parse(storedData);
 
-        if (storedData) {
-            var suppliesArray = JSON.parse(storedData);
-            suppliesArray.forEach(function(supply) {
-                addSupplyTable(supply);
-            });
-        } else {
-            tableBody.append('<tr id="no-supply-message"><td colspan="3" class="text-center">No supply inserted</td></tr>');
-        }
-    }
-    function saveFromLocalStorage() {
-    var suppliesArray = localStorage.getItem("request_supplies");
+                // Find the index of the supply with the given ID
+                var supplyIndex = suppliesArray.findIndex(function (supply) {
+                    return supply.supply_id === supplyId;
+                });
 
-    if (suppliesArray) {
-        suppliesArray = JSON.parse(suppliesArray);
-        $.ajax({
-            url: "{% url 'staff_requisition_supply_view_endpoint' %}",
-            type: "POST",
-            data: {
-                'requestor_notes': $('#requestor_notes').val(),
-                'action': 'save_from_local_storage',
-                'supply_data': JSON.stringify(suppliesArray),
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function (response) {
-                if (response.success === true) {
-                    console.log("Data from local storage saved successfully!");
-                    // Optionally, you can clear local storage after successful save
+                if (supplyIndex !== -1) {
+                    // Remove the item from the array
+                    suppliesArray.splice(supplyIndex, 1);
 
-                    localStorage.removeItem("request_supplies");
+                    // Check if the array is empty
+                    if (suppliesArray.length === 0) {
+                        // If the array is empty, clear the local storage
+
+                        localStorage.removeItem("request_supplies");
+                        console.log("Local storage cleared");
+                    } else {
+                        // Update local storage with the modified array
+                        localStorage.setItem("request_supplies", JSON.stringify(suppliesArray));
+                        console.log("Supply with ID " + supplyId + " deleted from local storage");
+                    }
                     window.location.reload();
                 } else {
-                    console.error("Error saving data from local storage:", response.error_message);
+                    console.warn("Supply with ID " + supplyId + " not found in local storage");
                 }
-            },
-            error: function (error) {
-                console.error("AJAX request failed:", error);
+            } else {
+                console.error("No data found in local storage.");
             }
-        });
-    }
-    else{
-        alert("No request to submit.");
-    }
-}
-</script>
+        }
+
+
+        function loadExistingData() {
+            var storedData = localStorage.getItem("request_supplies");
+            var tableBody = $('#supplier_table tbody');
+
+            if (storedData) {
+                var suppliesArray = JSON.parse(storedData);
+                suppliesArray.forEach(function (supply) {
+                    addSupplyTable(supply);
+                });
+            } else {
+                tableBody.append('<tr id="no-supply-message"><td colspan="3" class="text-center">No supply inserted</td></tr>');
+            }
+        }
+
+        function saveFromLocalStorage() {
+            var suppliesArray = localStorage.getItem("request_supplies");
+
+            if (suppliesArray) {
+                suppliesArray = JSON.parse(suppliesArray);
+                $.ajax({
+                    url: "{% url 'staff_requisition_supply_view_endpoint' %}",
+                    type: "POST",
+                    data: {
+                        'requestor_notes': $('#requestor_notes').val(),
+                        'action': 'save_from_local_storage',
+                        'supply_data': JSON.stringify(suppliesArray),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.success === true) {
+                            console.log("Data from local storage saved successfully!");
+                            // Optionally, you can clear local storage after successful save
+
+                            localStorage.removeItem("request_supplies");
+                            window.location.reload();
+                        } else {
+                            console.error("Error saving data from local storage:", response.error_message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("AJAX request failed:", error);
+                    }
+                });
+            } else {
+                alert("No request to submit.");
+            }
+        }
+    </script>
 {% endblock content %}
