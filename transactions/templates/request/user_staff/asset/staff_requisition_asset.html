@@ -12,93 +12,95 @@
 {# Content #}
 {% block content %}
     <style>
-    /* CSS for increment and decrement buttons */
-    .quantity-controls button {
-        background-color: transparent;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1em;
-        padding: 0.5em;
-        margin: 0;
-        transition: background-color 0.3s ease;
-        width: 30px; /* Adjust width as needed */
-        height: 30px; /* Adjust height as needed */
-        border-radius: 50%; /* Makes buttons circular */
-    }
+        /* CSS for increment and decrement buttons */
+        .quantity-controls button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0.5em;
+            margin: 0;
+            transition: background-color 0.3s ease;
+            width: 30px; /* Adjust width as needed */
+            height: 30px; /* Adjust height as needed */
+            border-radius: 50%; /* Makes buttons circular */
+        }
 
-    .quantity-controls button.increment {
-        background-color: blue;
-    }
+        .quantity-controls button.increment {
+            background-color: blue;
+        }
 
-    .quantity-controls button.decrement {
-        background-color: red;
-    }
+        .quantity-controls button.decrement {
+            background-color: red;
+        }
 
-    .quantity-controls button:hover {
-        filter: brightness(1.2); /* Adds a brightness effect on hover */
-    }
+        .quantity-controls button:hover {
+            filter: brightness(1.2); /* Adds a brightness effect on hover */
+        }
 
-    .quantity {
-        display: inline-block;
-        min-width: 2em;
-        text-align: center;
-        padding: 0.5em;
-        margin: 0 0.5em;
-        font-weight: bold;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-</style>
+        .quantity {
+            display: inline-block;
+            min-width: 2em;
+            text-align: center;
+            padding: 0.5em;
+            margin: 0 0.5em;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
 
-{# Simple Datatables CSS #}
-<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    {# Simple Datatables CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 
-<main id="main" class="main">
-    <div class="container mt-3">
-        <section class="section dashboard">
-            <div class="row">
-                <!-- Left side columns -->
-                <div class="col-lg-12" id="left">
-                    {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
+    <main id="main" class="main">
+        <div class="container mt-3">
+            <section class="section dashboard">
+                <div class="row">
+                    <!-- Left side columns -->
+                    <div class="col-lg-12" id="left">
+                        {% include 'request/user_staff/asset/include_staff_requisition_form_asset.html' %}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <div class="card mb-3">
-            <div class="card-body p-4">
+            <div class="card mb-3">
+                <div class="card-body p-4">
 
-                <div class="pagetitle" id="req_menu" style="">
-                    <h1 class="" style="margin-bottom: 5px; font-size: 35px">REQUEST</h1>
-                    <p class=""style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">OVERVIEW</p>
-                </div>
-                <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
+                    <div class="pagetitle" id="req_menu" style="">
+                        <h1 class="" style="margin-bottom: 5px; font-size: 35px">REQUEST</h1>
+                        <p class="" style="margin-bottom: 0; font-size: 16px; letter-spacing: 2px; color: var(--c1)">
+                            OVERVIEW</p>
+                    </div>
+                    <div class="form_divider" style="width: 100%; margin-top: 0;"></div>
 
-                <table class="table table-hover" id="supplier_table">
-                    <thead class="text-center">
+                    <table class="table table-hover" id="supplier_table">
+                        <thead class="text-center">
                         <tr>
                             <th scope="col" class="text-center text-uppercase">Asset Name</th>
                             <th scope="col" class="text-center text-uppercase">Quantity</th>
                             <th scope="col" class="text-center"></th>
                         </tr>
-                    </thead>
-                    <tbody class="text-center">
+                        </thead>
+                        <tbody class="text-center">
                         <!-- Content will be dynamically added here -->
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
 
-                <div class="row mb-3">
-                    <div class="col-sm-12 justify-content-end" id="req_btn">
-                        <button type="submit" class="submitBtn btn btn" id="submit_btn" style= "border: none !important; min-width: 100% !important;"
-                                onclick="saveFromLocalStorage()">
-                            <i class="bi bi-cursor"></i> SUBMIT
-                        </button>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 justify-content-end" id="req_btn">
+                            <button type="submit" class="submitBtn btn btn" id="submit_btn"
+                                    style="border: none !important; min-width: 100% !important;"
+                                    onclick="saveFromLocalStorage()">
+                                <i class="bi bi-cursor"></i> SUBMIT
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main><!-- End #main -->
+    </main><!-- End #main -->
 
 
     {# jQuery #}
@@ -134,12 +136,11 @@
             var asset_name = $('#asset_name').find('option:selected').text();
 
 
-
             if (asset_name && asset_quantity && asset_name !== "Select") {
-                 if (asset_quantity <= 0 || asset_quantity > 1000 ) {
+                if (asset_quantity <= 0 || asset_quantity > 1000) {
                     alert('Please enter a valid quantity');
-                return
-                 }
+                    return
+                }
                 var existingAsset = checkAndUpdateAsset(asset_id, asset_quantity);
 
                 if (existingAsset !== null && !existingAsset) {
@@ -175,9 +176,7 @@
                 var newRow = `<tr data-asset-id="${asset.asset_id}">
             <td class="text-center align-middle">${asset.asset_name}</td>
             <td class="text-center align-middle">
-                <button class="decrement" onclick="decrementQuantity(this)">-</button>
                 <span class="quantity">${asset.asset_quantity}</span>
-                <button class="increment" onclick="incrementQuantity(this)">+</button>
             </td>
             <td class="text-center align-middle">
                 <button style="background-color: transparent; border-color: transparent;" type="button"
@@ -206,41 +205,41 @@
             }
         }
 
-       function deleteSupply(supplyId) {
-        // Retrieve existing data from local storage
-        var storedData = localStorage.getItem("request_asset");
-        var suppliesArray = [];
+        function deleteSupply(supplyId) {
+            // Retrieve existing data from local storage
+            var storedData = localStorage.getItem("request_asset");
+            var suppliesArray = [];
 
-        if (storedData) {
-            suppliesArray = JSON.parse(storedData);
+            if (storedData) {
+                suppliesArray = JSON.parse(storedData);
 
-            // Find the index of the supply with the given ID
-            var supplyIndex = suppliesArray.findIndex(function(supply) {
-                return supply.asset_id === supplyId;
-            });
+                // Find the index of the supply with the given ID
+                var supplyIndex = suppliesArray.findIndex(function (supply) {
+                    return supply.asset_id === supplyId;
+                });
 
-            if (supplyIndex !== -1) {
-            // Remove the item from the array
-            suppliesArray.splice(supplyIndex, 1);
+                if (supplyIndex !== -1) {
+                    // Remove the item from the array
+                    suppliesArray.splice(supplyIndex, 1);
 
-                // Check if the array is empty
-                if (suppliesArray.length === 0) {
-                    // If the array is empty, clear the local storage
-                    localStorage.removeItem("request_asset");
-                    console.log("Local storage cleared");
+                    // Check if the array is empty
+                    if (suppliesArray.length === 0) {
+                        // If the array is empty, clear the local storage
+                        localStorage.removeItem("request_asset");
+                        console.log("Local storage cleared");
+                    } else {
+                        // Update local storage with the modified array
+                        localStorage.setItem("request_asset", JSON.stringify(suppliesArray));
+                        console.log("Asset with ID " + supplyId + " deleted from local storage");
+                    }
+                    window.location.reload();
                 } else {
-                    // Update local storage with the modified array
-                    localStorage.setItem("request_asset", JSON.stringify(suppliesArray));
-                    console.log("Asset with ID " + supplyId + " deleted from local storage");
+                    console.warn("Asset with ID " + supplyId + " not found in local storage");
                 }
-            window.location.reload();
             } else {
-                console.warn("Asset with ID " + supplyId + " not found in local storage");
+                console.error("No data found in local storage.");
             }
-        } else {
-            console.error("No data found in local storage.");
         }
-     }
 
         // Function to handle inline quantity increment and update local storage
         function incrementQuantity(btn) {
