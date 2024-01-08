@@ -21,6 +21,8 @@ def login_view(request):
                 error_message = 'Account is suspended'
             elif user.user_status == 3:
                 error_message = 'Account is deleted'
+            elif user.user_status != 1:
+                error_message = 'Account is not active'
             elif not check_password(password, user.user_password):
                 error_message = 'Incorrect Email or Password'
             else:

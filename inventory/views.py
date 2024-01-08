@@ -26,12 +26,17 @@ class InventorySupplyIndexView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        supply_type = get_list_or_404(SupplyType)
-        suppliers = get_list_or_404(Supplier, supplier_status=1)
-        # Add the data to the context
-        context['supply_type'] = supply_type
-        context['suppliers'] = suppliers
+        try:
+            # Query objects for AnotherModel
+            supply_type = SupplyType.objects.all()
+            suppliers = Supplier.objects.all()
+            # Add the data to the context
+            context['supply_type'] = supply_type
+            context['suppliers'] = suppliers
+        except Exception as e:
+            context['supply_type'] = None
+            context['suppliers'] = None
+            return context
         return context
 
     def dispatch(self, request, *args, **kwargs):
