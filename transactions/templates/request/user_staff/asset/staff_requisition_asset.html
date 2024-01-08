@@ -134,11 +134,12 @@
             var asset_name = $('#asset_name').find('option:selected').text();
 
 
-            if (asset_quantity <= 0 || asset_name === "Select") {
-                alert('Please fill in both Asset Name and Quantity before saving.');
+
+            if (asset_name && asset_quantity && asset_name !== "Select") {
+                 if (asset_quantity <= 0 || asset_quantity > 1000 ) {
+                    alert('Please enter a valid quantity');
                 return
-            }
-            if (asset_name && asset_quantity) {
+                 }
                 var existingAsset = checkAndUpdateAsset(asset_id, asset_quantity);
 
                 if (existingAsset !== null && !existingAsset) {

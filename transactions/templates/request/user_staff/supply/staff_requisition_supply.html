@@ -86,6 +86,12 @@
         // Check if both fields have values before saving
         if (supply_name && supply_quantity) {
             // Retrieve existing data from local storage
+            if (supply_quantity < 1 || supply_quantity > 1000) {
+                alert("Please input a valid quantity.");
+                return;
+            }
+
+
             var storedData = localStorage.getItem("request_supplies");
             var suppliesArray = [];
 

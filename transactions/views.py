@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from bootstrap_modal_forms.generic import BSModalUpdateView
 from django.contrib import messages
@@ -193,8 +194,8 @@ def update_note(request, req_id):
 def updateJoborder(request, req_id):
     try:
         req_form = get_object_or_404(Requisition, req_id=req_id)
-        job_order = get_object_or_404(Job_Order, req_id=req_id)
-        job_order_status = job_order.req_status.name
+        req = get_object_or_404(Job_Order, req_id=req_id)
+
 
         if req_form.request_status.name == RequestStatus.objects.get(name='Completed').name:
             messages.warning(request, 'Cannot update job order. Job order is already completed.')
@@ -209,10 +210,43 @@ def updateJoborder(request, req_id):
             return JsonResponse(
                 {'status': 'error', 'message': 'Cannot update job order. Job order is already declined.'})
 
-        req = get_object_or_404(Job_Order, req_id=req_id)
-        req.job_start_date = request.POST.get('job_order_start') if request.POST.get(
-            'job_order_start') else None
-        req.job_end_date = request.POST.get('job_order_end') if request.POST.get('job_order_end') else None
+        if request.POST.get('worker_count') == '':
+            messages.warning(request, 'Cannot update job order. Worker count is missing.')
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Worker count is missing.'})
+        else:
+            worker_count = int(request.POST.get('worker_count'))
+            if worker_count < 1:
+                messages.warning(request, 'Cannot update job order. Worker count is invalid.')
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Cannot update job order. Worker count is invalid.'})
+
+
+        if request.POST.get('job_order_start') != '' and request.POST.get('job_order_end') != '':
+            job_start_date_str = datetime.strptime(request.POST.get('job_order_start'), '%Y-%m-%d')
+            job_end_date_str = datetime.strptime(request.POST.get('job_order_end'), '%Y-%m-%d')
+        else:
+            job_start_date_str = None
+            job_end_date_str = None
+
+        if job_start_date_str is None and job_end_date_str is None:
+            messages.warning(request, 'Cannot update job order. Job start/end date is missing.')
+            return JsonResponse(
+                {'status': 'error', 'message': 'Cannot update job order. Job start/end date is missing.'})
+
+        # Validate job start date is not a past date
+        if job_start_date_str < datetime.now():
+            messages.warning(request, 'Job start date cannot be a past date.')
+            return JsonResponse({'status': 'error', 'message': 'Job start date cannot be a past date.'})
+
+        # Validate job end date is not less than the start date
+        if job_start_date_str > job_end_date_str:
+            messages.warning(request, 'Job end date cannot be less than the start date.')
+            return JsonResponse({'status': 'error', 'message': 'Job end date cannot be less than the start date.'})
+
+
+        req.job_start_date = job_start_date_str
+        req.job_end_date = job_end_date_str
         req.worker_count = request.POST.get('worker_count')
         req.save()
         req_form.reviewer_notes = request.POST.get('reviewer_notes')
@@ -280,7 +314,10 @@ def post_requisition_info(request, req_id):
             print()
             selected = RequisitionStatus.objects.get(pk=int(request.POST.get('req_status'))).name
             if selected == 'Approved':
-
+                if req_form.job_start_date is None or req_form.job_end_date is None:
+                    messages.warning(request, 'Cannot approve request. Job start/end date is missing.')
+                    return JsonResponse(
+                        {'status': 'error', 'message': 'Cannot approve request. Job start/end date is missing.'})
                 requisition.request_status = RequestStatus.objects.get(name='Completed')
                 req_form.req_status_id = int(request.POST.get('req_status'))
                 requisition.save()
@@ -434,6 +471,9 @@ def release_items(request, req_id):
                 if declined_items:
                     messages.success(request, 'Items released successfully! Some items were declined or cancelled')
                     return JsonResponse({'status': 'success'})
+                else:
+                    messages.success(request, 'Items released successfully!')
+                    return JsonResponse({'status': 'success'})
 
             elif requisition_type == 'Asset':
                 asset_data = Request_Assets.objects.filter(req_id=req_id)
@@ -467,13 +507,16 @@ def release_items(request, req_id):
                     current_stock.asset_on_hand -= item.req_asset_qty
                     current_stock.save()
 
+                requisition.request_status = RequestStatus.objects.get(name='Completed')
+                requisition.save()
+
                 # Check if there are declined items
                 if declined_items:
-                    requisition.request_status = RequestStatus.objects.get(name='Completed')
-                    requisition.save()
                     messages.success(request, 'Items released successfully! Some items were declined or cancelled')
                     return JsonResponse({'status': 'success'})
-
+                else:
+                    messages.success(request, 'Items released successfully!')
+                    return JsonResponse({'status': 'success'})
 
             elif requisition_type == 'Job Order':
                 messages.warning(request, 'Cannot release items. Job orders are not applicable for this action.')
