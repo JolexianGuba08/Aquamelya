@@ -51,8 +51,6 @@
         <th scope="col" class="text-center text-uppercase">Item Type</th>
         <th scope="col" class="text-center text-uppercase">Item Name</th>
         <th scope="col" class="purchase_tbl text-center text-uppercase">Qty</th>
-        <th scope="col" class="purchase_tbl text-center text-uppercase">Supplier</th>
-        <th scope="col" class="purchase_tbl text-center text-uppercase">Requestor</th>
         <th scope="col" class="purchase_tbl text-center text-uppercase">Purchase Date</th>
     </tr>
     </thead>
@@ -60,11 +58,9 @@
     {% if purchase_order %}
         {% for purchase in purchase_order %}
             <tr>
-                <th>{{ purchase.req__req_type__name }}</th>
-                <th>{{ purchase.purch_item_name }}</th>
-                <td class="purchase_tbl">{{ purchase.purch_qty }}</td>
-                <td class="purchase_tbl">{{ purchase.supplier__supplier_name }}</td>
-                <td class="purchase_tbl">{{ purchase.purch_requestor }}</td>
+                <th>{{ purchase.req_type }}</th>
+                <th>{{ purchase.req_item_name }}</th>
+                <td class="purchase_tbl">{{ purchase.quantity }}</td>
                 <td class="purchase_tbl">{{ purchase.purch_date }}</td>
             </tr>
         {% endfor %}

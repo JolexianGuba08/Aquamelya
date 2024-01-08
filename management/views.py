@@ -6,6 +6,7 @@ from bootstrap_modal_forms.generic import (
 import cloudinary.uploader
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db.models import Count
 from django.forms import model_to_dict
 from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,7 +16,7 @@ from django.views import generic, View
 from django.views.decorators.http import require_POST
 
 from Aquamelya import settings
-from transactions.models import Request_Supply, Job_Order, Request_Assets
+from transactions.models import Request_Supply, Job_Order, Request_Assets, Requisition
 from .custom_context.processor import get_user_info
 from .forms import *
 from .models import Supplier, SupplierStatus, User_Account
@@ -321,23 +322,7 @@ def error_404_view(request, exception):
 # ------------------REPORTS DASHBOARD------------------#
 
 def reports_data(request):
-    try:
-        filter_type = request.GET.get('filter_type')
-
-        supplies_count = Request_Supply.objects.count()
-        assets_count = Request_Assets.objects.count()
-        job_orders_count = Job_Order.objects.count()
-
-        data = {
-            'Supplies': supplies_count,
-            'Assets': assets_count,
-            'Job Orders': job_orders_count
-        }
-
-        return JsonResponse(data)
-
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    return redirect('reports_data_dashboard')
 
 
 def fetch_data_for_day(date_now):
@@ -446,8 +431,16 @@ def staff_profile_edit(request):
             staff_fname = request.POST.get('staff_fname')
             staff_mname = request.POST.get('staff_mname')
             staff_lname = request.POST.get('staff_lname')
-            staff_birthdate = request.POST.get('staff_birthdate')
+            staff_birthdate_str = request.POST.get('staff_birthdate')
             staff_picture = request.FILES.get('profile_pic')
+            print(staff_birthdate_str)
+            # validate the birthdate should not be greater than the current date and not less than  17 years old
+            staff_birthdate = datetime.strptime(staff_birthdate_str, '%Y-%m-%d').date()
+            max_birthdate = datetime.now().date() - timedelta(days=(17 * 365))  # 17 years ago from today
+
+            if staff_birthdate > datetime.now().date() or staff_birthdate > max_birthdate:
+                messages.warning(request, 'Invalid birthdate. Birthday must be at least 17 years old.')
+                return JsonResponse({'success': False, 'error': 'Invalid birthdate.'})
 
             if user.user_first_name and not staff_fname:
                 messages.warning(request, 'First name is required.')
