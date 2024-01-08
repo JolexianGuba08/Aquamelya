@@ -100,6 +100,11 @@ class UpdateSupplyModelForm(BSModalModelForm):
         widget=forms.NumberInput(attrs={'class': 'form-control'}),
         required=True,
     )
+    supply_description = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_description]
+    )
 
     def clean_supply_reorder_lvl(self):
         supply_reorder_lvl = self.cleaned_data['supply_reorder_lvl']
@@ -181,6 +186,11 @@ class UpdateAssetModelForm(BSModalModelForm):
     )
     asset_supplier = forms.ModelChoiceField(queryset=Supplier.objects.filter(supplier_status__name='Active'),
                                             empty_label="Select Supplier", required=False)
+    asset_description = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_description]
+    )
 
     def clean(self):
         cleaned_data = super().clean()
