@@ -216,7 +216,17 @@ class UpdateAssetModelForm(BSModalModelForm):
         required=True,
         validators=[validate_description]
     )
+    asset_manufacturer = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_model]
+    )
 
+    asset_model = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True,
+        validators=[validate_model]
+    )
     def clean(self):
         cleaned_data = super().clean()
         # Convert all string fields to lowercase
