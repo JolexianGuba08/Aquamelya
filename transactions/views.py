@@ -1307,7 +1307,7 @@ def delivery_items(request, pk):
             template = 'delivery/user_admin/delivery_items.html'
         else:
             delivery = get_object_or_404(Delivery, pk=pk, order_receive_by=request.session.get('session_user_id'))
-            template = 'delivery/user_admin/delivery_items.html'
+            template = 'acknowledgement/staff_items.html'
 
         request_type = delivery.purch.req.req_type.name
 
@@ -1323,21 +1323,20 @@ def delivery_items(request, pk):
             'supplier': delivery.purch.supplier.supplier_name,
             'user_type': request.session.get('session_user_type'),
         }
-
-
         delivery_items = None
+
         if request_type == "Supply":
             delivery_items = DeliverySupply.objects.filter(delivery=pk)
         elif request_type == "Asset":
             delivery_items = DeliveryAsset.objects.filter(delivery=pk)
-
-
 
     except Delivery.DoesNotExist:
         delivery_data = None
     except Exception as e:
         delivery_data = None
         delivery_items = None
+
+
     return render(request, template, {'delivery': delivery_data,
                                       'delivery_items': delivery_items})
 

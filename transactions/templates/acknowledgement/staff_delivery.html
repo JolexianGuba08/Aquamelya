@@ -22,7 +22,6 @@
             }
         }
     </style>
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.jqueryui.min.css">
     {% include 'acknowledgement/staff_delivery_modal.html' %}
     <main id="main" class="main">
@@ -86,6 +85,7 @@
                 </div>
             </div>
         </section>
+
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.0/tinymce.min.js"></script>
@@ -104,6 +104,7 @@
                 var pk = $(this).data('pk');
                 window.location.href = `/transactions/delivery_items/${pk}/`;
             });
+
             // Handle dropdown change event
             $('#status_filter, #delivery_search').on('change input', function () {
                 var selectedStatus = $('#status_filter').val();
@@ -123,6 +124,7 @@
                 });
             });
         });
+
 
     </script>
 
