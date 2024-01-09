@@ -1051,44 +1051,44 @@ def get_delivery_info(request, pk):
 
 
 # If Admin/Staff Received the delivery then, update the stock
-def post_delivery_info(request, delivery_id):
-    if request.session.get('session_user_type') == 0:
-        raise Http404("You are not allowed to access this page.")
-
-    message = 'Changes saved successfully!'
-    try:
-        # Get the delivery object and get the delivery status
-        delivery = get_object_or_404(Delivery, delivery_id=delivery_id)
-        delivery_status = request.POST.get('delivery_status')
-        # If delivery is arrived then, update the stock
-        if delivery_status == '2':
-            # getting the item type and name
-            delivery.purch.purch_status = 3
-            delivery.purch.save()
-            item_type = delivery.purch.purch_item_type
-            item_name = delivery.purch.purch_item_name
-            if item_type == 'Supply':
-                # Find the specific supply according to req_id, then update the stock
-                supply = get_object_or_404(Supply, supply_description=item_name)
-                supply.supply_on_hand += delivery.purch.purch_qty
-                message = f'{supply.supply_description} stock updated successfully!'
-                supply.save()
-            elif item_type == 'Asset':
-                # Find the specific asset according to req_id, then update the stock
-                asset = get_object_or_404(Assets, asset_description=item_name)
-                asset.asset_on_hand += delivery.purch.purch_qty
-                message = f'{asset.asset_description} stock updated successfully!'
-                asset.save()
-        # Update the delivery status and the date received
-        delivery.delivery_status = delivery_status
-        delivery.order_receive_date = timezone.now()
-
-        delivery.save()
-        messages.success(request, message)
-        return JsonResponse({'status': 'success'})
-    except Exception as e:
-        messages.error(request, f'Error saving changes!')
-        return JsonResponse({'status': f'error: {e}'})
+# def post_delivery_info(request, delivery_id):
+#     if request.session.get('session_user_type') == 0:
+#         raise Http404("You are not allowed to access this page.")
+#
+#     message = 'Changes saved successfully!'
+#     try:
+#         # Get the delivery object and get the delivery status
+#         delivery = get_object_or_404(Delivery, delivery_id=delivery_id)
+#         delivery_status = request.POST.get('delivery_status')
+#         # If delivery is arrived then, update the stock
+#         if delivery_status == '2':
+#             # getting the item type and name
+#             delivery.purch.purch_status = 3
+#             delivery.purch.save()
+#             item_type = delivery.purch.purch_item_type
+#             item_name = delivery.purch.purch_item_name
+#             if item_type == 'Supply':
+#                 # Find the specific supply according to req_id, then update the stock
+#                 supply = get_object_or_404(Supply, supply_description=item_name)
+#                 supply.supply_on_hand += delivery.purch.purch_qty
+#                 message = f'{supply.supply_description} stock updated successfully!'
+#                 supply.save()
+#             elif item_type == 'Asset':
+#                 # Find the specific asset according to req_id, then update the stock
+#                 asset = get_object_or_404(Assets, asset_description=item_name)
+#                 asset.asset_on_hand += delivery.purch.purch_qty
+#                 message = f'{asset.asset_description} stock updated successfully!'
+#                 asset.save()
+#         # Update the delivery status and the date received
+#         delivery.delivery_status = delivery_status
+#         delivery.order_receive_date = timezone.now()
+#
+#         delivery.save()
+#         messages.success(request, message)
+#         return JsonResponse({'status': 'success'})
+#     except Exception as e:
+#         messages.error(request, f'Error saving changes!')
+#         return JsonResponse({'status': f'error: {e}'})
 
 
 # ---------- STAFF PURCHASING SECTION ------------ #
@@ -1307,7 +1307,7 @@ def delivery_items(request, pk):
             template = 'delivery/user_admin/delivery_items.html'
         else:
             delivery = get_object_or_404(Delivery, pk=pk, order_receive_by=request.session.get('session_user_id'))
-            template = 'acknowledgement/acknowledgement_view.html'
+            template = 'delivery/user_admin/delivery_items.html'
 
         request_type = delivery.purch.req.req_type.name
 
@@ -1324,11 +1324,13 @@ def delivery_items(request, pk):
             'user_type': request.session.get('session_user_type'),
         }
 
+
         delivery_items = None
         if request_type == "Supply":
             delivery_items = DeliverySupply.objects.filter(delivery=pk)
         elif request_type == "Asset":
             delivery_items = DeliveryAsset.objects.filter(delivery=pk)
+
 
 
     except Delivery.DoesNotExist:
@@ -1366,8 +1368,10 @@ def get_delivery_info(request, pk, item_type):
 def post_delivery_info(request, delivery_id):
     global delivery_item
     try:
+        print(delivery_id)
         delivery_status = request.POST.get('delivery_status')
         item_type = request.POST.get('item_type')
+        print(delivery_status, item_type)
         if item_type == 'Supply':
             delivery_item = get_object_or_404(DeliverySupply, del_item_id=delivery_id)
 
@@ -1399,6 +1403,7 @@ def post_delivery_info(request, delivery_id):
             return JsonResponse({'status': 'error'})
         print("Endpoint Activated")
     except Exception as e:
+        print(e)
         messages.error(request, f'Error saving changes!')
         return JsonResponse({'status': f'error: {e}'})
 

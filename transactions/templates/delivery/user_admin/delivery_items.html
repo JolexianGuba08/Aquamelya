@@ -205,7 +205,7 @@
             var delivery_status = $('#delivery_status_select').val();
             var item_type  = $('#delivery_id').data('type');
             var user_id = '{{ request.user.id }}';
-
+            console.log(delivery_status)
             $.ajax({
                 url: `/transactions/post_delivery_data/${delivery_id}/`,
                 method: 'POST',
