@@ -12,7 +12,9 @@
                      style="background: url({{ profile_picture }}) no-repeat center center !important;   background: url({{ user_profile_pic }}) no-repeat center center; background-size: cover !important; width: 120px; height: 120px; border-radius: 50% !important;margin-bottom: 10px"
                      >
                      <!-- File Input -->
-                     <input title="Upload File" type="file" id="file" class="d-none "/>
+                     <input title="Upload File" type="file" id="file" class="d-none" accept=".png, .jpeg, .jpg" onchange="validateFile(this)" />
+
+
                      <!-- End File Input -->
                   </div>
 
@@ -99,6 +101,16 @@
 </form>
 <!-- End Profile Edit Form -->
 <script>
+    function validateFile(input) {
+    const allowedExtensions = /(\.png|\.jpeg|\.jpg)$/i;
+    const file = input.files[0];
+
+    if (!allowedExtensions.exec(file.name)) {
+        alert('Please choose a file with a PNG, JPEG, or JPG extension.');
+        input.value = ''; // Clear the file input
+    }
+}
+
    // Display Profile Image
    const image = document.querySelector("#profile");
    const file = document.querySelector("#file");
@@ -140,6 +152,8 @@
        const fileInput = document.getElementById('file');
        const file = fileInput.files[0]; // Get the selected file
        formData.append('profile_pic', file);
+
+
 
        fetch('{% url "staff_profile_edit" %}', {
            method: 'POST',

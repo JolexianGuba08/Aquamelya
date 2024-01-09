@@ -28,17 +28,6 @@
         </div>
 
         <div class="col-md-12">
-            <label for="inputName4" class="form-label">On Hand</label>
-            {% render_field form.asset_on_hand class="form-control" placeholder="" %}
-            <div class="{% if form.asset_on_hand.errors %}invalid{% endif %}">
-                {% for error in form.asset_on_hand.errors %}
-                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        <div class="col-md-12">
             <label for="inputName4" class="form-label">Brand</label>
             {% render_field form.asset_manufacturer class="form-control" placeholder="" %}
             <div class="{% if form.asset_manufacturer.errors %}invalid{% endif %}">
@@ -67,18 +56,7 @@
                 {% endfor %}
             </div>
         </div>
-
-
-        <div class="col-md-12">
-            <label for="inputName4" class="form-label">Purchase Date</label>
-            {% render_field form.purchase_date class="form-control" placeholder="" %}
-            <div class="{% if form.purchase_date.errors %}invalid{% endif %}">
-                {% for error in form.purchase_date.errors %}
-                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
+    
         <div class="col-md-12">
             <label for="inputName4" class="form-label">Supplier</label>
             {% render_field form.asset_supplier class="form-control" placeholder="" %}

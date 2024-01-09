@@ -69,6 +69,8 @@ class User_Account(models.Model):
             self.user_middle_name = self.user_middle_name.upper()
         if self.user_last_name:
             self.user_last_name = self.user_last_name.upper()
+        if self.user_email:
+            self.user_email = self.user_email.lower()
 
         super(User_Account, self).save(*args, **kwargs)
 

@@ -441,7 +441,10 @@ def staff_profile_edit(request):
             if staff_birthdate > datetime.now().date() or staff_birthdate > max_birthdate:
                 messages.warning(request, 'Invalid birthdate. Birthday must be at least 17 years old.')
                 return JsonResponse({'success': False, 'error': 'Invalid birthdate.'})
-
+            # validate the first name should not contain a number or special character
+            if not staff_fname.isalpha() or not staff_mname.isalpha() or not staff_lname.isalpha():
+                messages.warning(request, 'Invalid Characters.')
+                return JsonResponse({'success': False, 'error': 'Invalid.'})
             if user.user_first_name and not staff_fname:
                 messages.warning(request, 'First name is required.')
                 return JsonResponse({'success': False, 'error': 'First name is required.'})
