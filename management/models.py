@@ -32,15 +32,15 @@ class User_Account(models.Model):
     user_middle_name = models.CharField(max_length=55, blank=True, null=True)
     user_last_name = models.CharField(max_length=55)
     user_address = models.CharField(max_length=200, blank=True, null=True)  # Adjust max_length if needed
-    user_contact_number = models.CharField(
-        validators=[
-            RegexValidator(
-                regex=r'^09\d{9}$',
-                message='Please enter a valid phone number starting with 09.',
-            ),
-        ],
-        max_length=11,
-    )
+    user_contact_number = models.CharField(unique=True,
+                                           validators=[
+                                               RegexValidator(
+                                                   regex=r'^09\d{9}$',
+                                                   message='Please enter a valid phone number starting with 09.',
+                                               ),
+                                           ],
+                                           max_length=11,
+                                           )
     user_birthdate = models.DateField(blank=True, null=True)
     user_date_hired = models.DateField(blank=True, null=True)
     user_date_added = models.DateTimeField(auto_now_add=True)
