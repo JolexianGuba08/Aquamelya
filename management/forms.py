@@ -314,6 +314,9 @@ class User_Account_ModelForm(BSModalModelForm):
         first_name = cleaned_data.get('user_first_name')
         last_name = cleaned_data.get('user_last_name')
 
+        # email to lowercase
+        if cleaned_data.get('user_email'):
+            cleaned_data['user_email'] = cleaned_data.get('user_email').lower()
         # Check if a user with the same first and last name exists
         if first_name and last_name:
             existing_users = User_Account.objects.filter(
@@ -380,6 +383,9 @@ class User_Account_Update_ModelForm(BSModalModelForm):
         cleaned_data = super().clean()
         user_first_name = cleaned_data.get('user_first_name')
         user_last_name = cleaned_data.get('user_last_name')
+        # email to lowercase
+        if cleaned_data.get('user_email'):
+            cleaned_data['user_email'] = cleaned_data.get('user_email').lower()
 
         if user_first_name and user_last_name:
             existing_users = User_Account.objects.filter(

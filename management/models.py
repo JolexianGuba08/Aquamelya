@@ -53,24 +53,31 @@ class User_Account(models.Model):
 
     # saving hashed password
     def save(self, *args, **kwargs):
-        try:
-            existing_user = User_Account.objects.get(pk=self.pk)
-            if self.user_password != existing_user.user_password:  # Check if the password has changed
-                password = self.user_password.encode('utf-8')
-                salt = bcrypt.gensalt()
-                hashed_password = bcrypt.hashpw(password, salt)
-                self.user_password = hashed_password.decode('utf-8')
-        except User_Account.DoesNotExist:
-            pass
-        
+        if self._state.adding or not self.user_id:  # Check if it's a new user being created
+            print('new user')
+            password = self.user_password.encode('utf-8')
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(password, salt)
+            self.user_password = hashed_password.decode('utf-8')
+            print('done hashing')
+        else:
+            try:
+                print('existing user')
+                existing_user = User_Account.objects.get(pk=self.pk)
+                if self.user_password != existing_user.user_password:  # Check if the password has changed
+                    password = self.user_password.encode('utf-8')
+                    salt = bcrypt.gensalt()
+                    hashed_password = bcrypt.hashpw(password, salt)
+                    self.user_password = hashed_password.decode('utf-8')
+            except User_Account.DoesNotExist:
+                pass  # Handle the case when the user doesn't exist
+
         if self.user_first_name:
             self.user_first_name = self.user_first_name.upper()
         if self.user_middle_name:
             self.user_middle_name = self.user_middle_name.upper()
         if self.user_last_name:
             self.user_last_name = self.user_last_name.upper()
-        if self.user_email:
-            self.user_email = self.user_email.lower()
 
         super(User_Account, self).save(*args, **kwargs)
 
