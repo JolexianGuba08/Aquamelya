@@ -23,6 +23,7 @@ def validate_description(value):
     if not re.match(r"^[a-zA-Z0-9\s'()]+$", value):
         raise forms.ValidationError(f"Should only contain letters, numbers, comma and single quotes.")
 
+
 def validate_model(value):
     if value.isdigit():
         raise ValidationError('Model cannot consist only of digits')
@@ -36,6 +37,7 @@ def validate_model(value):
         raise ValidationError('Model cannot consist all only parenthesis')
     if not re.match(r"^[a-zA-Z0-9\s'()-]+$", value):
         raise forms.ValidationError(f"Should only contain letters, numbers, dash, comma and single quotes.")
+
 
 # SUPPLY FORMS SECTION
 class SupplyModelForm(BSModalModelForm):
@@ -74,31 +76,12 @@ class SupplyModelForm(BSModalModelForm):
             if field in cleaned_data:
                 cleaned_data[field] = cleaned_data[field].capitalize()
 
-        reorder_lvl = cleaned_data.get('supply_reorder_lvl')
-        on_hand = cleaned_data.get('supply_on_hand')
-        if reorder_lvl is not None and int(reorder_lvl) == 0:
-            self.add_error('supply_reorder_lvl', 'Reorder level cannot be zero.')
-
-        if reorder_lvl is not None and int(reorder_lvl) < 0:
-            self.add_error('supply_reorder_lvl', 'Reorder level cannot be less than zero.')
-        if reorder_lvl is not None and on_hand is not None:
-            if reorder_lvl > on_hand:
-                self.add_error('supply_reorder_lvl', 'Reorder level cannot be greater than on-hand quantity.')
-        if on_hand is not None and int(on_hand) == 0:
-            self.add_error('supply_on_hand', 'On-hand quantity cannot be zero.')
-
-        if on_hand is not None and int(on_hand) < 0:
-            self.add_error('supply_on_hand', 'On-hand quantity cannot be less than zero.')
-
-        if on_hand is not None and int(on_hand) > 1000000:
-            self.add_error('supply_on_hand', 'On-hand quantity cannot be greater than 1,000,000.')
-
         return cleaned_data
 
     class Meta:
         model = Supply
         exclude = ['supply_id', 'supply_date_added', 'supply_date_modified', 'supply_last_purchase_date',
-                   'supply_status']
+                   'supply_status', 'supply_on_hand']
 
 
 class UpdateSupplyModelForm(BSModalModelForm):
@@ -119,18 +102,6 @@ class UpdateSupplyModelForm(BSModalModelForm):
         validators=[validate_description]
     )
 
-    def clean_supply_reorder_lvl(self):
-        supply_reorder_lvl = self.cleaned_data['supply_reorder_lvl']
-        supply_on_hand = self.instance.supply_on_hand if self.instance else None
-
-        if supply_reorder_lvl <= 0:
-            raise forms.ValidationError('Reorder level must be greater than zero.')
-
-        if supply_on_hand is not None and supply_reorder_lvl > supply_on_hand:
-            raise forms.ValidationError('Reorder level cannot be greater than on-hand quantity.')
-
-        return supply_reorder_lvl
-
     def clean(self):
         cleaned_data = super().clean()
         for field in ['supply_description']:
@@ -145,19 +116,8 @@ class UpdateSupplyModelForm(BSModalModelForm):
                    'supply_last_purchase_date', 'supply_status', 'supply_unit', 'supply_on_hand']
 
 
-class DatePurchValidator:
-    def __call__(self, value):
-        if value and value > timezone.now().date():
-            raise ValidationError("Date purchase cannot be in the future.")
-
-
 # ASSET FORMS SECTION
 class AssetModelForm(BSModalModelForm):
-    purchase_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        required=True,
-        validators=[DatePurchValidator()]
-    )
     notes = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
         required=False
@@ -189,19 +149,12 @@ class AssetModelForm(BSModalModelForm):
         for field in ['asset_description']:
             if field in cleaned_data:
                 cleaned_data[field] = cleaned_data[field].capitalize()
-
-        asset_on_hand = cleaned_data.get('asset_on_hand')
-        if asset_on_hand is not None and int(asset_on_hand) == 0:
-            self.add_error('asset_on_hand', 'On-hand quantity cannot be zero.')
-        if asset_on_hand is not None and int(asset_on_hand) > 1000000:
-            self.add_error('asset_on_hand', 'On-hand quantity cannot be greater than 1,000,000.')
-        if asset_on_hand is not None and int(asset_on_hand) < 0:
-            self.add_error('asset_on_hand', 'On-hand quantity cannot be less than zero.')
         return cleaned_data
 
     class Meta:
         model = Assets
-        exclude = ['asset_id', 'asset_date_added', 'asset_date_modified', 'asset_status']
+        exclude = ['asset_id', 'asset_date_added', 'asset_date_modified', 'asset_status', 'asset_on_hand',
+                   'purchase_date']
 
 
 class UpdateAssetModelForm(BSModalModelForm):
@@ -227,6 +180,7 @@ class UpdateAssetModelForm(BSModalModelForm):
         required=True,
         validators=[validate_model]
     )
+
     def clean(self):
         cleaned_data = super().clean()
         # Convert all string fields to lowercase

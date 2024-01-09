@@ -2,100 +2,109 @@
 
 <div class="modal-header">
     <h3 class="modal-title" style="font-weight: bold; font-size: 20px; letter-spacing: 1px">SUPPLY DETAILS</h3>
-    <button type="button" class="btn btn-primary ml-auto" style="color: white; font-weight: bold; border: none;" id="purchaseBtn" onclick="enableForm()"> <i class="bi bi-pencil-square"></i></button>
+    <button type="button" class="btn btn-primary ml-auto" style="color: white; font-weight: bold; border: none;"
+            id="purchaseBtn" onclick="enableForm()"><i class="bi bi-pencil-square"></i></button>
 </div>
 <div class="modal-body">
-   <form id="myForm"  class="update_supply row g-3" method="POST" novalidate>
-      {% csrf_token %}
-       <div class="row  justify-content-center mt-3">
+    <form id="myForm" class="update_supply row g-3" method="POST" novalidate>
+        {% csrf_token %}
+        <div class="row  justify-content-center mt-3">
             <div class="col-md-4 text-center">
                 <label class="form-label" style="color: var(--c1); ">Date Added</label>
-                <label class="form-label" style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_date_added }}</label>
+                <label class="form-label"
+                       style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_date_added }}</label>
             </div>
             <div class="col-md-4 text-center">
                 <label class="form-label" style="color: var(--c1); ">Purchase Date</label>
-                <label class="form-label" style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_last_purchase_date }}</label>
+                <label class="form-label"
+                       style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_last_purchase_date }}</label>
             </div>
             <div class="col-md-4 text-center">
                 <label class="form-label" style="color: var(--c1); ">Date Modified</label>
-                <label class="form-label" style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_date_modified }}</label>
+                <label class="form-label"
+                       style="display: block; margin-bottom: 8px; color:#d1d1d1;">{{ supply.supply_date_modified }}</label>
             </div>
         </div>
 
-       <div class="col-md-12">
+        <div class="col-md-12">
             <label for="inputName4" class="form-label">Description</label>
-            {% render_field form.supply_description class="form-control" placeholder=" " disabled="disabled"%}
+            {% render_field form.supply_description class="form-control" placeholder=" " disabled="disabled" %}
             <div class="{% if form.supply_description.errors %}invalid{% endif %}">
                 {% for error in form.supply_description.errors %}
-                   <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
-      </div>
+        </div>
 
-      <div class="col-md-12">
+        <div class="col-md-12">
             <label for="inputName4" class="form-label">Type</label>
-            {% render_field form.supply_type class="form-control" placeholder=" " disabled="disabled"%}
+            {% render_field form.supply_type class="form-control" placeholder=" " disabled="disabled" %}
             <div class="{% if form.supply_type.errors %}invalid{% endif %}">
                 {% for error in form.supply_type.errors %}
-                   <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
-      </div>
-
-      <div class="col-md-12">
+        </div>
+        
+        <div class="col-md-12">
             <label for="inputName4" class="form-label">Re-order Level</label>
-            {% render_field form.supply_reorder_lvl class="form-control" placeholder=" " disabled="disabled"%}
+            {% render_field form.supply_reorder_lvl class="form-control" placeholder=" " disabled="disabled" %}
             <div class="{% if form.supply_reorder_lvl.errors %}invalid{% endif %}">
                 {% for error in form.supply_reorder_lvl.errors %}
-                 <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
-      </div>
+        </div>
 
-      <div class="col-md-12">
+        <div class="col-md-12">
             <label for="inputName4" class="form-label">Supplier</label>
-            {% render_field form.supplier_id class="form-control" placeholder="" disabled="disabled"%}
+            {% render_field form.supplier_id class="form-control" placeholder="" disabled="disabled" %}
             <div class="{% if form.supplier_id.errors %}invalid{% endif %}">
                 {% for error in form.supplier_id.errors %}
-                 <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
+                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
                 {% endfor %}
             </div>
-      </div>
+        </div>
 
-      <div class="col-md-12">
+        <div class="col-md-12">
             <label for="inputName4" class="form-label">Notes</label>
-            {% render_field form.notes class="form-control" placeholder="" disabled="disabled"%}
+            {% render_field form.notes class="form-control" placeholder="" disabled="disabled" %}
             <div class="{% if form.notes.errors %}invalid{% endif %}">
                 {% for error in form.notes.errors %}
-                <p class="help-block">{{ error }}</p>
+                    <p class="help-block">{{ error }}</p>
                 {% endfor %}
             </div>
-      </div>
+        </div>
 
-    <div>
-     </div>
+        <div>
+        </div>
 
-      <div class="modal-footer justify-content-end">
-            <button type="submit" class="btn btn-success d-none mx-0" id="saveBtn" style="border: none; padding: 10px ; width: 100%; letter-spacing: 1px; font-weight: bold">SAVE CHANGES</button>
-            <button type="button" class="btn btn-danger me-auto mx-0" data-bs-dismiss="modal" style="letter-spacing: 1px; padding: 10px ; width: 100%; font-weight: bold; border: none">CLOSE</button>
+        <div class="modal-footer justify-content-end">
+            <button type="submit" class="btn btn-success d-none mx-0" id="saveBtn"
+                    style="border: none; padding: 10px ; width: 100%; letter-spacing: 1px; font-weight: bold">SAVE
+                CHANGES
+            </button>
+            <button type="button" class="btn btn-danger me-auto mx-0" data-bs-dismiss="modal"
+                    style="letter-spacing: 1px; padding: 10px ; width: 100%; font-weight: bold; border: none">CLOSE
+            </button>
         </div>
     </form>
 </div>
 
 <script>
-       function enableForm() {
-            // Get all elements with the class "form-control" inside the form with the id "myForm"
-            var formControls = document.querySelectorAll('#myForm .form-control');
+    function enableForm() {
+        // Get all elements with the class "form-control" inside the form with the id "myForm"
+        var formControls = document.querySelectorAll('#myForm .form-control');
 
-            // Loop through each element and remove the "disabled" attribute
-            formControls.forEach(function (element) {
-                element.removeAttribute('disabled');
-            });
+        // Loop through each element and remove the "disabled" attribute
+        formControls.forEach(function (element) {
+            element.removeAttribute('disabled');
+        });
 
-            // Make the "Save Changes" button visible
-            var saveChangesButton = document.querySelector('#saveBtn');
+        // Make the "Save Changes" button visible
+        var saveChangesButton = document.querySelector('#saveBtn');
 
-            saveChangesButton.classList.remove('d-none');
-        }
+        saveChangesButton.classList.remove('d-none');
+    }
 
 </script>

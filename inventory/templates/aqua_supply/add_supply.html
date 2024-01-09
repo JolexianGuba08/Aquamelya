@@ -39,15 +39,6 @@
       </div>
 
       <div class="col-md-12">
-            <label for="inputName4" class="form-label">Quantity On Hand</label>
-            {% render_field form.supply_on_hand class="form-control" placeholder=""%}
-            <div class="{% if form.supply_on_hand.errors %}invalid{% endif %}">
-                {% for error in form.supply_on_hand.errors %}
-                    <p class="text-danger" style="font-size: 12px; margin-bottom: 0 !important">{{ error }}</p>
-                {% endfor %}
-            </div>
-      </div>
-      <div class="col-md-12">
             <label for="inputName4" class="form-label">On Hand Unit</label>
             {% render_field form.supply_unit class="form-control" empty_label="Unit"%}
             <div class="{% if form.supply_unit.errors %}invalid{% endif %}">
